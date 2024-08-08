@@ -1,4 +1,4 @@
-import { boundingBox, polygon } from "./iterators";
+import { aspect, boundingBox, normalize, polygon } from "./iterators";
 import { ray, subtract } from "./psimd";
 import { Ngon, Vector } from "./types";
 
@@ -6,16 +6,16 @@ import { Ngon, Vector } from "./types";
  * NGON calculates the points and returns key information about the 
  * @returns 
  */
-const ngon = (sides: number=6, rotation: number, cornerRadius: number): Ngon => {
+const ngon = (sides: number=6, rotation: number, cornerRadius: number, square: boolean = false): Ngon => {
 	//I need to generate a path if a cached one does not exist
-	const pathId = 'S-'+sides;
 	const gen = polygon(sides, rotation);
-	const [mx, my, Mx, My] = boundingBox(gen());
-	const [width, height] = subtract([Mx, My], [mx, my]);
+	const size = boundingBox(gen());
+	
 	const anti = Math.PI - ((sides-2) * Math.PI / sides)/2;
 	return [
-		width/height,
-		fill(gen(), cornerRadius, anti)
+		square ? '1/1': aspect(size),
+		square ? '-1 -1 2 2':'0 0 1 1',
+		fill(square ? gen():normalize(gen(), size), cornerRadius, anti)
 	];
 };
 
@@ -57,3 +57,4 @@ const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.r
 	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>v.toFixed(5)).join(', ');
 	return o+v+(typeof args[i] === 'string' ? args[i]:args[i].toFixed(5));
 }, '');
+

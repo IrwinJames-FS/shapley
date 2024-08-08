@@ -9,11 +9,16 @@ import ngon from "../../geometry/ngon";
  * @returns 
  */
 const Shape: FC<ShapeProps> = ({sides=3, rotation=0, cornerRadius=0}) => {
-	const [,d] = useMemo(()=>ngon(sides, rotation * Math.PI / 180, cornerRadius), [sides, rotation, cornerRadius]);
-	return (<div className="shapely-shape"><svg {...{
-		viewBox: '-1 -1 2 2',
-		width: 100,
-		height: 100
+	const [aspectRatio,viewBox, d] = useMemo(()=>ngon(sides, rotation * Math.PI / 180, cornerRadius), [sides, rotation, cornerRadius]);
+	return (<div {...{
+		className: "shapely-shape",
+		style: {
+			aspectRatio, 
+		}
+	}}>
+		<svg {...{
+		viewBox,
+		preserveAspectRatio: 'none'
 	}}>
 		<path {...{d, fill:'#F00'}}/>
 	</svg></div>);

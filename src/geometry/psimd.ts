@@ -12,7 +12,7 @@ import { Point, Vector } from "./types";
  * @param { number[] } b 
  * @returns { number[] }
  */
-export const add = (a: number[], b: number[]): number[] => a.map((v,i)=>v+(b[i] ?? 0));
+export const add = <T extends number[]>(a: number[], b: number[]): T => a.map((v,i)=>v+(b[i] ?? 0)) as T;
 
 /**
  * Subtracts the values of array **b** from the values of **a**. The array returned will be the same length as **a**.
@@ -20,7 +20,7 @@ export const add = (a: number[], b: number[]): number[] => a.map((v,i)=>v+(b[i] 
  * @param { number[] } b 
  * @returns { number[] }
  */
-export const subtract = (a: number[], b: number[]): number[] => a.map((v, i)=>v-(b[i] ?? 0));
+export const subtract = <T extends number[]>(a: number[], b: number[]): T => a.map((v, i)=>v-(b[i] ?? 0)) as T;
 
 /**
  * Multiplies the values of **a** by the values of **b**. The array returned will be the same length as **a**.
@@ -28,7 +28,7 @@ export const subtract = (a: number[], b: number[]): number[] => a.map((v, i)=>v-
  * @param { number[] } b 
  * @returns { number[] }
  */
-export const multiply = (a: number[], b: number[]): number[] => a.map((v,i)=>v*(b[i] ?? 1));
+export const multiply = <T extends number[]>(a: number[], b: number[]): T => a.map((v,i)=>v*(b[i] ?? 1)) as T;
 
 /**
  * Divides the values of **a** by the values of **b**. The array returned will be the same length as **a**.
@@ -36,7 +36,7 @@ export const multiply = (a: number[], b: number[]): number[] => a.map((v,i)=>v*(
  * @param { number[] } b 
  * @returns { number[] }
  */
-export const divide = (a: number[], b: number[]): number[] => a.map((v,i)=>v/(b[i] ?? 1));
+export const divide = <T extends number[]>(a: number[], b: number[]): T => a.map((v,i)=>v/(b[i] ?? 1)) as T;
 
 //Ray casting in 2d
 
@@ -46,5 +46,7 @@ export const ray = (radius: number, angle: number, [x, y, a=0]:Point | Vector = 
 	angle
 ];
 
-//Scalars
+// Scalars
+
+export const multiplyScalar = <T extends number[]>(a: number[], s: number): T => a.map(v=>v*s) as T;
 

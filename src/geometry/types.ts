@@ -14,6 +14,7 @@ export type Vector = [number, number, number];
 export type Rect = [number, number, number, number];
 
 export type Ngon = [
-	number, //aspect ratio
+	string, //aspect ratio
+	string, //the viewbox that will be used
 	string, //path command for the background
 ]
