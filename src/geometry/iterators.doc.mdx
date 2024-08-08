@@ -1,0 +1,34 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/geometry/iterators" />
+
+## polygon
+`src/geometry/iterators`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Polygon is a **reusable** iterator. It is designed this way to reduce the need to preserve arguments.
+
+```bash
+@param sides
+
+@param rotation
+
+@returns
+```
+
+#### Code:
+
+```ts
+export const polygon = (sides: number, rotation: number) => function* (): Generator<Vector> {
+    const t = CIRCLE / sides;
+    const center = new Point();
+    for (let i = rotation; i < CIRCLE + rotation; i += t) {
+        yield center.ray(i, 1);
+    }
+};
+
+```
+

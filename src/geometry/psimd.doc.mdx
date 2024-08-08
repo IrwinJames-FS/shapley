@@ -1,0 +1,30 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/geometry/psimd" />
+
+## add
+`src/geometry/psimd`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Adds the digits of two array in parallel using 0 in instances where the second array does not contain a value.
+
+This function should always return an array of equal length to a
+
+```bash
+@param { number[] } a
+
+@param { number[] }b
+
+@returns
+```
+
+#### Code:
+
+```ts
+const add = (a: number[], b: number[]): number[] => a.map((v, i) => v + (b[i] ?? 0));
+
+```
+

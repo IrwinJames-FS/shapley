@@ -1,0 +1,76 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/geometry/types" />
+
+## Point
+`src/geometry/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+The point is the most basic 2 dimension coordination on a cartesian plane.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type Point = [
+    number,
+    number
+];
+
+```
+
+## Vector
+`src/geometry/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+The vector type is used to declare the 2 dimensional point along with an angle to use as a trajectory.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type Vector = [
+    number,
+    number,
+    number
+];
+
+```
+
+## Rect
+`src/geometry/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+This is a min max rect where the first two numbers are the min coordinate and the last two numbers are the max coordinates in the rect.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type Rect = [
+    number,
+    number,
+    number,
+    number
+];
+
+```
+

@@ -1,0 +1,29 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/geometry/ngon" />
+
+## ngon
+`src/geometry/ngon`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+NGON calculates the points and returns key information about the
+
+```bash
+@returns
+```
+
+#### Code:
+
+```ts
+const ngon = (sides: number) => {
+    console.log("Time to get the ngon");
+    const gen = polygon(6, 0);
+    console.log(boundingBox(gen()));
+    return 0;
+};
+
+```
+
