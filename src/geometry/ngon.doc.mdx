@@ -18,12 +18,52 @@ NGON calculates the points and returns key information about the
 #### Code:
 
 ```ts
-const ngon = (sides: number) => {
-    console.log("Time to get the ngon");
-    const gen = polygon(6, 0);
-    console.log(boundingBox(gen()));
-    return 0;
+const ngon = (sides: number = 6): Ngon => {
+    const pathId = 'S-' + sides;
+    const gen = polygon(sides, 0);
+    const [mx, my, Mx, My] = boundingBox(gen());
+    const [width, height] = subtract([Mx, My], [mx, my]);
+    const anti = Math.PI - ((sides - 2) * Math.PI / sides) / 2;
+    return [
+        width / height,
+        fill(gen(), 0.1, anti)
+    ];
 };
+
+```
+
+## $d
+`src/geometry/ngon`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+
+
+```bash
+@private
+This template array method simplifies the path creation process by adding additional support for numbers and arrays of numbers.
+
+to Fixed is pegged at 5 this is to prevent differences between server side and client side calculations as node seems to have a higher precision by default.
+
+@param strings
+
+@param args
+
+@returns
+```
+
+#### Code:
+
+```ts
+const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o, v, i) => {
+    if (!args[i])
+        return o + v;
+    if (Array.isArray(args[i]))
+        return o + v + args[i].slice(0, 2).map(v => v.toFixed(5)).join(', ');
+    return o + v + (typeof args[i] === 'string' ? args[i] : args[i].toFixed(5));
+}, '');
 
 ```
 

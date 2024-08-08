@@ -40,9 +40,9 @@ export const divide = (a: number[], b: number[]): number[] => a.map((v,i)=>v/(b[
 
 //Ray casting in 2d
 
-export const ray = (radius: number, angle: number, [x, y]:Point = [0,0]): Vector => [
-	radius * Math.sin(angle) + x,
-	radius * Math.cos(angle) + y,
+export const ray = (radius: number, angle: number, [x, y, a=0]:Point | Vector = [0,0,0]): Vector => [
+	radius * Math.sin(a+angle) + x,
+	radius * Math.cos(a+angle) + y,
 	angle
 ];
 

@@ -22,6 +22,7 @@ export const polygon = (sides: number, rotation: number) => function*(): Generat
 	}
 }
 
+
 /**
  * Measures the polygon and returns a rect describing the bounding box.
  * 
