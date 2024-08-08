@@ -12,7 +12,7 @@ const config: StorybookConfig = {
       name: "storybook-addon-jsdoc-to-mdx",
       options: {
         folderPaths: ["./src/"],
-        extensions: ["ts"]
+        extensions: ["ts"],
       }
     }
   ],

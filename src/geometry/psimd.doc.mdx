@@ -1,0 +1,100 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/geometry/psimd" />
+
+## add
+`src/geometry/psimd`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Adds the values of **a** to the values of **b**. The array returned will be the same length as **a**
+
+```bash
+@param { number[] } a
+
+@param { number[] } b
+
+@returns { number[] }
+```
+
+#### Code:
+
+```ts
+export const add = (a: number[], b: number[]): number[] => a.map((v, i) => v + (b[i] ?? 0));
+
+```
+
+## subtract
+`src/geometry/psimd`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Subtracts the values of array **b** from the values of **a**. The array returned will be the same length as **a**.
+
+```bash
+@param { number[] } a
+
+@param { number[] } b
+
+@returns { number[] }
+```
+
+#### Code:
+
+```ts
+export const subtract = (a: number[], b: number[]): number[] => a.map((v, i) => v - (b[i] ?? 0));
+
+```
+
+## multiply
+`src/geometry/psimd`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Multiplies the values of **a** by the values of **b**. The array returned will be the same length as **a**.
+
+```bash
+@param { number[] } a
+
+@param { number[] } b
+
+@returns { number[] }
+```
+
+#### Code:
+
+```ts
+export const multiply = (a: number[], b: number[]): number[] => a.map((v, i) => v * (b[i] ?? 1));
+
+```
+
+## divide
+`src/geometry/psimd`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Divides the values of **a** by the values of **b**. The array returned will be the same length as **a**.
+
+```bash
+@param { number[] } a
+
+@param { number[] } b
+
+@returns { number[] }
+```
+
+#### Code:
+
+```ts
+export const divide = (a: number[], b: number[]): number[] => a.map((v, i) => v / (b[i] ?? 1));
+
+```
+
