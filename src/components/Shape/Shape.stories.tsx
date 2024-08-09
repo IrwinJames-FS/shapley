@@ -3,7 +3,6 @@ import Shape from "./Shape";
 import { useMemo } from "react";
 
 export default {
-	title: "Shapely/Shape",
 	component: Shape
 } as Meta<typeof Shape>;
 
