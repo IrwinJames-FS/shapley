@@ -1,0 +1,32 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/utilities/style" />
+
+## vars
+`src/utilities/style`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Converts snakeCased variable names to css camel case
+
+```bash
+@param variables
+
+@returns
+```
+
+#### Code:
+
+```ts
+export const vars = (variables: Record<string, string | number>): Record<string, string | number> => {
+    const o: Record<string, string | number> = {};
+    for (const [k, v] of Object.entries(variables)) {
+        o['--' + toSnake(k)] = v;
+    }
+    return o;
+};
+
+```
+

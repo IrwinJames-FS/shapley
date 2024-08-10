@@ -1,0 +1,24 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/components/PolyMorph/types" />
+
+## IntrinsicElement
+`src/components/PolyMorph/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+Supporting any element that reacts ComponentProps decorator supports.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type IntrinsicElement = keyof JSX.IntrinsicElements | JSXElementConstructor<any>;
+
+```
+
