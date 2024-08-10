@@ -1,4 +1,7 @@
 .shapely-shape{
+	--bg-color: transparent;
+	--border-width: 0;
+	--border-color: #000;
 	position: relative;
 	aspect-ratio: 1/1;
 	display: flex;
@@ -12,5 +15,12 @@
 		width: 100%;
 		height: 100%;
 		z-index: -1;
+		filter: var(--shadow);
+		& > use {
+			fill: var(--bg-color);
+			stroke: var(--border-color);
+			stroke-width: calc(var(--border-width) * 2);
+			
+		}
 	}
 }

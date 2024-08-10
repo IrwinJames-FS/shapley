@@ -28,6 +28,7 @@
     "@storybook/react-vite": "^8.2.8",
     "@storybook/test": "^8.2.8",
     "@types/react": "^18.3.3",
+    "@types/uuid": "^10.0.0",
     "react": "^18.3.1",
     "rollup": "^4.20.0",
     "rollup-plugin-dts": "^6.1.1",
@@ -37,5 +38,8 @@
     "storybook-addon-jsdoc-to-mdx": "^1.0.3",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "uuid": "^10.0.0"
   }
 }

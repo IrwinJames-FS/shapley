@@ -18,15 +18,14 @@ NGON calculates the points and returns key information about the
 #### Code:
 
 ```ts
-const ngon = (sides: number = 6): Ngon => {
-    const pathId = 'S-' + sides;
-    const gen = polygon(sides, 0);
-    const [mx, my, Mx, My] = boundingBox(gen());
-    const [width, height] = subtract([Mx, My], [mx, my]);
+const ngon = (sides: number = 6, rotation: number, cornerRadius: number, square: boolean = false): Ngon => {
+    const gen = polygon(sides, rotation);
+    const size = boundingBox(gen());
     const anti = Math.PI - ((sides - 2) * Math.PI / sides) / 2;
     return [
-        width / height,
-        fill(gen(), 0.1, anti)
+        square ? '1/1' : aspect(size),
+        square ? '-1 -1 2 2' : '0 0 1 1',
+        fill(square ? gen() : normalize(gen(), size), cornerRadius, anti)
     ];
 };
 
