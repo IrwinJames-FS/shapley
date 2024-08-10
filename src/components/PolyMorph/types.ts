@@ -1,13 +1,13 @@
-import { ComponentProps, JSXElementConstructor, ReactNode } from "react";
+import { ComponentProps, ComponentPropsWithoutRef, ComponentPropsWithRef, ElementType, JSXElementConstructor, ReactNode } from "react";
 
 /**
  * Supporting any element that reacts ComponentProps decorator supports.
  */
-export type IntrinsicElement = keyof JSX.IntrinsicElements | JSXElementConstructor<any>;
 
-export type PolyMorphProps<T extends IntrinsicElement> = ComponentProps<T> & {
+
+export type PolyMorphProps<T extends ElementType> = {
 	as?: T
-};
+} & ComponentPropsWithoutRef<T>
 
-export type PolyMorphic<P extends object = {}> = <T extends IntrinsicElement = "div">(props: PolyMorphProps<T> & P)=>ReactNode
+export type PolyMorphic<P, T extends ElementType> = PolyMorphProps<T> & P;
 

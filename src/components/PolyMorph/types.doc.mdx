@@ -2,7 +2,7 @@ import { Meta } from '@storybook/blocks';
 
 <Meta title="src/components/PolyMorph/types" />
 
-## IntrinsicElement
+## PolyMorphProps
 `src/components/PolyMorph/types`
 
 **AST Node Type:** *TypeAliasDeclaration*
@@ -18,7 +18,9 @@ Supporting any element that reacts ComponentProps decorator supports.
 #### Code:
 
 ```ts
-export type IntrinsicElement = keyof JSX.IntrinsicElements | JSXElementConstructor<any>;
+export type PolyMorphProps<T extends ElementType> = {
+    as?: T;
+} & ComponentPropsWithoutRef<T>;
 
 ```
 

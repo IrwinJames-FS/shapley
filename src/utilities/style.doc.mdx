@@ -30,3 +30,27 @@ export const vars = (variables: Record<string, string | number>): Record<string,
 
 ```
 
+## standardizeValue
+`src/utilities/style`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Throughout the library I am accepting a mixed type for unit values where a unit type can be assumed when a number is provided. This method is a convenience method to standardize the way this instance is handled.
+
+```bash
+@param value
+
+@param unit
+
+@returns
+```
+
+#### Code:
+
+```ts
+export const standardizeValue = (value: string | number, unit: string = 'px'): string => typeof value === 'string' ? value : value + unit;
+
+```
+

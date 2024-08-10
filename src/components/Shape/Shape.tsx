@@ -1,19 +1,18 @@
-import { FC, useMemo } from "react";
+import { ElementType, FC, useMemo } from "react";
 import { ShapeProps } from "./types";
 import './style.scss';
 import ngon from "../../geometry/ngon";
-import { vars } from "../../utilities";
 import { PolyMorphic } from "../PolyMorph/types";
-import PolyMorph from "../PolyMorph/PolyMorph";
 import { v4 } from "uuid";
+import { vars } from "../../utilities";
 
 /**
  * The shape component is currently purely a client side component.
  * @param param0 
  * @returns 
  */
-const Shape: PolyMorphic<ShapeProps> = ({
-	as = "div",
+const Shape = <T extends ElementType = "div">({
+	as,
 	gon,
 	sides=3, 
 	rotation=0, 
@@ -25,13 +24,14 @@ const Shape: PolyMorphic<ShapeProps> = ({
 	shadow = "none",
 	className,
 	style={},
+	shapeId,
 	...props
 	
-}) => {
+}: PolyMorphic<ShapeProps, T>) => {
+	const El = as || "div";
 	const [aspectRatio,viewBox, d] = useMemo(()=>gon ?? ngon(sides, rotation * Math.PI / 180, cornerRadius), [sides, rotation, cornerRadius]);
-	const id = v4();
-	return (<PolyMorph {...{
-		...props,
+	const id = shapeId ?? v4();
+	return (<El {...{
 		className: ["shapely-shape", className].filter(v=>!!v).join(' '),
 		style: {
 			aspectRatio, 
@@ -42,7 +42,8 @@ const Shape: PolyMorphic<ShapeProps> = ({
 				borderWidth: typeof borderWidth === 'number' ? borderWidth+'px':borderWidth,
 				shadow: !shadow ? "none": shadow === "none" ? shadow: typeof shadow === "string" ? shadow.split(',').map((v:string)=>`drop-shadow(${v})`).join(" "):"none" //the last evaluation is for storybooks sake.
 			})
-		}
+		},
+		...props,
 	}}>
 		<svg {...{
 		viewBox,
@@ -58,7 +59,7 @@ const Shape: PolyMorphic<ShapeProps> = ({
 		<use xlinkHref={"#"+id} clipPath={`url(#${id}-clip)`}/>
 	</svg>
 	{children}
-	</PolyMorph>);
+	</El>);
 };
 
 export default Shape;

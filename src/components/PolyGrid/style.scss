@@ -1,0 +1,22 @@
+.shapely-poly-grid {
+	--row-size: 10;
+	--grid-col-template: repeat(var(--row-size), 1fr);
+	--grid-row-template: 1fr;
+	--cell-spacing: 1px;
+	display: grid;
+	grid-template-columns: var(--grid-col-template);
+	grid-auto-rows: var(--grid-row-template);
+	& > .shapely-poly-grid-cell{
+		--clip-path: none;
+		margin: var(--cell-spacing);
+		grid-column-end: var(--cell-width, span 1);
+		grid-row-end: var(--cell-height, span 1);
+		clip-path: var(--clip-path);
+		& > .shapely-shape > svg:first-of-type {
+			transform: var(--shape-transform, none);
+		}
+		&:hover > .shapely-shape  {
+			--bg-color: #0F0 !important;
+		}
+	}
+}

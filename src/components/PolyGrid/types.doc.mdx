@@ -1,0 +1,29 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/components/PolyGrid/types" />
+
+## PolyGridProps
+`src/components/PolyGrid/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+The Poly grid is designed to provide a standardized method of dictating custom layouts by mutating css variables and properties
+
+The Shape Property accepts the Morphable version of the shape properties which will be reused to generate each cell.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type PolyGridProps<S extends ElementType> = {
+    shape: PolyMorphic<ShapeProps, S>;
+    rowSize: number;
+};
+
+```
+
