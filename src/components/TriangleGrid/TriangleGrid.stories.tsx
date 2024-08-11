@@ -17,6 +17,15 @@ type Story = StoryObj<GridProps>;
 
 export const TriangleGridTest: Story = {
 	args: {
-		testChildren: 10
-	}
+		testChildren: 10,
+		spacing: '2px 6px'
+	},
+}
+
+export const HorizontalTriangleGridTest: Story = {
+	args: {
+		testChildren: 100,
+		spacing: '2px 6px',
+		horizontal: true
+	},
 }

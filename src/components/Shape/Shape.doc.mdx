@@ -1,0 +1,77 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/components/Shape/Shape" />
+
+## Shape
+`src/components/Shape/Shape`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+The shape component is currently purely a client side component.
+
+```bash
+@param param0
+
+@returns
+```
+
+#### Code:
+
+```ts
+const Shape = <T extends ElementType = "div">({ as, gon, sides = 3, rotation = 0, cornerRadius = 0, children, backgroundColor: bgColor = "transparent", borderColor = "transparent", borderWidth = 2, shadow = "none", className, style = {}, shapeId, ...props }: PolyMorphic<ShapeProps, T>) => {
+    const El = as || "div";
+    const [aspectRatio, viewBox, d] = useMemo(() => gon ?? ngon(sides, rotation * Math.PI / 180, cornerRadius), [sides, rotation, cornerRadius]);
+    const id = shapeId ?? v4();
+    return (<El>{ ...{
+            className: ["shapely-shape", className].filter(v => !!v).join(' '),
+            style: {
+                aspectRatio,
+                ...style,
+                ...vars({
+                    bgColor,
+                    borderColor,
+                    borderWidth: typeof borderWidth === 'number' ? borderWidth + 'px' : borderWidth,
+                    shadow: !shadow ? "none" : shadow === "none" ? shadow : typeof shadow === "string" ? shadow.split(',').map((v: string) => `drop-shadow(${v})`).join(" ") : "none"
+                })
+            },
+            ...props,
+        } } >
+        <svg>{ ...{
+                viewBox,
+                preserveAspectRatio: 'none'
+            } } >
+        <defs>{}
+        < path);
+    {
+        {
+            d, id;
+        }
+    }
+    />
+        < clipPath;
+    id = { id } + "-clip";
+};
+ >
+    <use>xlinkHref;
+{
+    "#" + id;
+}
+/>
+    < /clipPath>
+    < /defs>
+    < use;
+xlinkHref = { "#": +id };
+clipPath = {} `url(#${id}-clip)`;
+/>
+    < /svg>;
+{
+    children;
+}
+<>/El>;
+;
+;
+
+```
+

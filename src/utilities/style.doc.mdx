@@ -20,9 +20,11 @@ Converts snakeCased variable names to css camel case
 #### Code:
 
 ```ts
-export const vars = (variables: Record<string, string | number>): Record<string, string | number> => {
+export const vars = (variables: Record<string, string | number | undefined>): Record<string, string | number> => {
     const o: Record<string, string | number> = {};
     for (const [k, v] of Object.entries(variables)) {
+        if (v === undefined)
+            continue;
         o['--' + toSnake(k)] = v;
     }
     return o;
@@ -50,7 +52,7 @@ Throughout the library I am accepting a mixed type for unit values where a unit 
 #### Code:
 
 ```ts
-export const standardizeValue = (value: string | number, unit: string = 'px'): string => typeof value === 'string' ? value : value + unit;
+export const standardizeValue = (value: string | number | undefined, unit: string = 'px'): string => value ? typeof value === 'string' ? value : value + unit : "none";
 
 ```
 

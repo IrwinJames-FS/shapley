@@ -7,7 +7,9 @@ import { PolyGridProps } from "./types";
 import Shape from "../Shape";
 
 /**
- * The Polygrid will require a lot of setup however this will ultimately standardize grid handling and make the code more maintainable having a centralized layout controller. 
+ * PolyGrid is a generic layout system that provides an iterator so items can be placed in a grid system. 
+ * 
+ * This is utilizing css grids to layout the content.
  * @param param0 
  * @returns 
  */
@@ -34,7 +36,7 @@ const PolyGrid = <T extends ElementType = "div", S extends ElementType = "div">(
 	return (<El {...{
 		className: clsfy(className, "shapely-poly-grid"),
 		style: {
-			gridTemplateColumns: `repeat(var(--row-size), ${gridCellTemplate ?? '1fr'})${gridRowSuffix ? ' '+gridRowSuffix:''}`,
+			gridTemplateColumns: (gridCellTemplate || gridRowSuffix) ? `repeat(var(--row-size), ${gridCellTemplate ?? '1fr'})${gridRowSuffix ? ' '+gridRowSuffix:''}`:undefined,
 			...vars({
 				rowSize: rowSizeTransformer(rowSize),
 				cellWidth: cellWidth ? "span "+cellWidth:undefined,

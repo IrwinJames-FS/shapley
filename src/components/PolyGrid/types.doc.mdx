@@ -23,6 +23,19 @@ The Shape Property accepts the Morphable version of the shape properties which w
 export type PolyGridProps<S extends ElementType> = {
     shape: PolyMorphic<ShapeProps, S>;
     rowSize: number;
+    rowSizeTransformer?: (rs: number) => number;
+    layout?: (index: number, size: number) => {
+        style?: CSSPropertiesPlusVars;
+        shape?: Partial<PolyMorphic<ShapeProps, S>>;
+    };
+    gridCellTemplate?: string;
+    gridRowTemplate?: string;
+    gridRowSuffix?: string;
+    gridCellSize?: [
+        number | undefined,
+        number | undefined
+    ];
+    spacing?: number | string;
 };
 
 ```

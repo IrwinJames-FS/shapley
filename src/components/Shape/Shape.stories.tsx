@@ -1,28 +1,26 @@
-import { StoryFn, Meta } from "@storybook/react";
+import { StoryFn, Meta, StoryObj } from "@storybook/react";
 import Shape from "./Shape";
-import { useMemo } from "react";
+import { ElementType, useMemo } from "react";
+import { PolyMorphic } from "../PolyMorph/types";
+import { ShapeProps } from "./types";
 
+type PolyShape<T extends ElementType = "div"> = PolyMorphic<ShapeProps, T>
 export default {
 	component: Shape,
-	argTypes: {
-		as: {
-			options: ["div", "a", "h1", "h2", "h3", "h4", "h5", "p", "span"],
-			control: {
-				type: "select"
-			}
-		}
+	render: args => <Shape {...args}/>
+} as Meta<PolyShape>
+
+type Story = StoryObj<PolyShape>;
+
+export const TriangleShape: Story = {
+	args: {
+		sides: 3,
+		backgroundColor: "rgb(68,168,255)",
+		borderWidth: 0.01,
+		borderColor: "#000",
+		shadow: "0px 0px 5px #000",
+		rotation: 180,
+		cornerRadius: 0.1,
+		children: "Triangle"
 	}
-} as Meta<typeof Shape>;
-
-const Template: StoryFn<typeof Shape> = ({sides=3, ...args}) => {
-	return <div style={{margin: '1rem'}}><Shape {...{sides, ...args}}/></div>;
-}
-
-export const ShapeTest = Template.bind({});
-ShapeTest.args = {
-	sides: 3,
-	backgroundColor: "rgb(28,128,248)",
-	cornerRadius: 0.05,
-	borderColor: "#000",
-	borderWidth: 0.02
 };
