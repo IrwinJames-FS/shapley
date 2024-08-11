@@ -6,7 +6,7 @@ import PolyGrid from "../PolyGrid/PolyGrid";
 import { v4 } from "uuid";
 import { clsfy } from "../../utilities";
 import { PolyGridLayout } from "../PolyGrid/types";
-const TriangleGrid = <T extends ElementType = "div", S extends ElementType="div">({
+const TriangleGrid = <T extends ElementType = "div">({
 	as,
 	className,
 	children, 

@@ -1,9 +1,6 @@
 import { ReactNode } from "react"
+import { BaseShapelyGridProps } from "../types"
 
-export type TriangleGridProps = {
-	children?: ReactNode
-	rowSize?: number
-	spacing?: number | string
-	offset?: number
+export type TriangleGridProps = BaseShapelyGridProps & {
 	horizontal?: boolean
 }
