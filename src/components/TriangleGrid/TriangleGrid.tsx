@@ -1,9 +1,10 @@
 import { ElementType } from "react";
 import { TriangleGridProps } from "./types";
-import './styles.scss';
 import { PolyMorphic } from "../PolyMorph/types";
 import PolyGrid from "../PolyGrid/PolyGrid";
 import { clsfy } from "../../utilities";
+
+import './styles.scss';
 const TriangleGrid = <T extends ElementType = "div">({
 	as,
 	className,

@@ -6,7 +6,7 @@ import { Ngon, Vector } from "./types";
  * NGON calculates the points and returns key information about the 
  * @returns 
  */
-const ngon = (sides: number=6, rotation: number, cornerRadius: number, square: boolean = false): Ngon => {
+const ngon = (sides: number, rotation: number, cornerRadius: number, square: boolean = false): Ngon => {
 	//I need to generate a path if a cached one does not exist
 	const gen = polygon(sides, rotation);
 	const size = boundingBox(gen());
@@ -15,7 +15,15 @@ const ngon = (sides: number=6, rotation: number, cornerRadius: number, square: b
 	return [
 		square ? '1/1': aspect(size),
 		square ? '-1 -1 2 2':'0 0 1 1',
-		fill(square ? gen():normalize(gen(), size), cornerRadius, anti)
+		fill(square ? 
+			gen():
+			normalize(
+				gen(), 
+				size
+			), 
+			cornerRadius, 
+			anti
+		)
 	];
 };
 
@@ -25,7 +33,7 @@ export default ngon;
 
 /* SVG Rendering */
 
-const fill = (gen: Generator<Vector>, cornerRadius: number = 0, antiAngle: number = 0): string => {
+const fill = (gen: Generator<Vector>, cornerRadius: number, antiAngle: number): string => {
 	let d = '';
 	for(const v of gen) {
 		const c = d ? ' L':'M';
@@ -52,7 +60,7 @@ type DArg = string | number | number[];
  * @returns 
  */
 export const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o,v,i)=>{
-	if(!args[i]) return o+v;
+	if(i>=args.length) return o+v;
 	//all arrays will only use the first two points until I encounter a use case for anything else.
 	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>v.toFixed(5)).join(', ');
 	return o+v+(typeof args[i] === 'string' ? args[i]:args[i].toFixed(5));

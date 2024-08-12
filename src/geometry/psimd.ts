@@ -40,7 +40,14 @@ export const divide = <T extends number[]>(a: number[], b: number[]): T => a.map
 
 //Ray casting in 2d
 
-export const ray = (radius: number, angle: number, [x, y, a=0]:Point | Vector = [0,0,0]): Vector => [
+export const ray = (
+	radius: number, 
+	angle: number, 
+	[x, 
+		y, 
+		a=0
+	]:Point | Vector = [0,0,0]
+): Vector => [
 	radius * Math.sin(a+angle) + x,
 	radius * Math.cos(a+angle) + y,
 	angle

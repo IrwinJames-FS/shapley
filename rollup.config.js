@@ -6,7 +6,7 @@ import dts from "rollup-plugin-dts";
 import terser from "@rollup/plugin-terser";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import sass from "rollup-plugin-sass";
-const packageJson = require("./package.json");
+import packageJson from "./package.json";
 
 export default [
   {
