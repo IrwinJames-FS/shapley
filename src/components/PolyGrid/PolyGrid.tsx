@@ -1,7 +1,6 @@
 import { CSSProperties, ElementType } from "react";
 import { clsfy, standardizeValue, vars } from "../../utilities";
-import PolyMorph from "../PolyMorph/PolyMorph";
-import { PolyMorphic, PolyMorphProps } from "../PolyMorph/types"
+import { PolyMorphic } from "../PolyMorph/types";
 import './style.scss';
 import { PolyGridProps } from "./types";
 import Shape from "../Shape";
@@ -45,7 +44,7 @@ const PolyGrid = <T extends ElementType = "div", S extends ElementType = "div">(
 				cellSpacing,
 				gridRowTemplate
 			}),
-			
+			...style
 		} as CSSProperties,
 		...props
 	}}>{children && (Array.isArray(children) ? children:[children]).map((c,i)=>{

@@ -1,6 +1,6 @@
-import { StoryFn, Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import Shape from "./Shape";
-import { ElementType, useMemo } from "react";
+import { ElementType } from "react";
 import { PolyMorphic } from "../PolyMorph/types";
 import { ShapeProps } from "./types";
 

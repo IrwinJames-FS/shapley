@@ -1,4 +1,4 @@
-import { ElementType, FC, useMemo } from "react";
+import { ElementType, useMemo } from "react";
 import { ShapeProps } from "./types";
 import './style.scss';
 import ngon from "../../geometry/ngon";

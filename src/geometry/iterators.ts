@@ -1,7 +1,7 @@
 /*
 In order to keep the rendering process as efficient as possible I will be using Generators to append actions to an iteration rather then run multiple iterations.
 */
-import { add, divide, multiply, multiplyScalar, ray, subtract } from "./psimd";
+import { add, divide, multiplyScalar, ray } from "./psimd";
 import { Point, Rect, Vector } from "./types";
 
 const CIRCLE = Math.PI * 2;
@@ -22,12 +22,23 @@ export const polygon = (sides: number, rotation: number) => function*(): Generat
 	}
 }
 
+/**
+ * The translate method appends a translate action to the end of each generator iteration
+ * @param gen 
+ * @param pos 
+ */
 export function* translate(gen: Generator<Vector>, pos: Point): Generator<Vector> {
 	for(const p of gen) {
 		yield add(p, pos);
 	}
 }
 
+/**
+ * The normalize method uses a minimum coordinate values and the dimensions of the Generator to move all point to appear between 0-1.
+ * This is helpful if you are building graphics that need to be represented in objectBoundingBox units. 
+ * @param gen 
+ * @param boundingBox
+ */
 export function* normalize(gen: Generator<Vector>, [mx, my, width, height]: Rect): Generator<Vector> {
 	;
 	const size = [width, height]

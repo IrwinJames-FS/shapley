@@ -1,6 +1,5 @@
-import { StoryFn, Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import TriangleGrid from "./TriangleGrid";
-import { useMemo } from "react";
 import { TriangleGridProps } from "./types";
 
 type GridProps = TriangleGridProps & {testChildren: number};
