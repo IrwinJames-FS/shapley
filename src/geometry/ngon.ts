@@ -1,5 +1,5 @@
 import { aspect, boundingBox, normalize, polygon } from "./iterators";
-import { ray, subtract } from "./psimd";
+import { ray } from "./psimd";
 import { Ngon, Vector } from "./types";
 
 /**

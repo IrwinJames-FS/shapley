@@ -1,6 +1,5 @@
-import { StoryFn, Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import DiamondGrid from "./DiamondGrid";
-import { useMemo } from "react";
 import { DiamondGridProps } from "./types";
 
 type GridProps = DiamondGridProps & {testChildren: number};

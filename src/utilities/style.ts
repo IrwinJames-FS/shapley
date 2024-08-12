@@ -1,4 +1,4 @@
-import { CSSNumeric, Hoverable } from "../components/types";
+import { CSSNumeric } from "../components/types";
 
 /**
  * Converts snakeCased variable names to css camel case

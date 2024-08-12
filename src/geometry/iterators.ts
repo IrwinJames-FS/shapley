@@ -1,7 +1,7 @@
 /*
 In order to keep the rendering process as efficient as possible I will be using Generators to append actions to an iteration rather then run multiple iterations.
 */
-import { add, divide, multiply, multiplyScalar, ray, subtract } from "./psimd";
+import { add, divide, multiplyScalar, ray } from "./psimd";
 import { Point, Rect, Vector } from "./types";
 
 const CIRCLE = Math.PI * 2;

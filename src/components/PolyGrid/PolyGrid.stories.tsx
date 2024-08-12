@@ -1,6 +1,5 @@
-import { StoryFn, Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import PolyGrid from "./PolyGrid";
-import { useMemo } from "react";
 import { PolyGridProps } from "./types";
 import { vars } from "../../utilities";
 import { v4 } from "uuid";

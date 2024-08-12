@@ -1,11 +1,9 @@
-import { ElementType } from "react"
-import { TriangleGridProps } from "./types"
+import { ElementType } from "react";
+import { TriangleGridProps } from "./types";
 import './styles.scss';
 import { PolyMorphic } from "../PolyMorph/types";
 import PolyGrid from "../PolyGrid/PolyGrid";
-import { v4 } from "uuid";
 import { clsfy } from "../../utilities";
-import { PolyGridLayout } from "../PolyGrid/types";
 const TriangleGrid = <T extends ElementType = "div">({
 	as,
 	className,
@@ -16,7 +14,6 @@ const TriangleGrid = <T extends ElementType = "div">({
 	horizontal
 }: PolyMorphic<TriangleGridProps, T>) => {
 	const el  = as || "div";
-	const rot = Number(horizontal ?? false) * 30;
 	
 	return (<PolyGrid {...{
 		as: el,
