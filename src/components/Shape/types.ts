@@ -1,6 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
 import { Ngon } from "../../geometry/types";
-import { IntrinsicElement, PolyMorphProps } from "../PolyMorph/types";
 
 export type CSSPropertiesPlusVars = CSSProperties & {
 	[k: string]: string | number
@@ -24,5 +23,6 @@ export type ShapeProps = {
 	sides?: number
 	style?: CSSPropertiesPlusVars
 	shadow?: string
+	shapeId?: string
 };
 

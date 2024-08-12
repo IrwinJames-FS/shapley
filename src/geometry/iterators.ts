@@ -24,7 +24,6 @@ export const polygon = (sides: number, rotation: number) => function*(): Generat
 
 export function* translate(gen: Generator<Vector>, pos: Point): Generator<Vector> {
 	for(const p of gen) {
-		console.log(p, pos)
 		yield add(p, pos);
 	}
 }
@@ -34,7 +33,6 @@ export function* normalize(gen: Generator<Vector>, [mx, my, width, height]: Rect
 	const size = [width, height]
 	//translating by mx and mx ensures my minimum point is now 0 and 0.
 	for(const p of translate(gen, multiplyScalar([mx, my], -1))) {
-		console.log(p);
 		//convert the position to a percentage.
 		yield divide(p, size); //if smallest point is always 0 then the size is always the largest points.
 	}
