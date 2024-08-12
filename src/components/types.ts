@@ -15,7 +15,6 @@ export type CSSNumeric = number | string
 export type PStyle = {
 	bgColor?: Hoverable<string>
 	borderColor?: Hoverable<string>
-	
 	borderWidth?: Hoverable<CSSNumeric>
 	shadow?: Hoverable<string>
 }

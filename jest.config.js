@@ -1,6 +1,12 @@
 module.exports = {
 	testEnvironment: "jsdom",
-	moduleNameWrapper: {
-		".(css | scss)$": "identity-obj-proxy"
-	}
+	moduleNameMapper: {
+		"^.+\\.scss$": "identity-obj-proxy"
+	},
+	moduleFileExtensions: [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
 }

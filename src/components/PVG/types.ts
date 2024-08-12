@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
 import { PStyle } from "../types";
 
 /**
@@ -12,6 +12,7 @@ import { PStyle } from "../types";
 export type PVGProps = ComponentPropsWithoutRef<"use"> & {
 	cached?: boolean
 	pstyle?: PStyle
+	children?: ReactNode
 	components?: { //this disctinction is made to avoid name collisions.
 		svg?: PVGSVGProps
 		clipPath?: PVGClipPathProps
@@ -19,9 +20,7 @@ export type PVGProps = ComponentPropsWithoutRef<"use"> & {
 	}
 }
 
-export interface PVGSVGProps extends ComponentPropsWithoutRef<"svg"> {
-	className?: string
-}
+export type PVGSVGProps = ComponentPropsWithoutRef<"svg"> 
 
 export type PVGClipPathProps = Omit<ComponentPropsWithoutRef<"clipPath">, "id">
 
