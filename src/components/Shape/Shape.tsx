@@ -49,8 +49,8 @@ const Shape = <T extends ElementType = "div">({
 		viewBox,
 		preserveAspectRatio: 'none'
 	}}>
+		{/*https://stackoverflow.com/questions/7241393/can-you-control-how-an-svgs-stroke-width-is-drawn*/}
 		<defs>
-			{/* https://stackoverflow.com/questions/7241393/can-you-control-how-an-svgs-stroke-width-is-drawn (this is the cleanest solution i have seen)*/}
 			<path {...{d, id}}/>
 			<clipPath id={id+"-clip"}>
 				<use xlinkHref={"#"+id}/>

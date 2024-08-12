@@ -1,0 +1,12 @@
+.shapely-pvg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	filter: var(--shadow, none);
+
+	& > use {
+		fill: var(--bg-color, #00F);
+		stroke: var(--border-color, currentColor);
+		stroke-width: calc(var(--border-width, 0) * 2);
+	}
+}

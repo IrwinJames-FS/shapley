@@ -51,7 +51,7 @@ type DArg = string | number | number[];
  * @param args 
  * @returns 
  */
-const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o,v,i)=>{
+export const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o,v,i)=>{
 	if(!args[i]) return o+v;
 	//all arrays will only use the first two points until I encounter a use case for anything else.
 	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>v.toFixed(5)).join(', ');

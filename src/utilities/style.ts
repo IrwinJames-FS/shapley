@@ -1,14 +1,20 @@
+import { CSSNumeric, Hoverable } from "../components/types";
 
 /**
  * Converts snakeCased variable names to css camel case
  * @param variables 
  * @returns 
  */
-export const vars = (variables: Record<string, string | number | undefined>): Record<string, string | number> => {
+export const vars = (variables: Record<string, CSSNumeric | CSSNumeric[] | undefined>, prefixes:string[] = [""]): Record<string, string | number> => {
 	const o: Record<string, string | number> = {};
 	for (const [k, v] of Object.entries(variables)) {
 		if(v===undefined) continue;
-		o['--'+toSnake(k)] = v;
+		const vals = Array.isArray(v) ? v:[v];
+		const key = toSnake(k);
+		for(let i = 0; i<vals.length;i++){
+			if(prefixes.length <= i) break;
+			o['--'+prefixes[i]+key] = vals[i];
+		}
 	}
 	return o;
 }
@@ -23,4 +29,5 @@ export const standardizeValue = (value: string | number | undefined, unit:string
 
 
 export const clsfy = (...names: (string | undefined)[]): string => names.filter(n=>n).join(' ');
+
 const toSnake = (str:string)=>str.replace(/[A-Z]/g, l=>'-'+l.toLowerCase());
