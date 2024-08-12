@@ -34,10 +34,20 @@ const PVG: FC<PVGProps> = ({
 			bgColor,
 			borderColor,
 			borderWidth,
-			shadow: !shadow ? "none": (Array.isArray(shadow) ? shadow:[shadow, shadow]).filter(s=>s !== "none").map(s=>s ? s.split(',').map(v=>`drop-shadow(${v})`).join(" "):"none")
+			shadow: !shadow 
+			? "none"
+			: (Array.isArray(shadow) 
+				? shadow
+				:[shadow, shadow])
+			.filter(s=>s !== "none")
+			.map(s=>s 
+				? s.split(',').map(v=>`drop-shadow(${v})`).join(" ")
+				:"none"
+			)
 		}, ['','hover-'])
 	},
 	viewBox,
+	preserveAspectRatio: "none",
 	...svgProps
 }}>
 
@@ -50,7 +60,7 @@ const PVG: FC<PVGProps> = ({
 </defs>}
 <use {...{
 	xlinkHref: cached ? xlinkHref:"#"+id,
-	clipPath: `url(#${cached ? xlinkHref:id}-clip)`
+	clipPath: `url(${cached ? xlinkHref:'#'+id}-clip)`
 }}/>
 </svg>);
 
