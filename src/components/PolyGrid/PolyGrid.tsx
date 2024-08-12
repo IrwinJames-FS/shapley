@@ -5,6 +5,7 @@ import { PolyMorphic, PolyMorphProps } from "../PolyMorph/types"
 import './style.scss';
 import { PolyGridProps } from "./types";
 import Shape from "../Shape";
+import { DEFAULT_ROW_SIZE } from "../constants";
 
 /**
  * PolyGrid is a generic layout system that provides an iterator so items can be placed in a grid system. 
@@ -17,7 +18,7 @@ const PolyGrid = <T extends ElementType = "div", S extends ElementType = "div">(
 	as,
 	className,
 	children,
-	rowSize,
+	rowSize=DEFAULT_ROW_SIZE,
 	rowSizeTransformer = n=>n,
 	layout = i=>({style:{gridColumnStart: (i%rowSize)+1, gridRowStart: Math.floor(i/rowSize)+1}}),
 	shape,

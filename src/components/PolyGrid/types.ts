@@ -10,7 +10,7 @@ import { CSSPropertiesPlusVars, ShapeProps } from "../Shape/types";
  */
 export type PolyGridProps<S extends ElementType> = {
 	shape: PolyMorphShape<S>
-	rowSize: number, //This is used to determine the 
+	rowSize?: number, //This is used to determine the 
 	rowSizeTransformer?: (rs: number)=>number
 	layout?: (index: number, size: number) => PolyGridLayout<S>
 	gridCellTemplate?: string
