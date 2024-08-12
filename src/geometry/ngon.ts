@@ -33,7 +33,7 @@ export default ngon;
 
 /* SVG Rendering */
 
-const fill = (gen: Generator<Vector>, cornerRadius: number, antiAngle: number): string => {
+export const fill = (gen: Generator<Vector>, cornerRadius: number, antiAngle: number): string => {
 	let d = '';
 	for(const v of gen) {
 		const c = d ? ' L':'M';
@@ -48,7 +48,7 @@ const fill = (gen: Generator<Vector>, cornerRadius: number, antiAngle: number): 
 	return d+'z';
 }
 
-type DArg = string | number | number[];
+type DArg = string | number | number[] | undefined;
 
 /**
  * @private
@@ -60,7 +60,7 @@ type DArg = string | number | number[];
  * @returns 
  */
 export const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o,v,i)=>{
-	if(i>=args.length) return o+v;
+	if(i>=args.length || args[i] === undefined) return o+v;
 	//all arrays will only use the first two points until I encounter a use case for anything else.
 	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>v.toFixed(5)).join(', ');
 	return o+v+(typeof args[i] === 'string' ? args[i]:args[i].toFixed(5));

@@ -53,7 +53,13 @@ export const ray = (
 	angle
 ];
 
+export const getAngle = (a: Point | Vector, b: Point | Vector) => {
+	const [x, y] = subtract(b, a);
+	return Math.atan2(x, y); //inverting the coordinate system so it plays nice.
+}
+
 // Scalars
 
 export const multiplyScalar = <T extends number[]>(a: number[], s: number): T => a.map(v=>v*s) as T;
+
 

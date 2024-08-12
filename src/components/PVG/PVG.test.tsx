@@ -7,7 +7,6 @@ describe("PVG - Polygon Vector Graphic", ()=>{
 			d: "M 0.5, 0, L 1,1 L 0,1z",
 		}}/>);
 		const svg = container.querySelector('svg');
-		console.log(svg, svg?.style.getPropertyValue("--border-color"));
 
 		expect(svg).toBeDefined();
 		expect(svg?.getAttribute('viewBox')).toBe('0 0 1 1');

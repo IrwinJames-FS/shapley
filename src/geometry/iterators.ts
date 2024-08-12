@@ -1,7 +1,7 @@
 /*
 In order to keep the rendering process as efficient as possible I will be using Generators to append actions to an iteration rather then run multiple iterations.
 */
-import { add, divide, multiplyScalar, ray } from "./psimd";
+import { add, divide, getAngle, multiplyScalar, ray } from "./psimd";
 import { Point, Rect, Vector } from "./types";
 
 const CIRCLE = Math.PI * 2;
@@ -47,6 +47,69 @@ export function* normalize(gen: Generator<Vector>, [mx, my, width, height]: Rect
 		//convert the position to a percentage.
 		yield divide(p, size); //if smallest point is always 0 then the size is always the largest points.
 	}
+}
+
+/**
+ * This rounding method is not reliant on the shape descriptor but rather just using the point to find the angle to the last point
+ * 
+ * **Warning:** This not longer returns a Vector Generator. 
+ * @param gen 
+ * @param cornerRadius 
+ */
+export function* rounded(gen:Generator<Vector>, cornerRadius:number | number[]):Generator<[Vector, Vector | undefined, Vector | undefined]>{
+	//A corner needs three points to round as such the first two vectors will 
+	const isArr = Array.isArray(cornerRadius);
+	let first: Vector | undefined;
+	let second: Vector | undefined;
+
+	//cursors so we dont need to reiterate
+	let a: Vector | undefined;
+	let b: Vector | undefined;
+	let i: number = 1;
+
+	for(const v of gen){
+		
+		if(!first) {
+			first = v;
+			a = v;
+			continue;
+		} else if (!second) {
+			second = v;
+			b = v;
+			continue;
+		}
+		let cr = isArr ? (cornerRadius as number[])[i] ?? 0:cornerRadius;
+		
+		i++;
+		yield round(b!, a!, v, cr);
+		a = b;
+		b = v;
+	}
+	//still need the last two
+	//the last of the iterator
+	const lr = round(b!, a!, first!, isArr ? (cornerRadius as number[])[i] ?? 0:cornerRadius);
+	yield lr;
+
+	//the first of the iterator
+	yield round(first!, b!, second!, isArr ? (cornerRadius as number[])[0] ?? 0:cornerRadius);
+}
+
+/**
+ * Uses three Vectors ignoring the angle property this method assumes *a* is the meeting point of *b* and *c* it then casts a ray back down that line the distance of the corner radius. 
+ * 
+ * The corner radius can be a static number which is applied to each vertex or the cornerRadius can be an array matching the initial generators lenth. any undefined radius will be assumed as 0.
+ * @param a 
+ * @param b 
+ * @param c 
+ * @param cr 
+ * @returns 
+ */
+export const round = (a: Vector, b: Vector, c: Vector, cr: number=0): [Vector, Vector | undefined, Vector | undefined] => {
+	return !cr ? [a, undefined, undefined]:[
+	a,
+	ray(cr,getAngle(a,b), [...a.slice(0,2), 0] as Vector),//gotta reset the vector or it will offset the line
+	ray(cr,getAngle(a,c), [...a.slice(0,2), 0] as Vector)
+]
 }
 
 /**

@@ -1,4 +1,4 @@
-import { add, divide, multiply, multiplyScalar, ray, subtract } from "./psimd";
+import { add, divide, getAngle, multiply, multiplyScalar, ray, subtract } from "./psimd";
 
 describe("Check that psimd methods are working properly", ()=>{
 	test("Ensure the add function works as expected", () => {
@@ -46,7 +46,15 @@ describe("Check that psimd methods are working properly", ()=>{
 		expect(b).toStrictEqual([0,1,0]);
 	});
 
-	test("Test the multiplyScalar function works as expected", ()=>{
+	test("Ensure the getAngle function works as expected", ()=>{
+		const a = getAngle([0,0], [0,1]);
+		const b = getAngle([0,1], [0,0]); 
+		expect(a).toBe(0);
+		expect(b).toBe(Math.PI);
+		
+	});
+
+	test("Ensure the multiplyScalar function works as expected", ()=>{
 		const a = multiplyScalar([1,1,1], 2);
 		expect(a.length).toBe(3);
 		expect(a).toStrictEqual([2,2,2]);

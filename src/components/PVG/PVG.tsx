@@ -3,6 +3,12 @@ import { PVGProps } from "./types";
 import { v4 } from "uuid";
 import { clsfy, vars } from "../../utilities";
 import './style.scss';
+
+/**
+ * PVG is the lowest level rendering element. this element typically renders a path, clipPath which it uses to create a shape that is only stroked inside the shape. If the cached flag is set the path and clipPath will not be used and it is expected the xlinkHref property is defined.
+ * @param props
+ * @returns 
+ */
 const PVG: FC<PVGProps> = ({
 	cached=false,
 	d,
