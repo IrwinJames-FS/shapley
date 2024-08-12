@@ -23,6 +23,14 @@ export const polygon = (sides: number, rotation: number) => function*(): Generat
 }
 
 /**
+ * 
+ * @param sides 
+ * @param rotation 
+ * @returns 
+ */
+export const normalizedPolygon = (sides: number, rotation: number) => normalized(polygon(sides, rotation));
+
+/**
  * The translate method appends a translate action to the end of each generator iteration
  * @param gen 
  * @param pos 
@@ -40,13 +48,22 @@ export function* translate(gen: Generator<Vector>, pos: Point): Generator<Vector
  * @param boundingBox
  */
 export function* normalize(gen: Generator<Vector>, [mx, my, width, height]: Rect): Generator<Vector> {
-	;
 	const size = [width, height]
 	//translating by mx and mx ensures my minimum point is now 0 and 0.
 	for(const p of translate(gen, multiplyScalar([mx, my], -1))) {
 		//convert the position to a percentage.
 		yield divide(p, size); //if smallest point is always 0 then the size is always the largest points.
 	}
+}
+
+/**
+ * Unlike the sister function **normalize** This method does not require a bounding rect. But it does require a reusable generator as normalizing does require a second iteration.
+ * @param gen 
+ * @returns 
+ */
+export const normalized = (gen:()=>Generator<Vector>):Generator<Vector> => {
+	const size = boundingBox(gen());
+	return normalize(gen(), size);
 }
 
 /**
@@ -68,7 +85,6 @@ export function* rounded(gen:Generator<Vector>, cornerRadius:number | number[]):
 	let i: number = 1;
 
 	for(const v of gen){
-		
 		if(!first) {
 			first = v;
 			a = v;
@@ -78,7 +94,7 @@ export function* rounded(gen:Generator<Vector>, cornerRadius:number | number[]):
 			b = v;
 			continue;
 		}
-		let cr = isArr ? (cornerRadius as number[])[i] ?? 0:cornerRadius;
+		let cr = getCr(cornerRadius, i);
 		
 		i++;
 		yield round(b!, a!, v, cr);
@@ -87,11 +103,17 @@ export function* rounded(gen:Generator<Vector>, cornerRadius:number | number[]):
 	}
 	//still need the last two
 	//the last of the iterator
-	const lr = round(b!, a!, first!, isArr ? (cornerRadius as number[])[i] ?? 0:cornerRadius);
+	const lr = round(b!, a!, first!, getCr(cornerRadius, i));
 	yield lr;
 
 	//the first of the iterator
-	yield round(first!, b!, second!, isArr ? (cornerRadius as number[])[0] ?? 0:cornerRadius);
+	yield round(first!, b!, second!, getCr(cornerRadius, 0));
+}
+
+const getCr = (cornerRadius: number | number[], i: number): number => {
+	if(!Array.isArray(cornerRadius)) return cornerRadius;
+	if(i < cornerRadius.length) cornerRadius[i];
+	return 0;
 }
 
 /**
@@ -104,7 +126,7 @@ export function* rounded(gen:Generator<Vector>, cornerRadius:number | number[]):
  * @param cr 
  * @returns 
  */
-export const round = (a: Vector, b: Vector, c: Vector, cr: number=0): [Vector, Vector | undefined, Vector | undefined] => {
+export const round = (a: Vector, b: Vector, c: Vector, cr: number): [Vector, Vector | undefined, Vector | undefined] => {
 	return !cr ? [a, undefined, undefined]:[
 	a,
 	ray(cr,getAngle(a,b), [...a.slice(0,2), 0] as Vector),//gotta reset the vector or it will offset the line

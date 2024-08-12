@@ -1,4 +1,4 @@
-import { aspect, boundingBox, normalize, polygon, translate } from "./iterators";
+import { aspect, boundingBox, normalize, normalizedPolygon, polygon, rounded, translate } from "./iterators";
 
 describe("Test Iterators", ()=>{
 	test("Test polygon iterator", ()=>{
@@ -15,6 +15,7 @@ describe("Test Iterators", ()=>{
 			-0.87, -0.5
 		])
 	});
+
 
 	test("Test the translate iterator", ()=>{
 		const buffer: number[] = []
@@ -45,6 +46,54 @@ describe("Test Iterators", ()=>{
 			0.5, 1,
 			1,0,
 			0, 0
+		]);
+	});
+
+	test("Test the normalizedPolygon iterator this", ()=>{
+		const buffer: number[] = [];
+		const poly = normalizedPolygon(3,0);
+		
+		for(const p of poly){
+			expect(p.length).toBe(3);
+			buffer.push(parseFloat(p[0].toFixed(2)), parseFloat(p[1].toFixed(2)));
+		}
+		expect(buffer.length).toBe(6);
+		expect(buffer).toStrictEqual([
+			0.5, 1,
+			1,0,
+			0, 0
+		]);
+	});
+
+	test("Test the rounded function with static border", ()=>{
+		const buffer: number[] = [];
+		const poly = rounded(normalizedPolygon(3,0), 0.1);
+		
+		for(const [p] of poly){
+			expect(p.length).toBe(3);
+			buffer.push(parseFloat(p[0].toFixed(2)), parseFloat(p[1].toFixed(2)));
+		}
+		expect(buffer.length).toBe(6);
+		expect(buffer).toStrictEqual([
+			1,0,
+			0, 0,
+			0.5, 1,
+		]);
+	});
+
+	test("Test the rounded function with declared border border", ()=>{
+		const buffer: number[] = [];
+		const poly = rounded(normalizedPolygon(3,0), [0.1, 0.2]);
+		
+		for(const [p] of poly){
+			expect(p.length).toBe(3);
+			buffer.push(parseFloat(p[0].toFixed(2)), parseFloat(p[1].toFixed(2)));
+		}
+		expect(buffer.length).toBe(6);
+		expect(buffer).toStrictEqual([
+			1,0,
+			0, 0,
+			0.5, 1,
 		]);
 	});
 
