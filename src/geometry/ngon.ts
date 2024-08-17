@@ -1,54 +1,8 @@
-import { aspect, boundingBox, normalize, polygon } from "./iterators";
-import { ray } from "./psimd";
-import { Ngon, Vector } from "./types";
+import { limitDecimal } from "./arithmetic";
+import Point from "./Point";
+import RoundedCorner from "./RoundedCorner";
 
-/**
- * NGON calculates the points and returns key information about the 
- * @returns 
- */
-const ngon = (sides: number, rotation: number, cornerRadius: number, square: boolean = false): Ngon => {
-	//I need to generate a path if a cached one does not exist
-	const gen = polygon(sides, rotation);
-	const size = boundingBox(gen());
-	
-	const anti = Math.PI - ((sides-2) * Math.PI / sides)/2;
-	return [
-		square ? '1/1': aspect(size),
-		square ? '-1 -1 2 2':'0 0 1 1',
-		fill(square ? 
-			gen():
-			normalize(
-				gen(), 
-				size
-			), 
-			cornerRadius, 
-			anti
-		)
-	];
-};
-
-
-
-export default ngon;
-
-/* SVG Rendering */
-
-const fill = (gen: Generator<Vector>, cornerRadius: number, antiAngle: number): string => {
-	let d = '';
-	for(const v of gen) {
-		const c = d ? ' L':'M';
-		if(cornerRadius && antiAngle) {
-			const start = ray(cornerRadius, -antiAngle, v);
-			const end = ray(cornerRadius, antiAngle, v);
-			d += $d`${c} ${start} Q ${v} ${end}`;
-		} else {
-			d += $d`${c} ${v}`
-		}
-	}
-	return d+'z';
-}
-
-type DArg = string | number | number[];
+type DArg = string | number | number[] | Point | RoundedCorner | undefined;
 
 /**
  * @private
@@ -60,9 +14,10 @@ type DArg = string | number | number[];
  * @returns 
  */
 export const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o,v,i)=>{
-	if(i>=args.length) return o+v;
+	if(i>=args.length || args[i] === undefined) return o+v;
+	if((args[i] instanceof Point) || (args[i] instanceof RoundedCorner)) return o+v+args[i]
 	//all arrays will only use the first two points until I encounter a use case for anything else.
-	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>v.toFixed(5)).join(', ');
-	return o+v+(typeof args[i] === 'string' ? args[i]:args[i].toFixed(5));
+	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>limitDecimal(v, 5)).join(', ');
+	return o+v+(typeof args[i] === 'string' ? args[i]:limitDecimal(args[i], 5));
 }, '');
 

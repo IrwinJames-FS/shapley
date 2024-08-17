@@ -1,0 +1,67 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/utilities/style/style" />
+
+## vars
+`src/utilities/style/style`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Converts snakeCased variable names to css camel case
+
+```bash
+@param variables
+
+@returns
+```
+
+#### Code:
+
+```ts
+export const vars = (variables: Record<string, CSSNumeric | CSSNumeric[] | undefined>, prefixes: string[] = [""]): Record<string, string | number> => {
+    const o: Record<string, string | number> = {};
+    for (const [k, v] of Object.entries(variables)) {
+        if (v === undefined)
+            continue;
+        const vals = Array.isArray(v) ? v : [v];
+        const key = toSnake(k);
+        for (let i = 0; i < vals.length; i++) {
+            if (prefixes.length <= i)
+                break;
+            o['--' + prefixes[i] + key] = vals[i];
+        }
+    }
+    return o;
+};
+
+```
+
+## standardizeValue
+`src/utilities/style/style`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Throughout the library I am accepting a mixed type for unit values where a unit type can be assumed when a number is provided. This method is a convenience method to standardize the way this instance is handled.
+
+```bash
+@param value
+
+@param unit
+
+@returns
+```
+
+#### Code:
+
+```ts
+export const standardizeValue = (value: string | number | undefined, unit: string = 'px'): string => value !== undefined ?
+    typeof value === 'string'
+        ? value : value + unit
+    : "none";
+
+```
+

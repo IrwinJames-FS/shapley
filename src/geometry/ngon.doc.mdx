@@ -2,35 +2,6 @@ import { Meta } from '@storybook/blocks';
 
 <Meta title="src/geometry/ngon" />
 
-## ngon
-`src/geometry/ngon`
-
-**AST Node Type:** *VariableStatement*
-
-#### JSDoc annotations:
-
-NGON calculates the points and returns key information about the
-
-```bash
-@returns
-```
-
-#### Code:
-
-```ts
-const ngon = (sides: number = 6, rotation: number, cornerRadius: number, square: boolean = false): Ngon => {
-    const gen = polygon(sides, rotation);
-    const size = boundingBox(gen());
-    const anti = Math.PI - ((sides - 2) * Math.PI / sides) / 2;
-    return [
-        square ? '1/1' : aspect(size),
-        square ? '-1 -1 2 2' : '0 0 1 1',
-        fill(square ? gen() : normalize(gen(), size), cornerRadius, anti)
-    ];
-};
-
-```
-
 ## $d
 `src/geometry/ngon`
 
@@ -56,12 +27,14 @@ to Fixed is pegged at 5 this is to prevent differences between server side and c
 #### Code:
 
 ```ts
-const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o, v, i) => {
-    if (!args[i])
+export const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => strings.reduce((o, v, i) => {
+    if (i >= args.length || args[i] === undefined)
         return o + v;
+    if ((args[i] instanceof Point) || (args[i] instanceof RoundedCorner))
+        return o + v + args[i];
     if (Array.isArray(args[i]))
-        return o + v + args[i].slice(0, 2).map(v => v.toFixed(5)).join(', ');
-    return o + v + (typeof args[i] === 'string' ? args[i] : args[i].toFixed(5));
+        return o + v + args[i].slice(0, 2).map(v => limitDecimal(v, 5)).join(', ');
+    return o + v + (typeof args[i] === 'string' ? args[i] : limitDecimal(args[i], 5));
 }, '');
 
 ```

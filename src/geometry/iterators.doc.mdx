@@ -2,21 +2,19 @@ import { Meta } from '@storybook/blocks';
 
 <Meta title="src/geometry/iterators" />
 
-## polygon
+## translate
 `src/geometry/iterators`
 
 **AST Node Type:** *VariableStatement*
 
 #### JSDoc annotations:
 
-Polygon is a **reusable** iterator. It is designed this way to reduce the need to preserve arguments.
-
-This method assumes that the radius is 2 and the center is 0 this will allow subsequent computations.
+A reusable mutation generator which translates all points by a provided point
 
 ```bash
-@param sides
+@param gen
 
-@param rotation
+@param point
 
 @returns
 ```
@@ -24,47 +22,119 @@ This method assumes that the radius is 2 and the center is 0 this will allow sub
 #### Code:
 
 ```ts
-export const polygon = (sides: number, rotation: number) => function* (): Generator<Vector> {
-    const t = CIRCLE / sides;
-    const center: Point = [0, 0];
-    for (let i = rotation; i < CIRCLE + rotation; i += t) {
-        yield ray(1, i, center);
-    }
+export const translate = (gen: VertexGenerator, point: Point): VertexGenerator => function* () {
+    for (const p of gen())
+        yield p.add(point);
 };
 
 ```
 
-## boundingBox
+## rotate
 `src/geometry/iterators`
 
 **AST Node Type:** *VariableStatement*
 
 #### JSDoc annotations:
 
-Measures the polygon and returns a rect describing the bounding box.
-
-It is recommened to use this prior to scaling or translating the polygon.
-
-- update 08/08/24: Will now return the min x,y and the dimensions. This seems to just be a more reusable format.
+A resuable mutation generator which rotates all points around a provided center point by a provided angle
 
 ```bash
-@param { Generator<Vector> } gen
+@param gen
 
-@returns { Rect }
+@param angle
+
+@param center
+
+@returns
 ```
 
 #### Code:
 
 ```ts
-export const boundingBox = (gen: Generator<Vector>): Rect => {
-    let mx: number, my: number, Mx: number, My: number = Mx = my = mx = 0;
-    for (const [x, y] of gen) {
-        mx = Math.min(mx, x);
-        my = Math.min(my, y);
-        Mx = Math.max(Mx, x);
-        My = Math.max(My, y);
+export const rotate = (gen: VertexGenerator, angle: number, center: Point): VertexGenerator => function* () {
+    for (const p of gen())
+        yield p.rotateAround(center, angle);
+};
+
+```
+
+## scale
+`src/geometry/iterators`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+A reusable mutation generator which scales all points by a 2D scale factor.
+
+```bash
+@param gen
+
+@param scaleFactor
+
+@returns
+```
+
+#### Code:
+
+```ts
+export const scale = (gen: VertexGenerator, scaleFactor: Point): VertexGenerator => function* () {
+    for (const p of gen())
+        yield p.multiply(scaleFactor);
+};
+
+```
+
+## round
+`src/geometry/iterators`
+
+**AST Node Type:** *VariableStatement*
+
+#### JSDoc annotations:
+
+Rounds each corner.
+
+```bash
+@param gen
+
+@param cornerRadius
+
+@returns
+```
+
+#### Code:
+
+```ts
+export const round = (gen: VertexGenerator, cornerRadius: number | number[]): VertexGenerator => function* () {
+    const generator = gen();
+    let cursor = generator.next();
+    let a = cursor.value;
+    if (cursor.done) {
+        yield a;
+        return;
     }
-    return [mx, my, Mx - mx, My - my];
+    cursor = generator.next();
+    let b = cursor.value;
+    if (cursor.done) {
+        yield a;
+        yield b;
+        return;
+    }
+    const first = a;
+    const second = b;
+    let i = 1;
+    for (const [x, y] of generator) {
+        const c = new Point(x, y);
+        const [s, e] = rounding(b, a, c, cornerRadius, i);
+        i++;
+        yield new RoundedCorner(s, b, e);
+        a = b;
+        b = c;
+    }
+    const [ls, le] = rounding(b, a, first, cornerRadius, i);
+    yield new RoundedCorner(ls, b, le);
+    const [fs, fe] = rounding(first, b, second, cornerRadius, 0);
+    yield new RoundedCorner(fs, first, fe);
 };
 
 ```
