@@ -122,14 +122,16 @@ export const round = (gen: VertexGenerator, cornerRadius: number | number[]): Ve
     }
     const first = a;
     const second = b;
+    let i = 1;
     for (const [x, y] of generator) {
         const c = new Point(x, y);
-        const [s, e] = rounding(b, a, c, cornerRadius, 0);
+        const [s, e] = rounding(b, a, c, cornerRadius, i);
+        i++;
         yield new RoundedCorner(s, b, e);
         a = b;
         b = c;
     }
-    const [ls, le] = rounding(b, a, first, cornerRadius, 0);
+    const [ls, le] = rounding(b, a, first, cornerRadius, i);
     yield new RoundedCorner(ls, b, le);
     const [fs, fe] = rounding(first, b, second, cornerRadius, 0);
     yield new RoundedCorner(fs, first, fe);
