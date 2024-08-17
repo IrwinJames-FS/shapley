@@ -9,10 +9,10 @@ const config: StorybookConfig = {
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
     {
-      name: "storybook-addon-jsdoc-to-mdx",
+      name: 'storybook-addon-jsdoc-to-mdx',
       options: {
-        folderPaths: ["./src/"],
-        extensions: ["ts", "tsx"],
+        folderPaths: ['./src/'], // paths to folders with JS/TS code
+        extensions: ['ts'] // file extensions to include
       }
     }
   ],

@@ -1,4 +1,4 @@
-import { CSSNumeric } from "../../components/types";
+import { CSSNumeric, Hoverable } from "../../components/types";
 
 /**
  * Converts snakeCased variable names to css camel case
@@ -36,4 +36,5 @@ export const standardizeValue = (value: string | number | undefined, unit:string
 
 export const clsfy = (...names: (string | undefined)[]): string => names.filter(n=>n).join(' ');
 
+export const shadowfy = (str?: Hoverable<string>)=> str ? (Array.isArray(str) ? str:[str]).map(s=>s.split(',').map(v=>`drop-shadow(${v})`).join(' ')):"none";
 const toSnake = (str:string)=>str.replace(/[A-Z]/g, l=>'-'+l.toLowerCase());

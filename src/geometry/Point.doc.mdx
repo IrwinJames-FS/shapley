@@ -1,0 +1,2273 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/geometry/Point" />
+
+## Point
+`src/geometry/Point`
+
+**AST Node Type:** *ClassDeclaration*
+
+#### JSDoc annotations:
+
+The point type is the basic unit used to create path commands in shapely.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## ray
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+This method finds a point on a circle's circumference of the provided **radius** at the provided **angle**
+
+```bash
+@param angle - The angle should be provided in radians.
+
+@param radius
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## rayDeg
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+This method finds a point on a circle's circumference of the provided **radius** at the provided **angle**
+
+```bash
+@param angle - The angle should be provided in degrees
+
+@param radius
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## add
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Adds the current point to another
+
+```bash
+@param point
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## adding
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Adds a provided value to the current value without creating a new Point
+
+```bash
+@param param0
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## subtract
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Subtracts another point from this point
+
+```bash
+@param point
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## multiply
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Multiply this point by another point
+
+```bash
+@param point
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## multiplying
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Multiplies the current point by another without making a new point
+
+```bash
+@param point
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## divide
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Divide this point by another point
+
+```bash
+@param point
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## dividing
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Divide this point by another point without making a new point
+
+```bash
+@param point
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## addScalar
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Add a value to both coordinate values.
+
+```bash
+@param n
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## subtractScalar
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Subtracts a value from both coordinate values.
+
+```bash
+@param n
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## multiplyScalar
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Multiplies the point by a single value.
+
+```bash
+@param n
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## divideScalar
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Divides the point by a single value.
+
+```bash
+@param n
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## precision
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+This method offers a way to round the values for x and y to a specific precision level. This is helpful in SSR as server side precision is usually different from client side.
+
+This method mutates the existing values
+
+```bash
+@param prec
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## to
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Get the info needed to plot a ray to a point.
+This is typically used in rotation methods to rotate around a point
+
+```bash
+@param point
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## rotateAround
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Rotates a point around another point
+
+```bash
+@param point
+
+@param angle
+
+@returns
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+
+## 
+**AST Node Type:** *GetAccessor*
+
+#### JSDoc annotations:
+
+A convenience method to initialize a point at origin.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+get;
+zero();
+{
+    return new Point(0, 0);
+}
+
+```
+
+## px
+`src/geometry/Point`
+
+**AST Node Type:** *MethodDeclaration*
+
+#### JSDoc annotations:
+
+Just a shortcut to initialize rather then needing to write new in a oneLiner
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+class Point extends Array<number> {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
+    get x() { return this[0]; }
+    set x(n: number) { this[0] = n; }
+    get y() { return this[1]; }
+    set y(n: number) { this[1] = n; }
+    get control() {
+        return this;
+    }
+    public ray(angle: number, radius: number): Point {
+        const p = new Point(radius * Math.sin(angle), radius * Math.cos(angle)).adding(this);
+        return p;
+    }
+    rayDeg(angle: number, radius: number): Point {
+        return this.ray(toRad(angle), radius);
+    }
+    public add([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x + x, this.y + y);
+    }
+    public adding([x, y]: SupportedPointMathTypes) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public subtract([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x - x, this.y - y);
+    }
+    public subtracting([x, y]: SupportedPointMathTypes) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    public multiply([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x * x, this.y * y);
+    }
+    public multiplying([x, y]: SupportedPointMathTypes) {
+        this.x *= x;
+        this.y *= y;
+        return this;
+    }
+    public divide([x, y]: SupportedPointMathTypes) {
+        return new Point(this.x / x, this.y / y);
+    }
+    public dividing([x, y]: SupportedPointMathTypes) {
+        this.x /= x;
+        this.y /= y;
+        return this;
+    }
+    addScalar(n: number) {
+        return new Point(this.x + n, this.y + n);
+    }
+    subtractScalar(n: number) {
+        return new Point(this.x - n, this.y - n);
+    }
+    multiplyScalar(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
+    divideScalar(n: number) {
+        return new Point(this.x / n, this.y / n);
+    }
+    min([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.min(this.x, x), Math.min(this.y, y));
+    }
+    max([x, y]: SupportedPointMathTypes | RoundedCorner) {
+        return new Point(Math.max(this.x, x), Math.max(this.y, y));
+    }
+    precision(prec: number) {
+        this.x = round(this.x, prec);
+        this.y = round(this.y, prec);
+        return this;
+    }
+    to([x, y]: SupportedPointMathTypes) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    from([x, y]: SupportedPointMathTypes) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return {
+            angle: Math.atan2(dx, dy),
+            distance: Math.sqrt(dx ** 2 + dy ** 2)
+        };
+    }
+    rotateAround(point: SupportedPointMathTypes, angle: number) {
+        const { angle: a, distance } = this.from(point);
+        return this.ray(a + angle, distance);
+    }
+    toString(): string { return Point.toString(this); }
+    static get zero() {
+        return new Point(0, 0);
+    }
+    static px(x: number, y: number) {
+        return new Point(x, y);
+    }
+    static toString([x, y]: SupportedPointMathTypes, prec: number = 5): string {
+        return `${round(x, prec)}, ${round(y, prec)}`;
+    }
+}
+
+```
+

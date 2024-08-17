@@ -1,0 +1,76 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/components/types" />
+
+## BaseShapelyGridProps
+`src/components/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+All of the specialized Polgyon Grids accept these base properties.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type BaseShapelyGridProps = {
+    children?: ReactNode;
+    rowSize?: number;
+    spacing?: CSSNumeric;
+    offset?: number;
+};
+
+```
+
+## Hoverable
+`src/components/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+For now I want to support hover effects I will have to find a more extensible method as I add in more responsive controls.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type Hoverable<T> = T | [
+    T,
+    T
+];
+
+```
+
+## PolyMorphic
+`src/components/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+PolyMorphic is a type decorator to describe the properties of an overridable react component.
+
+Providing a valid ElementType to the as property will allow a developer to override the root element of a component while still respecting linting rules in typescript.
+
+as such the properties will be a combination of the root element type and the properties provided to P.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type PolyMorphic<P, T extends ElementType> = PolyMorphProps<T> & P;
+
+```
+

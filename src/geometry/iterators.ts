@@ -1,160 +1,107 @@
 /*
 In order to keep the rendering process as efficient as possible I will be using Generators to append actions to an iteration rather then run multiple iterations.
 */
-import { add, divide, getAngle, multiplyScalar, ray } from "./psimd";
-import { Point, Rect, Vector } from "./types";
 
-const CIRCLE = Math.PI * 2;
+import Point from "./Point";
+import RoundedCorner from "./RoundedCorner";
+import { VertexGenerator } from "./types";
+
+
+export const bufferIterator = (points: number[]):VertexGenerator => function*() {
+	if(points.length % 2) throw new Error("Invalid buffer size");
+	for(let i = 0; i<points.length; i+=2) yield new Point(points[i], points[i+1]);
+}
+
+export const fromCircle = (stops: number, rotation: number=0, center: Point = Point.zero): VertexGenerator => function*(){
+	if(!stops) throw new Error("At least two stop must be requested");
+	if(stops < 3) console.warn("The smallest polygon typically has 3 sides");
+	const delta = (Math.PI*2)/stops;
+	for(let i = 0; i<stops; i++) yield center.ray((delta*i)+rotation, 0.5);
+}
+
+/*
+Mutators
+
+The first agument of each Mutator should be the generator it is mutating
+*/
 
 /**
- * Polygon is a **reusable** iterator. It is designed this way to reduce the need to preserve arguments. 
- * 
- * This method assumes that the radius is 2 and the center is 0 this will allow subsequent computations. 
- * @param sides 
- * @param rotation 
+ * A reusable mutation generator which translates all points by a provided point
+ * @param gen 
+ * @param point 
  * @returns 
  */
-export const polygon = (sides: number, rotation: number) => function*(): Generator<Vector> {
-	const t = CIRCLE/sides;
-	const center: Point = [0,0];
-	for(let i = rotation; i<CIRCLE+rotation; i += t) {
-		yield ray(1, i, center);
-	}
+export const translate = (gen:VertexGenerator, point: Point): VertexGenerator => function*(){
+	for(const p of gen()) yield p.add(point);
 }
 
 /**
- * 
- * @param sides 
- * @param rotation 
+ * A resuable mutation generator which rotates all points around a provided center point by a provided angle
+ * @param gen 
+ * @param angle 
+ * @param center 
  * @returns 
  */
-export const normalizedPolygon = (sides: number, rotation: number) => normalized(polygon(sides, rotation));
-
-/**
- * The translate method appends a translate action to the end of each generator iteration
- * @param gen 
- * @param pos 
- */
-export function* translate(gen: Generator<Vector>, pos: Point): Generator<Vector> {
-	for(const p of gen) {
-		yield add(p, pos);
-	}
+export const rotate = (gen: VertexGenerator, angle: number, center: Point): VertexGenerator => function*(){
+	for(const p of gen()) yield p.rotateAround(center, angle);
 }
 
 /**
- * The normalize method uses a minimum coordinate values and the dimensions of the Generator to move all point to appear between 0-1.
- * This is helpful if you are building graphics that need to be represented in objectBoundingBox units. 
+ * A reusable mutation generator which scales all points by a 2D scale factor.
  * @param gen 
- * @param boundingBox
- */
-export function* normalize(gen: Generator<Vector>, [mx, my, width, height]: Rect): Generator<Vector> {
-	const size = [width, height]
-	//translating by mx and mx ensures my minimum point is now 0 and 0.
-	for(const p of translate(gen, multiplyScalar([mx, my], -1))) {
-		//convert the position to a percentage.
-		yield divide(p, size); //if smallest point is always 0 then the size is always the largest points.
-	}
-}
-
-/**
- * Unlike the sister function **normalize** This method does not require a bounding rect. But it does require a reusable generator as normalizing does require a second iteration.
- * @param gen 
+ * @param scaleFactor 
  * @returns 
  */
-export const normalized = (gen:()=>Generator<Vector>):Generator<Vector> => {
-	const size = boundingBox(gen());
-	return normalize(gen(), size);
+export const scale = (gen: VertexGenerator, scaleFactor: Point): VertexGenerator => function*(){
+	for(const p of gen()) yield p.multiply(scaleFactor);
 }
 
 /**
- * This rounding method is not reliant on the shape descriptor but rather just using the point to find the angle to the last point
- * 
- * **Warning:** This not longer returns a Vector Generator. 
+ * Rounds each corner.
  * @param gen 
  * @param cornerRadius 
- */
-export function* rounded(gen:Generator<Vector>, cornerRadius:number | number[]):Generator<[Vector, Vector | undefined, Vector | undefined]>{
-	//A corner needs three points to round as such the first two vectors will 
-	const isArr = Array.isArray(cornerRadius);
-	let first: Vector | undefined;
-	let second: Vector | undefined;
-
-	//cursors so we dont need to reiterate
-	let a: Vector | undefined;
-	let b: Vector | undefined;
-	let i: number = 1;
-
-	for(const v of gen){
-		if(!first) {
-			first = v;
-			a = v;
-			continue;
-		} else if (!second) {
-			second = v;
-			b = v;
-			continue;
-		}
-		let cr = getCr(cornerRadius, i);
-		
-		i++;
-		yield round(b!, a!, v, cr);
-		a = b;
-		b = v;
-	}
-	//still need the last two
-	//the last of the iterator
-	const lr = round(b!, a!, first!, getCr(cornerRadius, i));
-	yield lr;
-
-	//the first of the iterator
-	yield round(first!, b!, second!, getCr(cornerRadius, 0));
-}
-
-const getCr = (cornerRadius: number | number[], i: number): number => {
-	if(!Array.isArray(cornerRadius)) return cornerRadius;
-	if(i < cornerRadius.length) cornerRadius[i];
-	return 0;
-}
-
-/**
- * Uses three Vectors ignoring the angle property this method assumes *a* is the meeting point of *b* and *c* it then casts a ray back down that line the distance of the corner radius. 
- * 
- * The corner radius can be a static number which is applied to each vertex or the cornerRadius can be an array matching the initial generators lenth. any undefined radius will be assumed as 0.
- * @param a 
- * @param b 
- * @param c 
- * @param cr 
  * @returns 
  */
-export const round = (a: Vector, b: Vector, c: Vector, cr: number): [Vector, Vector | undefined, Vector | undefined] => {
-	return !cr ? [a, undefined, undefined]:[
-	a,
-	ray(cr,getAngle(a,b), [...a.slice(0,2), 0] as Vector),//gotta reset the vector or it will offset the line
-	ray(cr,getAngle(a,c), [...a.slice(0,2), 0] as Vector)
-]
-}
-
-/**
- * Measures the polygon and returns a rect describing the bounding box.
- * 
- * It is recommened to use this prior to scaling or translating the polygon.
- * 
- * - update 08/08/24: Will now return the min x,y and the dimensions. This seems to just be a more reusable format.
- * @param { Generator<Vector> } gen 
- * @returns { Rect }
- */
-export const boundingBox = (gen: Generator<Vector>): Rect => {
-	let mx:number, my: number, Mx: number, My:number = Mx = my = mx = 0;
-	for(const [x,y] of gen){
-		mx = Math.min(mx, x);
-		my = Math.min(my, y);
-		Mx = Math.max(Mx, x);
-		My = Math.max(My, y);
+export const round = (gen: VertexGenerator, cornerRadius: number | number[]): VertexGenerator => function*(){
+	const generator = gen();
+	let cursor = generator.next();
+	let a = cursor.value;
+	if(cursor.done) {
+		yield a;
+		return; //cant round a single point
 	}
-	return [mx, my, Mx-mx, My-my];
+	cursor = generator.next();
+	let b = cursor.value;
+	if(cursor.done) {
+		yield a;
+		yield b;
+		return; //cant really round two points either
+	}
+	const first = a;
+	const second = b;
+	let i = 1;
+	for(const [x,y] of generator){
+		const c = new Point(x,y);
+		const [s, e] = rounding(b, a, c, cornerRadius, i);
+		i++;
+		yield new RoundedCorner(s, b, e);
+		a = b;
+		b = c;
+	}
+	
+	const [ls, le] = rounding(b, a, first, cornerRadius, i);
+	yield new RoundedCorner(ls, b, le);
+
+	const [fs, fe] = rounding(first, b, second, cornerRadius, 0);
+	yield new RoundedCorner(fs, first, fe);
 }
 
-export const aspect = ([,,width, height]: Rect) => {
-	const m = Math.max(width, height);
-	return `${width/m} / ${height/m}`
+const rounding = (a: Point, b: Point, c: Point, cornerRadius:number | number[], i: number) => {
+	const cr:number = Array.isArray(cornerRadius) ? (cornerRadius as number[])[i] ?? 0:cornerRadius;
+	const {angle: a1} = a.to(b);
+	const {angle: a2} = a.to(c);
+	return [
+		a.ray(a1, cr),
+		a.ray(a2, cr)
+	]
 }
