@@ -35,6 +35,14 @@ class Points {
 		return `${roundNumber(h/w, 3)} / 1`;
 	}
 
+	get viewInfo():[string, string]{
+		const [min, [w,h]] = this.measure();
+		return [
+			w > h ? `${roundNumber(w/h, 3)} / 1`:`${roundNumber(h/w, 3)} / 1`,
+			$d`${min} ${[w,h]}`
+		]
+	}
+
 	/**
 	 * Translate all points by a new position. This is effectively adding the new point to the center. 
 	 * @param point 

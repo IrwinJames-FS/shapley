@@ -14,30 +14,32 @@ const Geometric: FC<GeometricProps> = ({
 	geometry, 
 	className,
 	defs,
+	src,
 	style={},
 	bgColor,
 	borderColor,
 	borderWidth,
 	shadow,
+	viewBox,
 	...props})=>{
 	const id = v4();
 	return (<SVGCanvas {...{
 		className: clsfy(className, 'shapely-geometry'),
-		viewBox: geometry.viewBox,
+		viewBox: viewBox ?? geometry?.viewBox ?? '-0.5 -0.5 1 1',
 		style: {
 			...vars({
 				shadow: shadowfy(shadow)
 			}),
 			...style
 		},
-		defs:<>
+		defs:geometry ? (<>
 		{defs}
 		<GeometryDefinition {...{geometry, id}}/>
-		</>,
+		</>):undefined,
 		...props
 	}}>
 		<GeometryRef {...{
-			src: '#'+id,
+			src: src ?? '#'+id,
 			bgColor,
 			borderColor,
 			borderWidth

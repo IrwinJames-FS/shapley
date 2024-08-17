@@ -12,6 +12,8 @@ import './style.scss';
  */
 const Geometry = <T extends ElementType="div">({
 	as,
+	aspectRatio,
+	viewBox,
 	className,
 	geometry,
 	children,
@@ -27,11 +29,12 @@ const Geometry = <T extends ElementType="div">({
 	...props
 }: PolyMorphic<GeometryProps, T>) => {
 	const El = as || "div";
+	const info = geometry?.viewInfo ?? ['0 0 1 1', '1/1']
 	return (<El {...{
 		className:clsfy(className, 'shapely-geometric'),
 		style: {
 			...vars({
-				aspectRatio: geometry.aspectRatio
+				aspectRatio: aspectRatio ?? info[1]
 			}),
 			...style
 		},
@@ -44,6 +47,7 @@ const Geometry = <T extends ElementType="div">({
 			borderColor,
 			borderWidth,
 			shadow,
+			viewBox: viewBox ?? info[0],
 			...shapeProps
 		}}/>
 		{children}

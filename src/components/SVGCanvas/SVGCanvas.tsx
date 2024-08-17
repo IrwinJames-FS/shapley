@@ -15,7 +15,7 @@ const SVGCanvas: FC<SVGCanvasProps> = ({className, defs, children, ...props}) =>
 	className: clsfy(className, 'shapely-svg-canvas'),
 	...props
 }}>
-	<defs>{defs}</defs>
+	{defs && <defs>{defs}</defs>}
 	{children}
 </svg>);
 

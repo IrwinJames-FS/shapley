@@ -4,7 +4,10 @@ import { SVGCanvasProps } from "../SVGCanvas";
 import { PStyle } from "../types";
 
 export type GeometryProps = {
-	geometry: Points
+	geometry?: Points
+	src?: string,
+	aspectRatio?: string,
+	viewBox?:string,
 	children?: ReactNode
 	svg: SVGCanvasProps
 } & PStyle

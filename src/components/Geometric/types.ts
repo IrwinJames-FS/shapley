@@ -4,7 +4,8 @@ import { PStyle } from "../types"
 
 
 export type BaseGeometricProps = {
-	geometry: Points
+	geometry?: Points
+	src?: string
 } 
 
 export type GeometricProps = BaseGeometricProps & SVGCanvasProps & PStyle
