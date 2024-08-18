@@ -1,0 +1,15 @@
+.shapely-grid{
+	color: #000;
+	display: grid;
+	align-content: start;
+	.shapely-grid-cell{
+		grid-column-end: span var(--column-size);
+		grid-row-end: span var(--row-size);
+		clip-path: var(--clip-path);
+		aspect-ratio: var(--aspect-ratio, 1/1);
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: center;
+		align-items: center;
+	}
+}

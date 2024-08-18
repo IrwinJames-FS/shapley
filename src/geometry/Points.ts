@@ -1,8 +1,8 @@
-import { bufferIterator, fromCircle, rotate, round, scale, translate } from "./iterators";
+import { bufferIterator, fromCircle, normalize, rotate, round, scale, translate } from "./iterators";
 import { $d } from "./ngon";
 import Point from "./Point";
 import { round as roundNumber } from './arithmetic';
-import { VertexGenerator } from "./types";
+import { Rect, VertexGenerator } from "./types";
 
 
 /**
@@ -35,6 +35,9 @@ class Points {
 		return `${roundNumber(h/w, 3)} / 1`;
 	}
 
+	/**
+	 * Returns a tuple such that the first string is the aspect ratio and the second string is a view box
+	 */
 	get viewInfo():[string, string]{
 		const [min, [w,h]] = this.measure();
 		return [
@@ -48,7 +51,7 @@ class Points {
 	 * @param point 
 	 * @returns 
 	 */
-	translate(point:Point):Points {
+	public translate(point:Point):Points {
 		this.center.adding(point);
 		this.generator = translate(this.generator, point);
 		return this;
@@ -59,7 +62,7 @@ class Points {
 	 * @param angle 
 	 * @param point - The point to rotate around assumes 0,0 if no point is provided
 	 */
-	rotate(angle: number){
+	public rotate(angle: number){
 		this.generator = rotate(this.generator, angle, this.center);
 		return this;
 	}
@@ -69,9 +72,17 @@ class Points {
 	 * @param scaleFactor 
 	 * @returns 
 	 */
-	scale(scaleFactor: Point){
+	public scale(scaleFactor: Point){
 		this.center.multiplying(scaleFactor);
 		this.generator = scale(this.generator, scaleFactor);
+		return this;
+	}
+
+	public normalize(bounds: Rect = this.measure()){
+		
+		this.center.subtracting(bounds[0]);
+		console.log(this.center);
+		this.generator = normalize(this.generator, bounds);
 		return this;
 	}
 
@@ -83,7 +94,7 @@ class Points {
 	 * If you are rounding and unrounding points the shift of point order will be imporatnt to keep in mind if providing corner radius for each corner.
 	 * @param cornerRadius 
 	 */
-	round(cornerRadius: number | number[]){
+	public round(cornerRadius: number | number[]){
 		this.generator = round(this.generator, cornerRadius);
 		return this;
 	}
@@ -107,7 +118,7 @@ class Points {
 	 * Measure the current generator
 	 * @returns 
 	 */
-	measure(){
+	public measure():Rect{
 		let min = this.center;
 		let max = this.center;
 		for(const p of this.generator()){
@@ -121,7 +132,7 @@ class Points {
 	 * Representing points as a string will result in the path commands being generated.
 	 * @returns 
 	 */
-	toString(){
+	public toString(){
 		let d = '';
 		for(const p of this.generator()){
 			const c = d ? ' L':'M';

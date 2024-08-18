@@ -13,7 +13,7 @@ export type Vector = [number, number, number];
 /**
  * This is a min max rect where the first two numbers are the min coordinate and the last two numbers are the max coordinates in the rect.
  */
-export type Rect = [Point, Point];
+export type Rect = [Point, Point, Point];
 
 export type Ngon = [
 	string, //aspect ratio
