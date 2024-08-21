@@ -21,7 +21,7 @@ const PathDefinition: FC<PathDefinitionProps> = ({
 	...props})=>(<>
 <path {...{id, ...props}}/>
 {!noclip && <clipPath id={id+'-clip'} {...clipPath}>
-	<use xlinkHref={"#"+id}/>
+	<use href={"#"+id}/>
 </clipPath>}
 </>);
 

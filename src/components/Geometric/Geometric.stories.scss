@@ -1,0 +1,19 @@
+#hex-lattice{
+	flex-grow: 1;
+	aspect-ratio: 1/1;
+	background-color: #F00;
+	background-image: url("../../stories/assets/hexlink.svg");
+	background-size: 0.866025432568878rem 1.5rem;
+	background-position: 0 0;
+	background-repeat: repeat;
+}
+
+#tri-lattice{
+	flex-grow: 1;
+	aspect-ratio: 1/1;
+	background-color: #F00;
+	background-image: url("../../stories/assets/trilink.svg");
+	background-size: 1rem 2rem;
+	background-position: 0 0;
+	background-repeat: repeat;
+}

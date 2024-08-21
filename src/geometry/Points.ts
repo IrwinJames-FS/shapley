@@ -20,8 +20,10 @@ class Points {
 	//this is a method  to reconst
 	generator: VertexGenerator;
 	center: Point = Point.zero;
-	constructor(points: number[] | VertexGenerator) {
+	noClose: boolean
+	constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
 		this.generator = Array.isArray(points) ? bufferIterator(points): (points as VertexGenerator);
+		this.noClose = noClose;
 	}
 
 	get viewBox() {
@@ -31,8 +33,7 @@ class Points {
 
 	get aspectRatio(){
 		const [, [w, h]] = this.measure();
-		if(w > h) return `${roundNumber(w/h, 3)} / 1`;
-		return `${roundNumber(h/w, 3)} / 1`;
+		return `${roundNumber(w/h, 5)} / 1`
 	}
 
 	/**
@@ -138,7 +139,7 @@ class Points {
 			const c = d ? ' L':'M';
 			d += $d`${c} ${p}`;
 		}
-		return d+'z';
+		return d+(this.noClose ? '':'z');
 	}
 
 	

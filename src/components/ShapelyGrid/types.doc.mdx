@@ -21,7 +21,6 @@ The Shapely Grid props are used to layout the items so they can be displayed app
 export type ShapelyGridProps = {
     aspectRatio?: string;
     columns: number;
-    layout?: LayoutFn;
     cellSize: [
         number,
         number
@@ -30,7 +29,13 @@ export type ShapelyGridProps = {
     columnPrefix?: string;
     columnSuffix?: string;
     clipPath?: string;
-};
+    gap?: CSSable | [
+        CSSable,
+        CSSable
+    ];
+    layout?: ShapelyGridLayoutFn;
+    pathID?: string;
+} & PStyle;
 
 ```
 

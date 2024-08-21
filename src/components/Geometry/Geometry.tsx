@@ -21,6 +21,7 @@ const Geometry = <T extends ElementType="div">({
 	borderColor,
 	borderWidth,
 	shadow,
+	pathId,
 	style={},
 	svg:{
 		className: geometryClassName ="",
@@ -29,17 +30,18 @@ const Geometry = <T extends ElementType="div">({
 	...props
 }: PolyMorphic<GeometryProps, T>) => {
 	const El = as || "div";
-	const info = geometry?.viewInfo ?? ['0 0 1 1', '1/1']
+	const info = geometry?.viewInfo ?? ['1/1','0 0 1 1']
 	return (<El {...{
 		className:clsfy(className, 'shapely-geometric'),
 		style: {
 			...vars({
-				aspectRatio: aspectRatio ?? info[1]
+				aspectRatio: aspectRatio
 			}),
 			...style
 		},
 		...props
 	}}>
+		
 		<Geometric {...{
 			geometry, 
 			className: clsfy(geometryClassName, 'shapely-geometric-bg'),
@@ -47,7 +49,8 @@ const Geometry = <T extends ElementType="div">({
 			borderColor,
 			borderWidth,
 			shadow,
-			viewBox: viewBox ?? info[0],
+			pathId,
+			viewBox: viewBox ?? info[1],
 			...shapeProps
 		}}/>
 		{children}

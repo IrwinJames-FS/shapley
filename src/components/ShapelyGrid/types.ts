@@ -1,5 +1,4 @@
-import { Points } from "../../geometry"
-import { CSSPropertiesPlusVars } from "../types"
+import { CSSable, PStyle } from "../types"
 
 /**
  * The Shapely Grid props are used to layout the items so they can be displayed appropriately
@@ -14,11 +13,6 @@ export type ShapelyGridProps = {
 	 * The number of columns per row. 
 	 */
 	columns: number,
-
-	/**
-	 * This method provides the index of the element providing the opportunity to change gridColumnStart and gridRowStart. by default this uses the columns value to wrap the cells automatically.
-	 */
-	layout?: LayoutFn
 
 	/**
 	 * This is the number of fractional units that dimension should span in gridRowEnd and gridColumnEnd.
@@ -44,10 +38,29 @@ export type ShapelyGridProps = {
 	 * Because many of the cells bounding rectangles will overlap in a custom layout this can be used to clip the cells so they do not interfere with each others hover and click methods. 
 	 */
 	clipPath?: string
-}
 
-export type GeometriesDescriptor = {
-	id: string,
-	geometry: Points
-}
-export type LayoutFn = (index:number, size: number)=>CSSPropertiesPlusVars;
+	/**
+	 * The space between each cell
+	 * This can be descibed as a single cell or as [column, row] spacing. This will help with having matching spacing when laying out shapes with an irregular aspect ratio
+	 */
+	gap?: CSSable | [CSSable, CSSable]
+
+	/**
+	 * The layout function is used create a custom layout. if every cell is reliant on a single pathID the last argument in ShapelyGridLayoutFN tuple can be comitted.
+	 */
+	layout?: ShapelyGridLayoutFn
+
+	/**
+	 * This property provides an id to a cached shape 
+	 */
+	pathID?: string
+} & PStyle
+
+export type ShapelyGridCellProps = {
+	src: string
+	row: number
+	column: number
+	aspectRatio?: string
+} & PStyle
+
+export type ShapelyGridLayoutFn = (index: number, count: number) => [number, number] | [number, number, string]

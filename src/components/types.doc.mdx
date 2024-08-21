@@ -2,6 +2,28 @@ import { Meta } from '@storybook/blocks';
 
 <Meta title="src/components/types" />
 
+## PUnit
+`src/components/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+Most components I expect this to be used with will be capable of being a parent unit... infact all components currently require that the children can be set. I may explore alternative that dont have this requirement later.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type PUnit = {
+    children?: ReactNode;
+};
+
+```
+
 ## BaseShapelyGridProps
 `src/components/types`
 
@@ -71,6 +93,26 @@ as such the properties will be a combination of the root element type and the pr
 
 ```ts
 export type PolyMorphic<P, T extends ElementType> = PolyMorphProps<T> & P;
+
+```
+
+## CSSable
+`src/components/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+Currently these are the only types I will directly support sending to css and these are ultimately converted to a string using the standardizeValue method.
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type CSSable = string | number;
 
 ```
 

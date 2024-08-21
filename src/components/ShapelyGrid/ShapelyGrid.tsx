@@ -1,16 +1,12 @@
-import { ElementType } from "react";
+import { Children, cloneElement, ElementType, isValidElement, ReactElement, ReactNode } from "react";
 import { PolyMorphic } from "../types";
 import { ShapelyGridProps } from "./types";
-import { clsfy, vars } from "../../utilities";
+import { clsfy, standardizeValue, vars } from "../../utilities";
 import './style.scss';
+import Geometric from "../Geometric";
 
 /**
- * This component can be a bit intense because it is doing quite a bit.
- * 
- * If you are unfamiliar with CSS grids I recommend you dig into them a bit because this component relies heavily on CSS grid.
- * 
- * You might notice that this system does not force any cell to be a shape. While a clip path can be placed it will be up to developer to use a Shapely component if they choose
- * 
+ * This is the base level grid component. While the examples provided are to illustrate how this was used to build out higher level layouts this can require a lot of properties to work properly.
  */
 const ShapelyGrid = <T extends ElementType="div">({
 	as,
@@ -20,19 +16,58 @@ const ShapelyGrid = <T extends ElementType="div">({
 	columnCell='1fr',
 	columnPrefix,
 	columnSuffix,
-	children,
 	clipPath,
+	children,
+	gap,
 	aspectRatio='1/1',
-	layout= i => ({gridColumnStart: (i%columns)+1+'', gridRowStart: Math.floor(i/columns)+1+''})
+	layout=i=>[i%columns, Math.floor(i/columns), ''],
+	bgColor,
+	borderColor,
+	borderWidth,
+	shadow
 }:PolyMorphic<ShapelyGridProps, T>)=>{
 	const El = as || "div";
+	const gp = gap //if exists
+	? ( //convert to array if its not already an array
+		Array.isArray(gap) 
+		? gap
+		:[gap, gap]
+	)
+	//standardize the values with the default unit being px
+	.map(v=>standardizeValue(v))
+	//no gap in no gap out
+	: undefined;
+	//handle all geometries as an array.
 	const gridTemplateColumns = `${columnPrefix ? columnPrefix+" ":""}repeat(${columns}, ${columnCell})${columnSuffix ? " "+columnSuffix:""}`;
-	
+	const els = Children.map(children, (child: ReactElement<{className:string, children: ReactNode}>, i)=>{
+		const [column, row, t] = layout(i, columns)
+		const {props:{children, className, ...props}} = child;
+		const c = isValidElement(child) ? cloneElement(child, {
+			className: clsfy(className,'shapely-grid-cell'),
+			children: <>
+			<Geometric {...{pathId: t, bgColor, borderColor, borderWidth, shadow}} objectBounding/>
+			{children}
+			</>,
+			...props
+		}):child;
+		return <div className="shapely-grid-cell-wrapper" style={{
+			...vars({
+				clipPath: `url(${t}-clip)`,
+				column: column+1,
+				row: row + 1,
+				aspectRatio
+			})
+		}}>{c}</div>
+	})
 	return (<El {...{
 	className: clsfy(className, 'shapely-grid'),
 	style: {
 		gridTemplateColumns,
 		...vars({
+			...(gp ? {
+				columnGap: gp[0],
+				rowGap: gp[1]
+			}:{}),
 			aspectRatio,
 			columnSize: `${cellSize[0]}`,
 			rowSize: `${cellSize[1]}`,
@@ -40,7 +75,7 @@ const ShapelyGrid = <T extends ElementType="div">({
 		})
 	}
 }}>	
-	{(Array.isArray(children) ? children:[children]).map((c,i)=><div className="shapely-grid-cell" key={i} style={layout(i, columns)}>{c}</div>)}
+{els}
 </El>);
 };
 

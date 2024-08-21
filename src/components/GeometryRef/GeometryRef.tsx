@@ -13,9 +13,9 @@ const GeometryRef: FC<GeometryRefProps> = ({
 }) => (<use {...{
 	className: clsfy(className, 'shapely-geometry-ref'),
 	xlinkHref: src,
-	clipPath: `url(${src}-clip)`,
 	style: {
 		...vars({
+			clipPath: src ? `url(${src}-clip)`:undefined,
 			bgColor,
 			borderColor,
 			borderWidth,

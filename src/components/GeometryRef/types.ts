@@ -5,5 +5,5 @@ export type GeometryRefProps = Omit<ComponentPropsWithoutRef<"use">, "xlinkHref"
 	/**
 	 * Unlink xlinkHref src is required and will populate both xlinkhref as well as clip path
 	 */
-	src: string
+	src?: string
 }

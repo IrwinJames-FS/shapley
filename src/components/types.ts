@@ -1,4 +1,13 @@
 import { ReactNode, ComponentPropsWithoutRef, ElementType, CSSProperties } from "react"
+import { Points } from "../geometry"
+
+/**
+ * Most components I expect this to be used with will be capable of being a parent unit... infact all components currently require that the children can be set. I may explore alternative that dont have this requirement later.
+ * 
+ */
+export type PUnit = {
+	children?:ReactNode
+}
 
 /**
  * All of the specialized Polgyon Grids accept these base properties.
@@ -19,6 +28,7 @@ export type PStyle = {
 	shadow?: Hoverable<string>
 }
 
+
 /**
  * For now I want to support hover effects I will have to find a more extensible method as I add in more responsive controls.
  */
@@ -38,7 +48,20 @@ export type PolyMorphProps<T extends ElementType> = {
 export type PolyMorphic<P, T extends ElementType> = PolyMorphProps<T> & P;
 
 export type CSSPropertiesPlusVars = CSSProperties & {
-	[k: string]: string | number
+	[k: string]: CSSable
 }
 
+/**
+ * Currently these are the only types I will directly support sending to css and these are ultimately converted to a string using the standardizeValue method.
+ */
+export type CSSable = string | number;
+
 export type Docked<T> = (props:T)=>ReactNode
+
+export type GeometryDescriptor = {
+	pathId?: string
+	geometry?: Points
+	objectBounding?: boolean
+	aspectRatio?: string
+	viewBox?: string
+}
