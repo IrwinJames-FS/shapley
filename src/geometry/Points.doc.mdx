@@ -37,25 +37,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -68,7 +82,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -77,7 +91,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -88,6 +102,33 @@ class Points {
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
     }
+}
+
+```
+
+## 
+**AST Node Type:** *GetAccessor*
+
+#### JSDoc annotations:
+
+Returns a tuple such that the first string is the aspect ratio and the second string is a view box
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+get;
+viewInfo();
+[string, string];
+{
+    const [min, [w, h]] = this.measure();
+    return [
+        w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+        $d `${min} ${[w, h]}`
+    ];
 }
 
 ```
@@ -122,25 +163,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -153,7 +208,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -162,7 +217,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -207,25 +262,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -238,7 +307,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -247,7 +316,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -292,25 +361,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -323,7 +406,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -332,7 +415,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -379,25 +462,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -410,7 +507,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -419,7 +516,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -464,25 +561,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -495,7 +606,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -504,7 +615,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -547,25 +658,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -578,7 +703,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -587,7 +712,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -630,25 +755,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -661,7 +800,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -670,7 +809,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';
@@ -715,25 +854,39 @@ class Points {
     }
     get aspectRatio() {
         const [, [w, h]] = this.measure();
-        if (w > h)
-            return `${roundNumber(w / h, 3)} / 1`;
-        return `${roundNumber(h / w, 3)} / 1`;
+        return `${roundNumber(w / h, 5)} / 1`;
     }
-    translate(point: Point): Points {
+    get viewInfo(): [
+        string,
+        string
+    ] {
+        const [min, [w, h]] = this.measure();
+        return [
+            w > h ? `${roundNumber(w / h, 3)} / 1` : `${roundNumber(h / w, 3)} / 1`,
+            $d `${min} ${[w, h]}`
+        ];
+    }
+    public translate(point: Point): Points {
         this.center.adding(point);
         this.generator = translate(this.generator, point);
         return this;
     }
-    rotate(angle: number) {
+    public rotate(angle: number) {
         this.generator = rotate(this.generator, angle, this.center);
         return this;
     }
-    scale(scaleFactor: Point) {
+    public scale(scaleFactor: Point) {
         this.center.multiplying(scaleFactor);
         this.generator = scale(this.generator, scaleFactor);
         return this;
     }
-    round(cornerRadius: number | number[]) {
+    public normalize(bounds: Rect = this.measure()) {
+        this.center.subtracting(bounds[0]);
+        console.log(this.center);
+        this.generator = normalize(this.generator, bounds);
+        return this;
+    }
+    public round(cornerRadius: number | number[]) {
         this.generator = round(this.generator, cornerRadius);
         return this;
     }
@@ -746,7 +899,7 @@ class Points {
         this.generator = rotator;
         return this;
     }
-    measure() {
+    public measure(): Rect {
         let min = this.center;
         let max = this.center;
         for (const p of this.generator()) {
@@ -755,7 +908,7 @@ class Points {
         }
         return [min, max.subtract(min), max];
     }
-    toString() {
+    public toString() {
         let d = '';
         for (const p of this.generator()) {
             const c = d ? ' L' : 'M';

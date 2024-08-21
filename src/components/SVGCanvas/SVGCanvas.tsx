@@ -13,6 +13,7 @@ import './style.scss';
  */
 const SVGCanvas: FC<SVGCanvasProps> = ({className, defs, children, ...props}) => (<svg {...{
 	className: clsfy(className, 'shapely-svg-canvas'),
+	preserveAspectRatio: "none",
 	...props
 }}>
 	{defs && <defs>{defs}</defs>}

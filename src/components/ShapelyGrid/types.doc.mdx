@@ -1,0 +1,41 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="src/components/ShapelyGrid/types" />
+
+## ShapelyGridProps
+`src/components/ShapelyGrid/types`
+
+**AST Node Type:** *TypeAliasDeclaration*
+
+#### JSDoc annotations:
+
+The Shapely Grid props are used to layout the items so they can be displayed appropriately
+
+```bash
+
+```
+
+#### Code:
+
+```ts
+export type ShapelyGridProps = {
+    aspectRatio?: string;
+    columns: number;
+    cellSize: [
+        number,
+        number
+    ];
+    columnCell?: string;
+    columnPrefix?: string;
+    columnSuffix?: string;
+    clipPath?: string;
+    gap?: CSSable | [
+        CSSable,
+        CSSable
+    ];
+    layout?: ShapelyGridLayoutFn;
+    pathID?: string;
+} & PStyle;
+
+```
+

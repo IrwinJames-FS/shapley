@@ -10,6 +10,7 @@ import './style.scss';
  */
 const SVGCache:FC<SVGCacheProps> = ({children, className, ...props}) => (<svg {...{
 	className: clsfy(className, 'shapely-cache'),
+	
 	...props
 }}>
 	<defs>

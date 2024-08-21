@@ -7,6 +7,14 @@ import PathDefinition from "../PathDefinition";
  * @param props
  * @returns 
  */
-const GeometryDefinition: FC<GeometryDefinitionProps> = ({geometry, ...props}) => (<PathDefinition d={''+geometry} {...props}/>);
+const GeometryDefinition: FC<GeometryDefinitionProps> = ({geometry, objectBounding, ...props}) => (<PathDefinition {...{
+	d: ''+(objectBounding ? geometry.normalize():geometry),
+	options: {
+		clipPath:{
+			clipPathUnits: objectBounding ? 'objectBoundingBox':undefined,
+		}
+	},
+	...props
+}}/>);
 
 export default GeometryDefinition;

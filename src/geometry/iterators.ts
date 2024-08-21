@@ -4,7 +4,7 @@ In order to keep the rendering process as efficient as possible I will be using 
 
 import Point from "./Point";
 import RoundedCorner from "./RoundedCorner";
-import { VertexGenerator } from "./types";
+import { Rect, VertexGenerator } from "./types";
 
 
 export const bufferIterator = (points: number[]):VertexGenerator => function*() {
@@ -104,4 +104,17 @@ const rounding = (a: Point, b: Point, c: Point, cornerRadius:number | number[], 
 		a.ray(a1, cr),
 		a.ray(a2, cr)
 	]
+}
+
+/**
+ * Converts the geometry to values between 0 and 1 this is usefule for clipPaths
+ * @param generator 
+ * @param param1 
+ * @returns 
+ */
+export const normalize = (generator: VertexGenerator, [min, size]: Rect) => function*(){
+	const gen = translate(generator, min.multiplyScalar(-1))();
+	for(const p of gen){
+		yield p.divide(size);
+	}
 }

@@ -146,6 +146,7 @@ class Point extends Array<number>{
 		return new Point(this.x * n, this.y * n);
 	}
 
+	
 	/**
 	 * Divides the point by a single value.
 	 * @param n 
