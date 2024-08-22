@@ -14,6 +14,7 @@ export default {
 
 type Story = StoryObj<GeometricProps>;
 
+
 type StoryTest = StoryObj<PolyMorphic<GeometricProps, "h1">>;
 
 export const TriangleHeaderTest: StoryTest = {
