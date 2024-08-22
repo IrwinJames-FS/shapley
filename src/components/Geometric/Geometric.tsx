@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import GeometryDefinition from "../GeometryDefinition/GeometryDefinition";
+import GeometryDefinition from "../GeometryDefinition";
 import SVGCanvas from "../SVGCanvas";
 import { FC } from "react";
 import { GeometricProps } from "./types";

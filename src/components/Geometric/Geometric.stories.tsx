@@ -3,8 +3,9 @@ import { GeometricProps } from "./types";
 import Geometric from "./Geometric";
 import Preview from "../Preview";
 import { fromCircle, Points } from "../../geometry";
-import { CSSPropertiesPlusVars } from "../types";
+import { CSSPropertiesPlusVars, PolyMorphic } from "../types";
 import './Geometric.stories.scss';
+
 export default {
 	component: Geometric,
 	decorators: Preview,
@@ -14,6 +15,16 @@ export default {
 type Story = StoryObj<GeometricProps>;
 
 
+type StoryTest = StoryObj<PolyMorphic<GeometricProps, "h1">>;
+
+export const TriangleHeaderTest: StoryTest = {
+	args: {
+		as:"h1",
+		geometry: Points.fromCircle(3).round(0.1),
+		bgColor: 'rgb(28,128,248)',
+		borderColor: "#000",
+	}
+}
 
 export const TriangleLattice: Story = {
 	args: {

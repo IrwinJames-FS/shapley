@@ -1,8 +1,6 @@
 .shapely-grid{
 	color: #000;
 	display: grid;
-	align-content: start;
-	align-items: start;
 	column-gap: var(--column-gap, 0);
 	row-gap: var(--row-gap, 0);
 	.shapely-grid-cell-wrapper{

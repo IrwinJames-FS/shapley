@@ -8,9 +8,6 @@ import { PathDefinitionProps } from "./types";
  * 
  * 
  * it is important to note that the id provided will be reused to identify multiple components. For example this component creates both a path and clip path using the provided path commands. the id for the clip path is <id>-clip. In the future masks and feEffects may be added 
- * 
- * @param param0 
- * @returns 
  */
 const PathDefinition: FC<PathDefinitionProps> = ({
 	noclip,

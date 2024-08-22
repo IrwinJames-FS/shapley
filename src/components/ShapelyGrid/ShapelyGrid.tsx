@@ -24,7 +24,10 @@ const ShapelyGrid = <T extends ElementType="div">({
 	bgColor,
 	borderColor,
 	borderWidth,
-	shadow
+	shadow,
+	row: gridAutoRows,
+	style={},
+	...props
 }:PolyMorphic<ShapelyGridProps, T>)=>{
 	const El = as || "div";
 	const gp = gap //if exists
@@ -63,6 +66,7 @@ const ShapelyGrid = <T extends ElementType="div">({
 	className: clsfy(className, 'shapely-grid'),
 	style: {
 		gridTemplateColumns,
+		gridAutoRows,
 		...vars({
 			...(gp ? {
 				columnGap: gp[0],
@@ -71,9 +75,12 @@ const ShapelyGrid = <T extends ElementType="div">({
 			aspectRatio,
 			columnSize: `${cellSize[0]}`,
 			rowSize: `${cellSize[1]}`,
-			clipPath
-		})
-	}
+			clipPath,
+			
+		}),
+		...style
+	},
+	...props
 }}>	
 {els}
 </El>);

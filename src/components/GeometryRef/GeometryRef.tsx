@@ -2,6 +2,7 @@ import { FC } from "react";
 import { GeometryRefProps } from "./types";
 import { clsfy, vars } from "../../utilities";
 import './style.scss';
+
 const GeometryRef: FC<GeometryRefProps> = ({
 	className,
 	bgColor,

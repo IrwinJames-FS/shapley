@@ -5,7 +5,7 @@ import ShapelyGrid from "./ShapelyGrid";
 import { Points } from "../../geometry";
 import SVGCache from "../SVGCache/SVGCache";
 import PolygonDefinition from "../PolygonDefinition";
-import { background } from "storybook/internal/theming";
+import GeometryDefinition from "../GeometryDefinition";
 
 type ShapelyGridComponentProps = PolyMorphic<ShapelyGridProps, "div">
 export default {
@@ -15,8 +15,10 @@ export default {
 	},
 	decorators: Story=>(<>
 	<SVGCache>
-		<PolygonDefinition id="triangle-odd" sides={3} rotation={180} objectBounding/>
-		<PolygonDefinition id="triangle-even" sides={3} rotation={0} objectBounding/>
+		<GeometryDefinition id="triangle-odd" geometry={Points.fromCircle(3, Math.PI).round(0.05)} objectBounding/>
+		<PolygonDefinition id="triangle-even" sides={3} rotation={0} cornerRadius={0.05} objectBounding/>
+		<PolygonDefinition id="diamond" sides={4} objectBounding/>
+		<PolygonDefinition id="hexagon" sides={6} rotation={30} objectBounding/>
 	</SVGCache>
 	<Story/>
 	</>),
@@ -58,14 +60,54 @@ export const TriangleGrid: Story = {
 		gap: [10, 5],
 		bgColor: 'rgb(28,128,248)',
 		borderColor: '#000',
-		borderWidth: 0.05,
+		borderWidth: 0.1,
 		shadow: '0 0 4px #000',
-		children: new Array(180).fill(<h1>Hello</h1>),
+		children: new Array(180).fill(<div>Hello</div>),
 		layout: (i, c)=>{
 			const x = i%c;
 			const y = Math.floor(i/c);
 			return [x, y, (x+y)%2 ? '#triangle-even':'#triangle-odd']
 		}
 		
+	}
+}
+
+export const DiamondGrid: Story = {
+	args: {
+		columns: TriangleColumns,
+		columnCell: '1fr',
+		columnSuffix: '1fr',
+		cellSize: [2, 2],
+		aspectRatio: '1/1',
+		gap: [10, 5],
+		bgColor: 'rgb(28,128,248)',
+		borderColor: "#000",
+		borderWidth: 0.05,
+		shadow: '0 0 4px #000',
+		children: new Array(180).fill(<h1>Diamonds</h1>),
+		layout: (i,c)=>{
+			const x = i%c;
+			return [x, Math.floor(i/c)*2+((x+1)%2), '#diamond']
+		}
+	}
+}
+
+export const HexagonGrid: Story = {
+	args: {
+		columns: TriangleColumns,
+		columnCell: '1fr 2fr',
+		columnSuffix: '1fr',
+		cellSize: [3, 2],
+		aspectRatio: Points.fromCircle(6, Math.PI/6).aspectRatio,
+		gap: 5,
+		bgColor: 'rgb(28,128,248)',
+		borderColor: "#000",
+		borderWidth: 0.05,
+		shadow: '0 0 4px #000',
+		children: new Array(180).fill(<h1>Diamonds</h1>),
+		layout: (i,c)=>{
+			const x = i%c;
+			return [x*2, Math.floor(i/c)*2+((x+1)%2), '#hexagon']
+		}
 	}
 }
