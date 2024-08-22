@@ -1,3 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.433012716284439 -0.75 0.866025432568878 1.5" preserveAspectRatio="xMinYMin meet">
-<path d="M 0, -0.75 L 0, -0.5 L -0.43301, -0.25 L -0.43301, 0.25 L 0, 0.5 L 0, 0.75 L 0, 0.5 L 0.43301, 0.25 L 0.43301, -0.25 L 0, -0.5" stroke="#000" stroke-width="0.1" fill="transparent"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-43 -75 86 150" preserveAspectRatio="xMinYMin meet">
+	<path d="M 0, -75 L 0, -50 L -43, -25 L -43, 25 L 0, 50 L 0, 75 L 0, 50 L 43, 25 L 43, -25 L 0, -50" stroke="#FFF" stroke-width="1" fill="none"/>
 </svg>

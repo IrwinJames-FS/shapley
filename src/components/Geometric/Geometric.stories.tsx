@@ -13,6 +13,8 @@ export default {
 
 type Story = StoryObj<GeometricProps>;
 
+
+
 export const TriangleLattice: Story = {
 	args: {
 		geometry: new Points([
