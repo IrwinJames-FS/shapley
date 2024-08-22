@@ -1,15 +1,12 @@
 import { FC } from "react";
 import { SVGCanvasProps } from "./types";
 import { clsfy } from "../../utilities";
+
 import './style.scss';
 /**
- * The SVG canvas is basically just an SVG element. 
+ * The SVGCanvas is an SVG element that does not preserveAspectRatio. 
  * 
- * I will use this to set defaults if I need to.
- * 
- * Also I am separating the defs and children in the even paths are being loaded from a resource. 
- * @param props
- * @returns 
+ * The reason for this being it expects its content to preserve the aspect ratio. this allows for a cleaner implementation of objectBoundingUnits.  
  */
 const SVGCanvas: FC<SVGCanvasProps> = ({className, defs, children, ...props}) => (<svg {...{
 	className: clsfy(className, 'shapely-svg-canvas'),
