@@ -54,6 +54,11 @@ export type ShapelyGridProps = {
 	 * This property provides an id to a cached shape 
 	 */
 	pathID?: string
+
+	/**
+	 * A pattern to be used in the row auto property
+	 */
+	row?: string
 } & PStyle
 
 export type ShapelyGridCellProps = {

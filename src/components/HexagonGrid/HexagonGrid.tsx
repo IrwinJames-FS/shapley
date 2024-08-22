@@ -1,17 +1,18 @@
 import { ElementType, ReactNode } from "react";
 import { PolyMorphic } from "../types";
-import { DiamondGridProps } from "./types";
+import { HexagonGridProps } from "./types";
 import ShapelyGrid from "../ShapelyGrid";
 import { v4 } from "uuid";
 import SVGCache from "../SVGCache";
 import PolygonDefinition from "../PolygonDefinition";
 
-const DiamondGrid = <T extends ElementType = "div">({
+const HexagonGrid = <T extends ElementType = "div">({
 	as: el,
 	geometry,
 	cornerRadius,
+	horizontal,
 	...props
-}:PolyMorphic<DiamondGridProps, T>) => {
+}:PolyMorphic<HexagonGridProps, T>) => {
 	let geo = geometry ?? '';
 	let cache: ReactNode = undefined;
 	if(!geometry){
@@ -19,7 +20,7 @@ const DiamondGrid = <T extends ElementType = "div">({
 		geo = '#'+id;
 		cache = <SVGCache>
 			
-			<PolygonDefinition id={id} sides={4} cornerRadius={cornerRadius} objectBounding/>
+			<PolygonDefinition id={id} sides={6} rotation={horizontal ? 30:0} cornerRadius={cornerRadius} objectBounding/>
 		</SVGCache>
 
 	}
@@ -27,18 +28,21 @@ const DiamondGrid = <T extends ElementType = "div">({
 		{cache}
 		<ShapelyGrid {...{
 			as: el || "div",
-			cellSize: [2,2],
-			columnCell: '1fr',
+			cellSize: horizontal ? [3,2]:[2,3],
+			columnCell: horizontal ? '1fr 2fr':'1fr',
 			columnSuffix: '1fr',
-			aspectRatio: '1 / 1',
+			aspectRatio: '1.1547 / 1',
+			row: horizontal ? '1fr' : '1fr 2fr',
 			layout: (i, c) => {
 				const x = i%c;
 				const y = Math.floor(i/c);
-				return [x, y*2+(1+x)%2, geo];
+				return horizontal 
+				? [x*2, y*2+((1+x)%2), geo]
+				: [x, y*4+(((1+x)%2)*2), geo];
 			},
 			...props
 		}}/>
 	</>)
 };
 
-export default DiamondGrid;
+export default HexagonGrid;
