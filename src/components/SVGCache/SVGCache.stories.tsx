@@ -7,8 +7,17 @@ import Preview from "../Preview";
 import { Points } from "../../geometry";
 import GeometryDefinition from "../GeometryDefinition";
 
+/**
+ * These properties are not part of the component
+ */
 type CachePreviewProps = {
+	/**
+	 * (Not part of component props)
+	 */
 	count: number,
+	/**
+	 * (Not part of component props)
+	 */
 	speeds: Rotations
 }
 const ids = ["triangle-shape", "diamond-shape", "pentagon-shape", "hexagon-shape", "heptagon-shape", "octagon-shape"];
@@ -29,7 +38,7 @@ export default {
 			for(let i = 0; i<count; i++){
 				for(let j = 0; j<6; j++){
 					arr.push(<Geometric {...{
-						src: '#'+ids[j],
+						pathId: '#'+ids[j],
 						viewBox: infos[j][1],
 						
 						bgColor: colors[j],
@@ -48,7 +57,6 @@ export default {
 		useEffect(()=>{
 			let id:number = -1;
 			const draw = ()=>{
-				console.log("drawing");
 				setRotations(rots=>rots.map((r,i)=>r+speeds[i]*0.01) as Rotations)
 				id = requestAnimationFrame(draw);
 			}
@@ -74,6 +82,9 @@ type Story = StoryObj<CachePreviewProps>;
  */
 export const Shapes:Story = {
 	args: {
+		/**
+		 * (Not part of the component props)
+		 */
 		count: 10,
 		speeds: new Array(6).fill(1).map(()=>Math.random()) as Rotations
 	}
