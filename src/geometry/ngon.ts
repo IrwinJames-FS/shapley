@@ -1,4 +1,4 @@
-import { limitDecimal } from "./arithmetic";
+import { round } from "./arithmetic";
 import Point from "./Point";
 import RoundedCorner from "./RoundedCorner";
 
@@ -17,7 +17,7 @@ export const $d = (strings: TemplateStringsArray, ...args: DArg[]): string => st
 	if(i>=args.length || args[i] === undefined) return o+v;
 	if((args[i] instanceof Point) || (args[i] instanceof RoundedCorner)) return o+v+args[i]
 	//all arrays will only use the first two points until I encounter a use case for anything else.
-	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>limitDecimal(v, 5)).join(', ');
-	return o+v+(typeof args[i] === 'string' ? args[i]:limitDecimal(args[i], 5));
+	if(Array.isArray(args[i])) return o+v+args[i].slice(0,2).map(v=>round(v, 5)).join(', ');
+	return o+v+(typeof args[i] === 'string' ? args[i]:round(args[i], 5));
 }, '');
 

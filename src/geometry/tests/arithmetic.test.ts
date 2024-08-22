@@ -1,10 +1,6 @@
-import { limitDecimal, round, toDeg, toRad } from "../arithmetic";
+import { round, toDeg, toRad } from "../arithmetic";
 
 describe("Test the methods provided by arithmetic", ()=>{
-	test("Test the limit decimal method", ()=>{
-		const a = 0.0123456789;
-		expect(limitDecimal(a, 0)).toBe('0');
-	});
 
 	test("Test the round method", ()=>{
 		const a = 0.0123456789;

@@ -1,13 +1,8 @@
-
-
-export const limitDecimal = (num: number, limit: number) => {
-	return ''+round(num, limit);
-};
-
 /**
  * I dont like the limit decimal method this forces conversion to string rather then just dropping precision
- * @param num 
- * @param limit 
+ * @param {number} num 
+ * @param {number} limit 
+ * @return {number}
  */
 export const round = (num: number, limit: number) => {
 	if(!limit) return Math.round(num);
@@ -17,7 +12,7 @@ export const round = (num: number, limit: number) => {
 
 /**
  * Convert radians to degress
- * @param rad 
+ * @param {number} rad 
  * @returns 
  */
 export const toDeg = (rad: number):number => rad * 180/Math.PI;

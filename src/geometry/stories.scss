@@ -1,0 +1,10 @@
+$border: 1px solid #000;
+table.result-table {
+	border-collapse: collapse;
+	&, th, td {
+		border: $border;
+	}
+	td {
+		padding: 1rem;
+	}
+}
