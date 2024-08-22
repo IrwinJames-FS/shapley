@@ -6,18 +6,16 @@ import Geometric from "../Geometric";
 import Preview from "../Preview";
 import { Points } from "../../geometry";
 import GeometryDefinition from "../GeometryDefinition";
+import { CachePreviewProps, PreviewRotations } from "./types";
 
-type CachePreviewProps = {
-	count: number,
-	speeds: Rotations
-}
+
 const ids = ["triangle-shape", "diamond-shape", "pentagon-shape", "hexagon-shape", "heptagon-shape", "octagon-shape"];
-type Rotations = [number, number, number, number, number, number];
+
 export default {
 	decorators: Preview,
 	tags: ['autodocs'],
 	render: ({count, speeds}) => {
-		const [rotations, setRotations] = useState<Rotations>([0,0,0,0,0,0]);
+		const [rotations, setRotations] = useState<PreviewRotations>([0,0,0,0,0,0]);
 		
 		const geometries = useMemo<Points[]>(()=>rotations.map((r,i)=>Points.fromCircle(i+3, Math.PI+r)), [rotations]);
 		
@@ -29,7 +27,7 @@ export default {
 			for(let i = 0; i<count; i++){
 				for(let j = 0; j<6; j++){
 					arr.push(<Geometric {...{
-						src: '#'+ids[j],
+						pathId: '#'+ids[j],
 						viewBox: infos[j][1],
 						
 						bgColor: colors[j],
@@ -48,8 +46,7 @@ export default {
 		useEffect(()=>{
 			let id:number = -1;
 			const draw = ()=>{
-				console.log("drawing");
-				setRotations(rots=>rots.map((r,i)=>r+speeds[i]*0.01) as Rotations)
+				setRotations(rots=>rots.map((r,i)=>r+speeds[i]*0.01) as PreviewRotations)
 				id = requestAnimationFrame(draw);
 			}
 			draw();
@@ -74,7 +71,10 @@ type Story = StoryObj<CachePreviewProps>;
  */
 export const Shapes:Story = {
 	args: {
+		/**
+		 * (Not part of the component props)
+		 */
 		count: 10,
-		speeds: new Array(6).fill(1).map(()=>Math.random()) as Rotations
+		speeds: new Array(6).fill(1).map(()=>Math.random()) as PreviewRotations
 	}
 }

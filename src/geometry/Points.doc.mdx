@@ -28,8 +28,10 @@ Points uses generator methods to append actions to an iteration reducing the num
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -97,7 +99,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -154,8 +156,10 @@ Translate all points by a new position. This is effectively adding the new point
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -223,7 +227,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -253,8 +257,10 @@ Rotates the points around a point by a specified radian
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -322,7 +328,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -352,8 +358,10 @@ Scales the point by two a scale Factor Point
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -421,7 +429,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -453,8 +461,10 @@ If you are rounding and unrounding points the shift of point order will be impor
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -522,7 +532,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -552,8 +562,10 @@ Scale by a single scale factor
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -621,7 +633,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -649,8 +661,10 @@ Measure the current generator
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -718,7 +732,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -746,8 +760,10 @@ Representing points as a string will result in the path commands being generated
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -815,7 +831,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
@@ -845,8 +861,10 @@ Generates points by picking points around a circle.
 class Points {
     generator: VertexGenerator;
     center: Point = Point.zero;
-    constructor(points: number[] | VertexGenerator) {
+    noClose: boolean;
+    constructor(points: number[] | VertexGenerator, noClose: boolean = false) {
         this.generator = Array.isArray(points) ? bufferIterator(points) : (points as VertexGenerator);
+        this.noClose = noClose;
     }
     get viewBox() {
         const [min, size] = this.measure();
@@ -914,7 +932,7 @@ class Points {
             const c = d ? ' L' : 'M';
             d += $d `${c} ${p}`;
         }
-        return d + 'z';
+        return d + (this.noClose ? '' : 'z');
     }
     public static fromCircle(stops: number, rotation: number = 0, center: Point = Point.zero) {
         return new Points(fromCircle(stops, rotation, center));
