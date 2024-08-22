@@ -5,7 +5,7 @@ import SVGCache from "./SVGCache";
 import Geometric from "../Geometric";
 import Preview from "../Preview";
 import { Points } from "../../geometry";
-import GeometryDefinition from "../GeometryDefinition/GeometryDefinition";
+import GeometryDefinition from "../GeometryDefinition";
 
 type CachePreviewProps = {
 	count: number,

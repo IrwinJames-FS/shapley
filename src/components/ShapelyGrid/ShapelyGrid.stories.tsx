@@ -5,7 +5,7 @@ import ShapelyGrid from "./ShapelyGrid";
 import { Points } from "../../geometry";
 import SVGCache from "../SVGCache/SVGCache";
 import PolygonDefinition from "../PolygonDefinition";
-import GeometryDefinition from "../GeometryDefinition/GeometryDefinition";
+import GeometryDefinition from "../GeometryDefinition";
 
 type ShapelyGridComponentProps = PolyMorphic<ShapelyGridProps, "div">
 export default {

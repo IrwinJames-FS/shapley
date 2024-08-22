@@ -1,9 +1,9 @@
 import { ElementType, ReactNode } from "react";
 import { PolyMorphic } from "../types";
 import { TriangleGridProps } from "./types";
-import ShapelyGrid from "../ShapelyGrid/ShapelyGrid";
+import ShapelyGrid from "../ShapelyGrid";
 import { v4 } from "uuid";
-import SVGCache from "../SVGCache/SVGCache";
+import SVGCache from "../SVGCache";
 import PolygonDefinition from "../PolygonDefinition";
 
 const TriangleGrid = <T extends ElementType = "div">({

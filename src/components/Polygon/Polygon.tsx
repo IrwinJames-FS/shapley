@@ -1,7 +1,7 @@
 import { ElementType } from "react";
 import { PolyMorphic } from "../types";
 import { PolygonProps } from "./types";
-import Geometry from "../Geometry/Geometry";
+import Geometry from "../Geometry";
 import { Points, toRad } from "../../geometry";
 
 /**
