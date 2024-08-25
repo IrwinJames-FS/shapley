@@ -5,10 +5,11 @@ import RoundedCorner from "./RoundedCorner";
 type DArg = string | number | number[] | Point | RoundedCorner | undefined;
 
 /**
- * @private
  * This template array method simplifies the path creation process by adding additional support for numbers and arrays of numbers. 
  * 
- * to Fixed is pegged at 5 this is to prevent differences between server side and client side calculations as node seems to have a higher precision by default. 
+ * This method accepts strings, numbers, number arrays, Point and RoundedCorner types. Arrays will only use the first two values. Point and RoundedCorner have special toString methods which are utilized to add support here. 
+ * 
+ * @todo Update the DArg value to accept a generic type that has a toString method instead of a Point or RoundedCorner method this will allow other drawing classes to be implemented in later iterations.
  * @param strings 
  * @param args 
  * @returns 

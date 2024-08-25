@@ -6,12 +6,23 @@ import Point from "./Point";
 import RoundedCorner from "./RoundedCorner";
 import { Rect, VertexGenerator } from "./types";
 
-
+/**
+ * The buffer iterator takes a flate array of numbers and iterates over them by units of two using each two units as an x and y coordinate value.
+ * @param points 
+ * @returns 
+ */
 export const bufferIterator = (points: number[]):VertexGenerator => function*() {
 	if(points.length % 2) throw new Error("Invalid buffer size");
 	for(let i = 0; i<points.length; i+=2) yield new Point(points[i], points[i+1]);
 }
 
+/**
+ * Creates a generator that provides x and y values for points around a 1x1 circle with (0, 0) being the center.
+ * @param stops 
+ * @param rotation 
+ * @param center 
+ * @returns 
+ */
 export const fromCircle = (stops: number, rotation: number=0, center: Point = Point.zero): VertexGenerator => function*(){
 	if(!stops) throw new Error("At least two stop must be requested");
 	if(stops < 3) console.warn("The smallest polygon typically has 3 sides");
@@ -96,6 +107,17 @@ export const rounded = (gen: VertexGenerator, cornerRadius: number | number[]): 
 	yield new RoundedCorner(fs, first, fe);
 }
 
+/**
+ * Rounding is a utility function used by *rounded()* This method uses the corner radius provides and three points to determine the angle from *a* that needs to be used to cast start and end values for a quadradic curve. 
+ * 
+ * The limitation of this rounding method is it is ignorant to other mutations caused by rounding so if the length of two neighboring corner radius' points exceeds the length of the common side an overlapping effect will be created.
+ * @param a 
+ * @param b 
+ * @param c 
+ * @param cornerRadius 
+ * @param i 
+ * @returns 
+ */
 const rounding = (a: Point, b: Point, c: Point, cornerRadius:number | number[], i: number) => {
 	const cr:number = Array.isArray(cornerRadius) ? (cornerRadius as number[])[i] ?? 0:cornerRadius;
 	const {angle: a1} = a.to(b);

@@ -7,6 +7,7 @@ import { CSSPropertiesPlusVars } from "../types";
 import './Geometric.stories.scss';
 
 export default {
+	title: "Components/Geometric",
 	component: Geometric,
 	decorators: Preview,
 	tags: ['autodocs']
