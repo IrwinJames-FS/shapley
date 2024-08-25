@@ -62,7 +62,7 @@ export const scale = (gen: VertexGenerator, scaleFactor: Point): VertexGenerator
  * @param cornerRadius 
  * @returns 
  */
-export const round = (gen: VertexGenerator, cornerRadius: number | number[]): VertexGenerator => function*(){
+export const rounded = (gen: VertexGenerator, cornerRadius: number | number[]): VertexGenerator => function*(){
 	const generator = gen();
 	let cursor = generator.next();
 	let a = cursor.value;

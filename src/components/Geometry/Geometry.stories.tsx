@@ -12,6 +12,9 @@ export default {
 
 type Story = StoryObj<GeometryProps>;
 
+/**
+ * I made a heart!!!
+ */
 export const Heart: Story = {
 	args: {
 		geometry: new Points([

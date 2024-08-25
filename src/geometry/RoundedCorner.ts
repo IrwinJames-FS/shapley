@@ -17,6 +17,7 @@ class RoundedCorner extends Array<number> {
 	get ey(){return this[5]}
 	set ey(n: number){this[5] = n}
 
+	get control(){return new Point(this.x, this.y);}
 	constructor([sx, sy]: SupportedPointMathTypes, [x,y]: SupportedPointMathTypes, [ex, ey]: SupportedPointMathTypes){
 		super(x, y, sx, sy, ex,ey)
 	}
@@ -71,6 +72,7 @@ class RoundedCorner extends Array<number> {
 	}
 
 	toString(){ return `${Point.toString([this.sx, this.sy])} Q ${Point.toString([this.x, this.y])} ${Point.toString([this.ex, this.ey])}`;}
+	toArray(){ return [this.x, this.y, this.sx, this.sy, this.ex, this.ey] }
 }
 
 export default RoundedCorner;

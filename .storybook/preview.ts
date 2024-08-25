@@ -12,3 +12,7 @@ const preview: Preview = {
 };
 
 export default preview;
+
+export const onStorybookInit = () => {
+  console.log("Initializing");
+};

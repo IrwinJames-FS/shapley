@@ -1,8 +1,9 @@
-import { bufferIterator, fromCircle, normalize, rotate, round, scale, translate } from "./iterators";
+import { bufferIterator, fromCircle, normalize, rotate, rounded, scale, translate } from "./iterators";
 import { $d } from "./ngon";
 import Point from "./Point";
 import { round as roundNumber } from './arithmetic';
 import { Rect, VertexGenerator } from "./types";
+import RoundedCorner from "./RoundedCorner";
 
 
 /**
@@ -96,7 +97,7 @@ class Points {
 	 * @param cornerRadius 
 	 */
 	public round(cornerRadius: number | number[]){
-		this.generator = round(this.generator, cornerRadius);
+		this.generator = rounded(this.generator, cornerRadius);
 		return this;
 	}
 
@@ -129,6 +130,13 @@ class Points {
 		return [min, max.subtract(min), max];
 	}
 
+	public toArray(){
+		const array: (Point | RoundedCorner)[] = [];
+		for(const point of this.generator()){
+			array.push(point);
+		}
+		return array;
+	}
 	/**
 	 * Representing points as a string will result in the path commands being generated.
 	 * @returns 

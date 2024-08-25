@@ -215,6 +215,8 @@ class Point extends Array<number>{
 	}
 
 	toString():string { return Point.toString(this)}
+
+	toArray(){return [this.x, this.y]}
 	//Static methods
 
 	

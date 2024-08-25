@@ -3,7 +3,7 @@ import { GeometricProps } from "./types";
 import Geometric from "./Geometric";
 import Preview from "../Preview";
 import { fromCircle, Points } from "../../geometry";
-import { CSSPropertiesPlusVars, PolyMorphic } from "../types";
+import { CSSPropertiesPlusVars } from "../types";
 import './Geometric.stories.scss';
 
 export default {
@@ -15,17 +15,9 @@ export default {
 type Story = StoryObj<GeometricProps>;
 
 
-type StoryTest = StoryObj<PolyMorphic<GeometricProps, "h1">>;
-
-export const TriangleHeaderTest: StoryTest = {
-	args: {
-		as:"h1",
-		geometry: Points.fromCircle(3).round(0.1),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-	}
-}
-
+/** 
+ * This is an attempt to create a repeating lattice pattern using triangles. Or rather creating a minimal sized image that can be repeated.
+*/
 export const TriangleLattice: Story = {
 	args: {
 		geometry: new Points([
@@ -50,7 +42,9 @@ export const TriangleLattice: Story = {
 		} as CSSPropertiesPlusVars,
 	}
 }
-
+/**
+ * Using the lattice generated in the previous story heres the repeating resul
+ */
 export const TriLatticeResult: Story = {
 	render: ()=>{
 		return (<div id="tri-lattice"></div>)
@@ -93,6 +87,7 @@ export const HexLatticeResult: Story = {
 		return (<div id="hex-lattice"></div>)
 	}
 }
+
 
 export const Logo: Story = {
 	args: {
