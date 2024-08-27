@@ -1,0 +1,30 @@
+:root {
+	--ts-doc-primary-blue: rgb(28,128,248);
+	--ts-doc-primary-purple: #7B2CBF;
+	--ts-doc-primary-green: #5CB85C;
+	--ts-doc-primary-red: #FF0F0F;
+}
+
+
+.declaration-text {
+	color: var(--ts-doc-primary-blue);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
+.type-param-name {
+	color: var(--ts-doc-primary-purple);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
+.default-equals {
+	color: var(--ts-doc-primary-green);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
+.required:after{
+	content: "*";
+	color: var(--ts-doc-primary-red);
+}

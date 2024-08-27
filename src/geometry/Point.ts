@@ -232,6 +232,12 @@ class Point extends Array<number>{
 		return new Point(x, y);
 	}
 
+	/**
+	 * With the two string method also being applicable to arrays this can replicate the Point toString functionality on other array types assuming the first two elements are the x and y coordinates. 
+	 * @param param0 
+	 * @param prec 
+	 * @returns 
+	 */
 	static toString([x, y]: SupportedPointMathTypes, prec:number = 5):string {
 		return `${round(x, prec)}, ${round(y, prec)}`
 	}

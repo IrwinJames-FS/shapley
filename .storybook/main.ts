@@ -1,5 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-vite";
-import docerizer from "./docerizer";
+import tsDocument from "./tsDocument";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)", "../docs/**/*.mdx"],
@@ -18,7 +18,7 @@ const config: StorybookConfig = {
     reactDocgenTypescriptOptions: {}
   },
   viteFinal: async (config) => {
-    await docerizer();
+    tsDocument();
     return config;
   },
   staticDirs: ['../public']
