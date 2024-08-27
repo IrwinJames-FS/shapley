@@ -1,20 +1,13 @@
 import type { StorybookConfig } from "@storybook/react-vite";
+import tsDocument from "./tsDocument";
 
 const config: StorybookConfig = {
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)", "../docs/**/*.mdx"],
   addons: [
-    "@storybook/addon-onboarding",
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
-    {
-      name: 'storybook-addon-jsdoc-to-mdx',
-      options: {
-        folderPaths: ['./src/'], // paths to folders with JS/TS code
-        extensions: ['ts'] // file extensions to include
-      }
-    }
   ],
   framework: {
     name: "@storybook/react-vite",
@@ -24,6 +17,10 @@ const config: StorybookConfig = {
     reactDocgen: 'react-docgen-typescript',
     reactDocgenTypescriptOptions: {}
   },
-  
+  viteFinal: async (config) => {
+    tsDocument();
+    return config;
+  },
+  staticDirs: ['../public']
 };
 export default config;

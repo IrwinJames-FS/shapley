@@ -8,19 +8,25 @@ const GeometryRef: FC<GeometryRefProps> = ({
 	bgColor,
 	borderColor,
 	borderWidth,
+	fill,
+	stroke,
+	strokeWidth,
 	src,
 	style={},
 	...props
 }) => (<use {...{
 	className: clsfy(className, 'shapely-geometry-ref'),
-	xlinkHref: src,
+	href: src,
 	style: {
 		...vars({
-			clipPath: src ? `url(${src}-clip)`:undefined,
 			bgColor,
 			borderColor,
 			borderWidth,
 		}, ['', 'hover-']),
+		fill,
+		stroke,
+		strokeWidth,
+		clipPath: src ? `url(${src}-clip)`:undefined,
 		...style
 	},
 	...props

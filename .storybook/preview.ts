@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-
+import './story.style.css';
 const preview: Preview = {
   parameters: {
     controls: {
@@ -12,3 +12,7 @@ const preview: Preview = {
 };
 
 export default preview;
+
+export const onStorybookInit = () => {
+  console.log("Initializing");
+};

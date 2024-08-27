@@ -31,7 +31,6 @@ const Geometric: FC<GeometricProps> = ({
 	: geometry 
 	? '#'+id
 	:undefined; //use the source if its provided other wise use an id only if a geometry for that id is provided
-	console.log(src);
 	return (<SVGCanvas {...{
 		className: clsfy(className, 'shapely-geometry'),
 		viewBox: objectBounding 
@@ -53,7 +52,7 @@ const Geometric: FC<GeometricProps> = ({
 		</>):undefined,
 		...props
 	}}>
-		{multiple ? geometry.map((_, i)=><GeometryRef {...{
+		{multiple ? geometry.map((_, i)=><GeometryRef key={i} {...{
 			src:src+'-'+i,
 			bgColor,
 			borderColor,

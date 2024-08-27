@@ -1,5 +1,5 @@
 export * from "./arithmetic";
-export * from './iterators';
+export * from "./iterators";
 export * from './ngon';
 export * from './types';
 export { default as Points } from './Points';

@@ -15,12 +15,11 @@ export type Vector = [number, number, number];
  */
 export type Rect = [Point, Point, Point];
 
-export type Ngon = [
-	string, //aspect ratio
-	string, //the viewbox that will be used
-	string, //path command for the background
-]
-
+/**
+ * The vertex generator is a method that returns a Generator method or an IteratableIterator.
+ * 
+ * The generator it returns should always return a Point or RoundedCorner method. 
+ */
 export type VertexGenerator = ()=>Generator<Point | RoundedCorner>
 
 /**

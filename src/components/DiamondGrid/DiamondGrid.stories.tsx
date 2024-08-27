@@ -12,6 +12,11 @@ export default {
 
 type Story = StoryObj<Props>;
 
+/**
+ * The diamond grid is nice for custom shapes as it provides a lot of surface area in a less then linear manner.
+ * 
+ * Does this trigger hmr.
+ */
 export const DiamondGridExample: Story = {
 	args: {
 		columns: 9,

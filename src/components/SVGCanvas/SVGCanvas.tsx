@@ -9,6 +9,7 @@ import './style.scss';
  * The reason for this being it expects its content to preserve the aspect ratio. this allows for a cleaner implementation of objectBoundingUnits.  
  */
 const SVGCanvas: FC<SVGCanvasProps> = ({className, defs, children, ...props}) => (<svg {...{
+	xmlns:"http://www.w3.org/2000/svg",
 	className: clsfy(className, 'shapely-svg-canvas'),
 	preserveAspectRatio: "none",
 	...props
