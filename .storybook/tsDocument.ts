@@ -7,14 +7,13 @@ import fs from "fs";
 const tsDocument = () => {
 	replaceDocs();
 	const project = new Project();
+	
 	project.addSourceFilesAtPaths(path.join(__src, '**/*.ts'));
 	project.getSourceFiles().forEach(file=>{
 		if(file.getFilePath().endsWith('.test.ts')) return;
 		const src = new tsSourceFile(file);
-		const doc = ''+src;
-		if(doc) fs.writeFileSync(path.join(__docs, src.docPath), doc);
-		
-	})
+		src.save();
+	});
 }
 
 export default tsDocument;

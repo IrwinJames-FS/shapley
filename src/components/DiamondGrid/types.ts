@@ -1,8 +1,11 @@
 import { CSSable, PStyle } from "../types";
 
+/**
+ * The Diamond Grid props explain to the component how it should layout each cell.
+ */
 export type DiamondGridProps = {
 	/**
-	 * The number of columns in each row.
+	 * The number of columns in each row..
 	 */
 	columns: number
 	/**

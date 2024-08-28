@@ -1,8 +1,11 @@
 import { Node, SourceFile, SyntaxKind as SK, ScriptTarget, ScriptKind, NameableNode } from "ts-morph";
-import { __src } from "./constants";
+import { __src, __docs } from "./constants";
 import { $code, $dec, $h } from "./tsDecs";
 import { TSDocNode } from "./types";
 import { createPrinter, createSourceFile } from "typescript";
+import fs from 'fs';
+import path from "path";
+
 
 export class tsSourceFile {
 	file: SourceFile
@@ -62,6 +65,13 @@ ${doc}
 
 		${kind === SK.ClassDeclaration ? '':$code(code)}
 		`;
+	}
+
+	save(){
+		const doc = this.toString();
+		if(!doc) return false;
+		fs.writeFileSync(path.join(__docs, this.docPath), doc);
+		return true;
 	}
 }
 
