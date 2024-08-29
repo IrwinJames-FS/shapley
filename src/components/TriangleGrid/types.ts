@@ -1,4 +1,4 @@
-import { CSSable, PStyle } from "../types"
+import { CSSNumeric, PStyle } from "../types"
 
 export type TriangleGridProps = {
 	/**
@@ -19,7 +19,7 @@ export type TriangleGridProps = {
 	/**
 	 * The gap to be used in the row and column gaps.
 	 */
-	gap?: CSSable | [CSSable, CSSable]
+	gap?: CSSNumeric | [CSSNumeric, CSSNumeric]
 
 	/**
 	 * Render the horizontal variation of this grid.

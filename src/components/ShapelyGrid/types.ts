@@ -1,4 +1,4 @@
-import { CSSable, PStyle } from "../types"
+import { CSSNumeric, PStyle } from "../types"
 
 /**
  * The Shapely Grid props are used to layout the items so they can be displayed appropriately
@@ -43,7 +43,7 @@ export type ShapelyGridProps = {
 	 * The space between each cell
 	 * This can be descibed as a single cell or as [column, row] spacing. This will help with having matching spacing when laying out shapes with an irregular aspect ratio
 	 */
-	gap?: CSSable | [CSSable, CSSable]
+	gap?: CSSNumeric | [CSSNumeric, CSSNumeric]
 
 	/**
 	 * The layout function is used create a custom layout. if every cell is reliant on a single pathID the last argument in ShapelyGridLayoutFN tuple can be comitted.

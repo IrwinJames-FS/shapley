@@ -19,7 +19,18 @@ export type BaseShapelyGridProps = {
 	offset?: number
 }
 
-export type CSSNumeric = number | string
+/**
+ * CSSNumeric is the base types that CSS supports
+ */
+export type CSSNumeric = 
+/**
+ * Numbers are automatically converted to a px value
+ */
+number 
+/**
+ * Strings are treated with as raw css
+ */
+| string
 
 export type PStyle = {
 	bgColor?: Hoverable<string>
@@ -48,13 +59,8 @@ export type PolyMorphProps<T extends ElementType> = {
 export type PolyMorphic<P, T extends ElementType> = PolyMorphProps<T> & P;
 
 export type CSSPropertiesPlusVars = CSSProperties & {
-	[k: string]: CSSable
+	[k: string]: CSSNumeric
 }
-
-/**
- * Currently these are the only types I will directly support sending to css and these are ultimately converted to a string using the standardizeValue method.
- */
-export type CSSable = string | number;
 
 export type Docked<T> = (props:T)=>ReactNode
 

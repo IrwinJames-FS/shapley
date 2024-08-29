@@ -1,7 +1,7 @@
 import { Project } from "ts-morph";
 import path from "path";
-import { __docs, __root, __src } from "./constants";
-import { tsSourceFile } from "./tsSourceFile";
+import { __docs, __root, __src } from "../constants";
+import tsSourceFile from "./tsSourceFile";
 import fs from "fs";
 
 const tsDocument = () => {
@@ -9,11 +9,7 @@ const tsDocument = () => {
 	const project = new Project();
 	
 	project.addSourceFilesAtPaths(path.join(__src, '**/*.ts'));
-	project.getSourceFiles().forEach(file=>{
-		if(file.getFilePath().endsWith('.test.ts')) return;
-		const src = new tsSourceFile(file);
-		src.save();
-	});
+	project.getSourceFiles().forEach(tsSourceFile);
 }
 
 export default tsDocument;
