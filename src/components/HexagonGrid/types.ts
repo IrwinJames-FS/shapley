@@ -1,4 +1,4 @@
-import { CSSable, PStyle } from "../types"
+import { CSSNumeric, PStyle } from "../types"
 
 export type HexagonGridProps = {
 	/**
@@ -24,5 +24,5 @@ export type HexagonGridProps = {
 	/**
 	 * The distance between each cell
 	 */
-	gap: CSSable | [CSSable | CSSable]
+	gap: CSSNumeric | [CSSNumeric | CSSNumeric]
 } & PStyle

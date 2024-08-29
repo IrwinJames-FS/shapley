@@ -1,4 +1,4 @@
-import { CSSable, PStyle } from "../types";
+import { CSSNumeric, PStyle } from "../types";
 
 /**
  * The Diamond Grid props explain to the component how it should layout each cell.
@@ -16,7 +16,7 @@ export type DiamondGridProps = {
 	/**
 	 * The desired gap
 	 */
-	gap: CSSable | [CSSable, CSSable],
+	gap: CSSNumeric | [CSSNumeric, CSSNumeric],
 
 	/**
 	 * If you provide a geometry property this will be ignored however this provides the opportunity to add a corner radius to the grid. Typically geometries are described as values between 0-1 as such your corner radius should be < the shortest sides intersecting at the vertex.

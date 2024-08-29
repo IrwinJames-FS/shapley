@@ -12,6 +12,12 @@
 	font-weight: inherit;
 }
 
+.literal-text {
+	color: var(--ts-doc-primary-red);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
 .type-param-name {
 	color: var(--ts-doc-primary-purple);
 	font-size: 0.9em;
