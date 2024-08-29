@@ -20,7 +20,7 @@ export  const tsTypeProperty = (node: Node, depth:number):TsNode[] => {
 		return t.isUnion() ? t.getUnionTypes().flatMap(findProps)
 		: t.isIntersection() ? t.getIntersectionTypes().flatMap(findProps)
 		: t.isTuple() ? t.getTupleElements().flatMap(findProps)
-		: (t.isObject() && t.isAnonymous()) ? t.getProperties().flatMap(s=>s.getDeclarations().map(n=>tsNode(n, depth)))
+		: (t.isObject() && t.isAnonymous()) ? t.getProperties().flatMap(s=>s.getDeclarations().flatMap(n=>tsNode(n, depth)))
 		: [];
 	}
 	const p = findProps(node.getType());
@@ -32,18 +32,20 @@ export const getTypeName = (node: Node) => {
 	const symbol = t.getAliasSymbol() ?? t.getSymbol();
 	return symbol?.getName()
 }
-export const tsNode = (node: Node, depth: number): TsNode | undefined => {
-	if(!('getName' in node) || typeof node.getName !== 'function') return undefined
+export const tsNode = (node: Node, depth: number): TsNode[] => {
+	if(Node.isVariableStatement(node)) return node.getDeclarations().flatMap(tsNode)
+	if(!('getName' in node) || typeof node.getName !== 'function') return [];
 	const name = (node as unknown as NamedNode).getName();
 	const kind = tsKind(node);
 	
 	if(!name || !kind) {
-		return undefined;
+		return [];
 	} 
 	const type = node.getType();
 	//if(Node.isPropertySignature(node)) console.log(name, kind, type);
 	const comment = Node.isJSDocable(node) ? node.getJsDocs().reduce((o,v)=>o+'\n'+v.getComment(), ''):'';
 	const id = node.getSourceFile().getFilePath().slice(0, -3).replace(__src+'/', '').replace(/\//g, '-')+'-'+name.toLowerCase();
+
 	const tsSignature = (t: Type) => {
 		const link = tsAliasLink(t);
 		return link ? link
@@ -73,9 +75,11 @@ export const tsNode = (node: Node, depth: number): TsNode | undefined => {
 			return undefined;
 		}
 		const nm = symbol.getName();
-		if(nm.startsWith('__')){
+		if(nm.startsWith('__') || nm === name){
+			
 			return tsFunction(t.getCallSignatures()) ?? selfSymbol;
 		}
+		if(name === 'rayDeg') console.log("Raydeg", nm)
 		const href = tsHref(symbol);
 		return tsLink(nm, href, t.getTypeArguments());
 	}
@@ -104,15 +108,15 @@ export const tsNode = (node: Node, depth: number): TsNode | undefined => {
 	}
 
 	const signature = tsSignature(type);
-	return {
+	return [{
 		id,
 		name,
 		comment,
 		kind,
 		signature,
 		depth,
-		code: !['class', 'type', '.property'].includes(kind) ? getCode(node):undefined
-	}
+		code: !['class', 'type', 'property', 'method', 'get', 'set'].includes(kind) ? getCode(node):undefined
+	}];
 };
 
 
@@ -128,13 +132,13 @@ export const tsHref = (symbol: Symbol, name: string) => {
 export const tsKind = (node: Node) => {
 	switch(node.getKind()){
 		case SK.TypeAliasDeclaration: return 'type';
-		case SK.VariableDeclaration: return 'const';
+		case SK.VariableDeclaration: return Node.isArrowFunction(node) ? 'function':'const';
 		case SK.InterfaceDeclaration: return 'interface';
 		case SK.FunctionDeclaration: return 'function'; //todo build in special generator type here
 		case SK.ClassDeclaration: return 'class';
 		case SK.EnumDeclaration: return 'enum';
 		case SK.MethodDeclaration: return 'method';
-		case SK.PropertySignature: return '.property'
+		case SK.PropertySignature:
 		case SK.PropertyDeclaration: return 'property';
 		case SK.GetAccessor: return 'get';
 		case SK.SetAccessor: return 'set';

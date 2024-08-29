@@ -27,7 +27,7 @@ ${$dec`${kind}`}\n\n
 ${name ? $h(2+depth, name):''}
 ${$lbl('Signature', signature)}
 
-${comment}
+${comment ?? ''}
 
 ${code ? $code(code):''}
 
