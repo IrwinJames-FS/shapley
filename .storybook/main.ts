@@ -1,7 +1,7 @@
 import type { StorybookConfig } from "@storybook/react-vite";
-import tsDocument from "./tsDocument";
 import { Project } from "ts-morph";
-import { tsSourceFile } from "./tsSourceFile";
+import tsSourceFile from "./tsDocument/tsSourceFile";
+import tsDoc from "./tsDoc";
 
 
 const config: StorybookConfig = {
@@ -21,7 +21,7 @@ const config: StorybookConfig = {
     reactDocgenTypescriptOptions: {}
   },
   viteFinal: async config => {
-    const watcher = tsDocument();
+    tsDoc();
     if(!config.plugins) config.plugins = [];
     //todo only do this in a dev environment
     config.plugins.push({
@@ -31,11 +31,10 @@ const config: StorybookConfig = {
         if(!file.endsWith('.ts') || file.endsWith('.test.ts')) return; //do nothing
         const project = new Project();
         const fl = project.addSourceFileAtPath(file);
-        const src = new tsSourceFile(fl);
-        src.save();
+        tsSourceFile(fl);
+
       }
-    })
-    console.log(config.optimizeDeps, watcher);
+    });
     return config
   },
   staticDirs: ['../public']
