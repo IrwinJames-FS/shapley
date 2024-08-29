@@ -1,9 +1,8 @@
 
-import { NamedNode, Node, ScriptTarget, Signature, SyntaxKind as SK, Symbol, Type} from "ts-morph";
+import { AccessorDeclaration, MethodDeclaration, NamedNode, Node, PropertyDeclaration, Signature, SyntaxKind as SK, Symbol, Type} from "ts-morph";
 import { __src } from "../constants";
 import { TsNode } from "./types";
 import { $a, $dec, $lit, $wrap } from "./tsDecs";
-import { createPrinter, createSourceFile, ScriptKind } from "typescript";
 
 
 const selfSymbol = '&lcub;...&rcub;';
@@ -114,8 +113,7 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		comment,
 		kind,
 		signature,
-		depth,
-		code: !['class', 'type', 'property', 'method', 'get', 'set'].includes(kind) ? getCode(node):undefined
+		depth
 	}];
 };
 
@@ -137,29 +135,19 @@ export const tsKind = (node: Node) => {
 		case SK.FunctionDeclaration: return 'function'; //todo build in special generator type here
 		case SK.ClassDeclaration: return 'class';
 		case SK.EnumDeclaration: return 'enum';
-		case SK.MethodDeclaration: return 'method';
-		case SK.PropertySignature:
-		case SK.PropertyDeclaration: return 'property';
-		case SK.GetAccessor: return 'get';
-		case SK.SetAccessor: return 'set';
+		case SK.MethodDeclaration: return getNestedKind(node as MethodDeclaration, 'method');
+		case SK.PropertySignature: return 'property'
+		case SK.PropertyDeclaration: return getNestedKind(node as PropertyDeclaration, 'property');
+		case SK.ConstructSignature: return 'constructor';
+		case SK.Constructor: return 'constructor';
+		case SK.ConstructorType: return 'constructor';
+		case SK.GetAccessor: return getNestedKind(node as AccessorDeclaration, 'get');
+		case SK.SetAccessor: return getNestedKind(node as AccessorDeclaration, 'set');
 	}
 	return undefined;
 }
-
-const getCode = (node: Node) => {
-	const text = node.getText();
-	switch(node.getKind()){
-		case SK.MethodDeclaration:
-		case SK.PropertyDeclaration:
-		case SK.GetAccessor:
-		case SK.SetAccessor: return wrapcode(text, 'class {%}');
-	}
-	return recode(text);
-}
-const wrapcode = (text: string, wrapper: string) => {
-	const [prefix, suffix] = wrapper.split('%');
-	const code = recode(prefix+text+suffix);
-	return code.slice(prefix.length, -suffix.length-1).replace(/\n\s{4}/g, '\n');
-}
-const recode = (text: string) => createPrinter({removeComments: true})
-	.printFile(createSourceFile('temp.ts', text, ScriptTarget.Latest, false, ScriptKind.TS))
+const getNestedKind = (node: MethodDeclaration | PropertyDeclaration | AccessorDeclaration, suffix: string) => [
+	node.isStatic() && 'static',
+	node.isAbstract() && 'abstract',
+	suffix
+].filter(f=>f).join(' ');
