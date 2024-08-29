@@ -1,9 +1,8 @@
 
-import { NamedNode, Node, ScriptTarget, Signature, SyntaxKind as SK, Symbol, Type} from "ts-morph";
+import { AccessorDeclaration, MethodDeclaration, NamedNode, Node, PropertyDeclaration, Signature, SyntaxKind as SK, Symbol, Type} from "ts-morph";
 import { __src } from "../constants";
 import { TsNode } from "./types";
 import { $a, $dec, $lit, $wrap } from "./tsDecs";
-import { createPrinter, createSourceFile, ScriptKind } from "typescript";
 
 
 const selfSymbol = '&lcub;...&rcub;';
@@ -20,7 +19,7 @@ export  const tsTypeProperty = (node: Node, depth:number):TsNode[] => {
 		return t.isUnion() ? t.getUnionTypes().flatMap(findProps)
 		: t.isIntersection() ? t.getIntersectionTypes().flatMap(findProps)
 		: t.isTuple() ? t.getTupleElements().flatMap(findProps)
-		: (t.isObject() && t.isAnonymous()) ? t.getProperties().flatMap(s=>s.getDeclarations().map(n=>tsNode(n, depth)))
+		: (t.isObject() && t.isAnonymous()) ? t.getProperties().flatMap(s=>s.getDeclarations().flatMap(n=>tsNode(n, depth)))
 		: [];
 	}
 	const p = findProps(node.getType());
@@ -32,18 +31,20 @@ export const getTypeName = (node: Node) => {
 	const symbol = t.getAliasSymbol() ?? t.getSymbol();
 	return symbol?.getName()
 }
-export const tsNode = (node: Node, depth: number): TsNode | undefined => {
-	if(!('getName' in node) || typeof node.getName !== 'function') return undefined
+export const tsNode = (node: Node, depth: number): TsNode[] => {
+	if(Node.isVariableStatement(node)) return node.getDeclarations().flatMap(tsNode)
+	if(!('getName' in node) || typeof node.getName !== 'function') return [];
 	const name = (node as unknown as NamedNode).getName();
 	const kind = tsKind(node);
 	
 	if(!name || !kind) {
-		return undefined;
+		return [];
 	} 
 	const type = node.getType();
 	//if(Node.isPropertySignature(node)) console.log(name, kind, type);
 	const comment = Node.isJSDocable(node) ? node.getJsDocs().reduce((o,v)=>o+'\n'+v.getComment(), ''):'';
 	const id = node.getSourceFile().getFilePath().slice(0, -3).replace(__src+'/', '').replace(/\//g, '-')+'-'+name.toLowerCase();
+
 	const tsSignature = (t: Type) => {
 		const link = tsAliasLink(t);
 		return link ? link
@@ -73,9 +74,11 @@ export const tsNode = (node: Node, depth: number): TsNode | undefined => {
 			return undefined;
 		}
 		const nm = symbol.getName();
-		if(nm.startsWith('__')){
+		if(nm.startsWith('__') || nm === name){
+			
 			return tsFunction(t.getCallSignatures()) ?? selfSymbol;
 		}
+		if(name === 'rayDeg') console.log("Raydeg", nm)
 		const href = tsHref(symbol);
 		return tsLink(nm, href, t.getTypeArguments());
 	}
@@ -104,15 +107,14 @@ export const tsNode = (node: Node, depth: number): TsNode | undefined => {
 	}
 
 	const signature = tsSignature(type);
-	return {
+	return [{
 		id,
 		name,
 		comment,
 		kind,
 		signature,
-		depth,
-		code: !['class', 'type', '.property'].includes(kind) ? getCode(node):undefined
-	}
+		depth
+	}];
 };
 
 
@@ -128,34 +130,24 @@ export const tsHref = (symbol: Symbol, name: string) => {
 export const tsKind = (node: Node) => {
 	switch(node.getKind()){
 		case SK.TypeAliasDeclaration: return 'type';
-		case SK.VariableDeclaration: return 'const';
+		case SK.VariableDeclaration: return Node.isArrowFunction(node) ? 'function':'const';
 		case SK.InterfaceDeclaration: return 'interface';
 		case SK.FunctionDeclaration: return 'function'; //todo build in special generator type here
 		case SK.ClassDeclaration: return 'class';
 		case SK.EnumDeclaration: return 'enum';
-		case SK.MethodDeclaration: return 'method';
-		case SK.PropertySignature: return '.property'
-		case SK.PropertyDeclaration: return 'property';
-		case SK.GetAccessor: return 'get';
-		case SK.SetAccessor: return 'set';
+		case SK.MethodDeclaration: return getNestedKind(node as MethodDeclaration, 'method');
+		case SK.PropertySignature: return 'property'
+		case SK.PropertyDeclaration: return getNestedKind(node as PropertyDeclaration, 'property');
+		case SK.ConstructSignature: return 'constructor';
+		case SK.Constructor: return 'constructor';
+		case SK.ConstructorType: return 'constructor';
+		case SK.GetAccessor: return getNestedKind(node as AccessorDeclaration, 'get');
+		case SK.SetAccessor: return getNestedKind(node as AccessorDeclaration, 'set');
 	}
 	return undefined;
 }
-
-const getCode = (node: Node) => {
-	const text = node.getText();
-	switch(node.getKind()){
-		case SK.MethodDeclaration:
-		case SK.PropertyDeclaration:
-		case SK.GetAccessor:
-		case SK.SetAccessor: return wrapcode(text, 'class {%}');
-	}
-	return recode(text);
-}
-const wrapcode = (text: string, wrapper: string) => {
-	const [prefix, suffix] = wrapper.split('%');
-	const code = recode(prefix+text+suffix);
-	return code.slice(prefix.length, -suffix.length-1).replace(/\n\s{4}/g, '\n');
-}
-const recode = (text: string) => createPrinter({removeComments: true})
-	.printFile(createSourceFile('temp.ts', text, ScriptTarget.Latest, false, ScriptKind.TS))
+const getNestedKind = (node: MethodDeclaration | PropertyDeclaration | AccessorDeclaration, suffix: string) => [
+	node.isStatic() && 'static',
+	node.isAbstract() && 'abstract',
+	suffix
+].filter(f=>f).join(' ');

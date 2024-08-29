@@ -12,8 +12,7 @@ class tsNodeList extends Array<TsNode> {
 	}
 
 	add(node: Node, depth: number=0){
-		const n = tsNode(node, depth);
-		if(n) this.addTsNode(n);
+		tsNode(node, depth).forEach(n=>this.addTsNode(n))
 		if(Node.isClassDeclaration(node)) node.forEachChild(nd=>this.add(nd, depth+1));
 		if(Node.isTypeAliasDeclaration(node)) tsTypeProperty(node, depth+1).map(p=>this.addTsNode(p));
 	}

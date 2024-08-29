@@ -5,7 +5,13 @@
 	--ts-doc-primary-red: #FF0F0F;
 }
 
-
+.doc-block{
+	background-color: rgba(0,0,0,0.05);
+	margin-bottom: 1rem !important;
+	border-radius: 1rem;
+	padding: 1rem;
+	box-shadow: 2px 2px 4px #000;
+}
 .declaration-text {
 	color: var(--ts-doc-primary-blue);
 	font-size: 0.9em;

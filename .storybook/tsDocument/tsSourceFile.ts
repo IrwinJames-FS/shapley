@@ -22,12 +22,12 @@ const tsSourceFile = (file: SourceFile) => {
 
 `;
 	for(const {kind, name, signature, comment, code, depth} of nodes) {
-		doc += `<div style={{paddingLeft: '${depth}rem'}}>
+		doc += `<div className="doc-block" style={{marginLeft: '${depth}rem'}}>
 ${$dec`${kind}`}\n\n
 ${name ? $h(2+depth, name):''}
 ${$lbl('Signature', signature)}
 
-${comment}
+${comment ?? ''}
 
 ${code ? $code(code):''}
 
