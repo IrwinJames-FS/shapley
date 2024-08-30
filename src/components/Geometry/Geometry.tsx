@@ -23,9 +23,12 @@ const Geometry = <T extends ElementType="div">({
 	shadow,
 	pathId,
 	style={},
-	svg:{
-		className: geometryClassName ="",
-		...shapeProps
+	components: {
+		svg:{
+			className: geometryClassName ="",
+			...shapeProps
+		}={},
+		...components
 	}={},
 	...props
 }: PolyMorphic<GeometryProps, T>) => {
@@ -59,6 +62,7 @@ const Geometry = <T extends ElementType="div">({
 			pathId,
 			className: clsfy(geometryClassName, 'shapely-geometric-bg'),
 			viewBox,
+			components,
 			...shapeProps
 		}}/>
 		{children}

@@ -23,8 +23,11 @@ const Geometric: FC<GeometricProps> = ({
 	noclip,
 	defs,
 	viewBox,
-	use={},
-	def={},
+	components: {
+		use,
+		def,
+		clipPath
+	}={},
 	...svg
 	})=>{
 	const multiple = Array.isArray(geometry);
@@ -50,7 +53,7 @@ const Geometric: FC<GeometricProps> = ({
 		},
 		defs:geometry ? (<>
 		{defs}
-		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, noclip, ...def}}/>):<GeometryDefinition {...{geometry, id, noclip, ...def}}/>}
+		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, noclip, components:{clipPath}, ...def}}/>):<GeometryDefinition {...{geometry, id, noclip, components:{clipPath}, ...def}}/>}
 		</>):defs,
 		...svg
 	}}>

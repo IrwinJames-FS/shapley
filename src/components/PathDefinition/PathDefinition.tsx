@@ -11,7 +11,7 @@ import { PathDefinitionProps } from "./types";
  */
 const PathDefinition: FC<PathDefinitionProps> = ({
 	noclip,
-	options:{
+	components:{
 		clipPath={},
 	}={}, 
 	id,
