@@ -13,5 +13,8 @@ export type GeometricProps = Omit<GeometryDescriptor, "aspectRatio" | "geometry"
 	 */
 	noclip?: boolean,
 
+	/**
+	 * Geometric can handle multiple geometries but the same style will be applied to all geometries.
+	 */
 	geometry?: Points | Points[]
 }

@@ -1,8 +1,9 @@
-import { ReactNode } from "react";
 import { SVGCanvasProps } from "../SVGCanvas";
-import { GeometryDescriptor, PStyle } from "../types";
+import { GeometryDescriptor, PStyle, PUnit } from "../types";
 
 export type GeometryProps = {
-	children?: ReactNode
+	/**
+	 * If you need to modify the properties provided to the background layer this can be used.
+	 */
 	svg?: SVGCanvasProps
-} & PStyle & GeometryDescriptor
+} & PStyle & GeometryDescriptor & PUnit
