@@ -1,5 +1,4 @@
 import { ReactNode, ComponentPropsWithoutRef, ElementType, CSSProperties } from "react"
-import { Points } from "../geometry"
 
 /**
  * Most components I expect this to be used with will be capable of being a parent unit... infact all components currently require that the children can be set. I may explore alternative that dont have this requirement later.
@@ -63,11 +62,3 @@ export type CSSPropertiesPlusVars = CSSProperties & {
 }
 
 export type Docked<T> = (props:T)=>ReactNode
-
-export type GeometryDescriptor = {
-	pathId?: string
-	geometry?: Points
-	objectBounding?: boolean
-	aspectRatio?: string
-	viewBox?: string
-}

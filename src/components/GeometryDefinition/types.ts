@@ -1,7 +1,7 @@
 import { Points } from "../../geometry"
 import { PathDefinitionProps } from "../PathDefinition"
 
-export type GeometryDefinitionProps = Omit<PathDefinitionProps, "d"> & {
+export type BaseGeometryDefinitionProps = {
 	/**
 	 * The **Points** class that is used to generate the path commands. 
 	 */
@@ -12,3 +12,7 @@ export type GeometryDefinitionProps = Omit<PathDefinitionProps, "d"> & {
 	 */
 	objectBounding?: boolean
 }
+
+export type BaseGeometryDefinitionElementProps = Omit<PathDefinitionProps, "d">
+
+export type GeometryDefinitionProps = BaseGeometryDefinitionElementProps & BaseGeometryDefinitionProps

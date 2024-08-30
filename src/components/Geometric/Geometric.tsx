@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import GeometryDefinition from "../GeometryDefinition";
 import SVGCanvas from "../SVGCanvas";
-import { FC } from "react";
+import { FC, useReducer } from "react";
 import { GeometricProps } from "./types";
 import { clsfy, shadowfy, vars } from "../../utilities";
 import './style.scss';
@@ -13,17 +13,20 @@ import GeometryRef from "../GeometryRef";
 const Geometric: FC<GeometricProps> = ({
 	geometry, 
 	className,
-	defs,
 	style={},
 	bgColor,
 	borderColor,
 	borderWidth,
 	shadow,
-	viewBox,
-	pathId,
+	src:pathId,
 	objectBounding,
 	noclip,
-	...props})=>{
+	defs,
+	viewBox,
+	use={},
+	def={},
+	...svg
+	})=>{
 	const multiple = Array.isArray(geometry);
 	const id = v4();
 	const src = pathId 
@@ -47,21 +50,22 @@ const Geometric: FC<GeometricProps> = ({
 		},
 		defs:geometry ? (<>
 		{defs}
-		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, noclip}}/>):<GeometryDefinition {...{geometry, id, noclip}}/>}
-		
-		</>):undefined,
-		...props
+		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, noclip, ...def}}/>):<GeometryDefinition {...{geometry, id, noclip, ...def}}/>}
+		</>):defs,
+		...svg
 	}}>
 		{multiple ? geometry.map((_, i)=><GeometryRef key={i} {...{
 			src:src+'-'+i,
 			bgColor,
 			borderColor,
 			borderWidth,
+			...use,
 		}}/>):<GeometryRef {...{
 			src,
 			bgColor,
 			borderColor,
 			borderWidth,
+			...useReducer
 		}}/>}
 	</SVGCanvas>);
 }

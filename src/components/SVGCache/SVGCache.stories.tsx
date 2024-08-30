@@ -20,29 +20,28 @@ export default {
 		const geometries = useMemo<Points[]>(()=>rotations.map((r,i)=>Points.fromCircle(i+3, Math.PI+r)), [rotations]);
 		
 		const colors = useMemo(()=>["#FF0", "#F0F", "#0FF", "#F00", "#0F0", "#00F"], []);
-		const infos = useMemo(()=>geometries.map(g=>g.viewInfo), [geometries]);
 		const positions = useMemo(()=>new Array(count * 6).fill({top:'', left: '', width:''}).map(()=>({top:Math.floor(Math.random()*100)+'%', left:Math.floor(Math.random()*100)+'%', width:Math.floor(Math.random()*10)+'rem'})), []);
 		const shapes = useMemo(()=>{
 			const arr = [];
 			for(let i = 0; i<count; i++){
 				for(let j = 0; j<6; j++){
 					arr.push(<Geometric {...{
-						pathId: '#'+ids[j],
-						viewBox: infos[j][1],
+						src: '#'+ids[j],
+						viewBox: geometries[j].viewBox,
 						
 						bgColor: colors[j],
 						borderColor: "#000",
 						borderWidth: 0.01,
 						shadow: "0 0 4px #000",
 						style: {
-							aspectRatio:infos[j][0],
+							aspectRatio:geometries[j].viewBox,
 							...positions[i*6+j]
 						}
 					}}/>)
 				}
 			}
 			return arr;
-		}, [count, infos]);
+		}, [count, geometries]);
 		useEffect(()=>{
 			let id:number = -1;
 			const draw = ()=>{

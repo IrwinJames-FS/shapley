@@ -68,11 +68,11 @@ export const HexagonLattice: Story = {
 			Mx,my+0.5,
 			0, my+0.25			
 		], true),
-		viewBox: `${mx} ${my} ${w} ${h}`,
 		bgColor: 'transparent',
 		borderColor: '#000',
 		borderWidth: 0.1,
 		noclip: true,
+		viewBox: `${mx} ${my} ${w} ${h}`,
 		style: {
 			'--aspect-ratio': `${w}/${h}`,
 			flexGrow: 0,

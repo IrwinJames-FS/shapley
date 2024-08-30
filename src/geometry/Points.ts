@@ -57,7 +57,7 @@ class Points {
 	 * Calling this property will trigger an iteration of points if the shape has not been measured since its last Mutation. That being said subsequent calls will not trigger additional iterations through the points.
 	 */
 	get viewBox() {
-		if(!this._vw) return this.measure();
+		if(!this._vw) this.measure();
 		return this._vw;
 	}
 
