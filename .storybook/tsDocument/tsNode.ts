@@ -42,7 +42,10 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	} 
 	const type = node.getType();
 	//if(Node.isPropertySignature(node)) console.log(name, kind, type);
-	const comment = Node.isJSDocable(node) ? node.getJsDocs().reduce((o,v)=>o+'\n'+v.getComment(), ''):'';
+	const comment = Node.isJSDocable(node) ? node.getJsDocs().reduce((o,v)=>{
+		const cmt = v.getComment();
+		return o === cmt ? o:o+'\n'+cmt;
+	}, ''):'';
 	const id = node.getSourceFile().getFilePath().slice(0, -3).replace(__src+'/', '').replace(/\//g, '-')+'-'+name.toLowerCase();
 
 	const tsSignature = (t: Type) => {

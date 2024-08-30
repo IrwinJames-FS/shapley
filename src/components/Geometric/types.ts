@@ -1,20 +1,32 @@
-import { Points } from "../../geometry";
+import { BaseGeometryDefinitionElementProps, BaseGeometryDefinitionProps } from "../GeometryDefinition";
 import { SVGCanvasProps } from "../SVGCanvas";
-import { GeometryDescriptor, PStyle } from "../types";
+import { BaseGeometryRefElementProps, BaseGeomtryRefProps } from "../GeometryRef";
+import { Points } from "../../geometry";
+import { PStyle } from "../types";
 
-export type GeometricProps = Omit<GeometryDescriptor, "aspectRatio" | "geometry"> & PStyle & SVGCanvasProps & {
-	/**
-	 * If this is checked then I assume the viewbox is 0 0 1 1
-	 */
-	objectBounding?: boolean,
-
+export type BaseGeometricProps = {
 	/**
 	 * By setting this to true a clip path is not used to limit the shape.
 	 */
 	noclip?: boolean,
 
 	/**
-	 * Geometric can handle multiple geometries but the same style will be applied to all geometries.
+	 * If a pathId is provided this property should also be applied
+	 */
+	aspectRatio?: string
+
+	/**
+	 * You can interface with the svg wrapping svg here
+	 */
+	svg?: SVGCanvasProps
+	
+	/**
+	 * Multiple geometries can be rendered in a Geometric but only the first will be reference to define the viewbox. A custom viewbox can be provided.
 	 */
 	geometry?: Points | Points[]
+
+	use?: BaseGeometryRefElementProps
+	def?: BaseGeometryDefinitionElementProps
 }
+
+export type GeometricProps = BaseGeometricProps & BaseGeomtryRefProps & Partial<Omit<BaseGeometryDefinitionProps, "geometry">> & SVGCanvasProps & PStyle;

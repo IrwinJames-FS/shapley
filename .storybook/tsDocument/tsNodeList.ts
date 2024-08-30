@@ -23,7 +23,7 @@ class tsNodeList extends Array<TsNode> {
 		if(~i) {
 			const o = this[i];
 			if(!o.kind.includes(node.kind)) o.kind += ' ' + node.kind;
-			o.comment += '\n' + node.comment;
+			if(!o.comment.includes(node.comment)) o.comment += '\n' + node.comment;
 		} else {
 			this.indices[node.id] = this.length;
 			this.push(node);

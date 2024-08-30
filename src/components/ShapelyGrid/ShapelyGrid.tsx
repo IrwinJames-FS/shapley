@@ -48,7 +48,7 @@ const ShapelyGrid = <T extends ElementType="div">({
 		const c = isValidElement(child) ? cloneElement(child, {
 			className: clsfy(className,'shapely-grid-cell'),
 			children: <>
-			<Geometric {...{pathId: t, bgColor, borderColor, borderWidth, shadow}} objectBounding/>
+			<Geometric {...{src: t, bgColor, borderColor, borderWidth, shadow}} objectBounding/>
 			{children}
 			</>,
 			...props

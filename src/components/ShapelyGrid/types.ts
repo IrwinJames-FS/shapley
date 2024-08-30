@@ -61,11 +61,5 @@ export type ShapelyGridProps = {
 	row?: string
 } & PStyle
 
-export type ShapelyGridCellProps = {
-	src: string
-	row: number
-	column: number
-	aspectRatio?: string
-} & PStyle
-
 export type ShapelyGridLayoutFn = (index: number, count: number) => [number, number] | [number, number, string]
+	
