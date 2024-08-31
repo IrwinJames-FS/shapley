@@ -58,7 +58,6 @@ export const $code = (value: string, lineNums?: boolean) => {
 		
 		const count = countLines(value);
 		const lines = createLineNumbers(count);
-		console.log("Generate line numbers", count, lines);
 		return `
 <div className="numbered-code">
 <div>

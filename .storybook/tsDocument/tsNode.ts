@@ -1,8 +1,8 @@
 
-import { AccessorDeclaration, MethodDeclaration, NamedNode, Node, PropertyDeclaration, Signature, SyntaxKind as SK, Symbol, Type} from "ts-morph";
+import { AccessorDeclaration, MethodDeclaration, NamedNode, Node, PropertyDeclaration, Signature, SyntaxKind as SK, Symbol, Type, TypeAliasDeclaration } from "ts-morph";
 import { __src } from "../constants";
 import { TsNode } from "./types";
-import { $a, $dec, $lit, $wrap } from "./tsDecs";
+import { $a, $dec, $lit, $param, $wrap } from "./tsDecs";
 
 
 const selfSymbol = '&lcub;...&rcub;';
@@ -19,9 +19,12 @@ export  const tsTypeProperty = (node: Node, depth:number):TsNode[] => {
 	const isSelf = (t: Type) => {
 		if(!t.isObject()) return false;
 		const alias = t.getAliasSymbol();
-		if(!alias) return true;
+		if(!alias){
+			const nm = t.getSymbol()?.getName();
+
+			return !!nm && (name === nm || nm.startsWith("__"));
+		}
 		const nm = alias?.getName();
-		console.log(name, nm)
 		return nm === name;
 	}
 	const findProps = (t: Type) => {
@@ -74,8 +77,9 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		: t.isUnion() ? t.getUnionTypes().map(tsSignature).join(' | ')
 		: t.isIntersection() ? t.getIntersectionTypes().map(tsSignature).join(' & ')
 		: t.isTuple() ? $wrap('[%]', t.getTupleElements().map(tsSignature).join(', '))
-		: tsSymbol(t) ?? 'N/A';
+		: tsSymbol(t) ?? noNameFound(t);
 	}
+	const noNameFound = (t:Type) => t.getText();
 	const tsFunction = ([signature]: Signature[]) => {
 		if(!signature) return undefined;
 		return `(${signature.getParameters().map(p=>`${p.getName()}: ${tsSignature(p.getValueDeclaration()!.getType())}`).join(', ')})=>${tsSignature(signature.getReturnType())}`
@@ -124,25 +128,39 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		return `<a href="${p}">${src.replace(__src+'/', '')}(ln: ${ln})</a>`;
 	};
 
+	const getGenerics = (node:Node)=>{
+		if(!Node.isTypeAliasDeclaration(node)) return undefined;
+		const params = (node as TypeAliasDeclaration).getTypeParameters();
+		if(!params.length) return undefined;
+		return params.map(p=>{
+			const constraint = p.getConstraint()?.getType()
+			return $param`${p.getName()}`+`${constraint ? ' extends '+tsSignature(constraint):''}`
+		}).join(', ');
+	}
 	const signature = tsSignature(type);
+	const optional = isOptional(node);
+	
 	return [{
 		id,
+		generics: getGenerics(node),
 		name,
 		comment,
 		kind,
 		signature,
 		depth,
-		src: tsSourceLink(node)
+		src: tsSourceLink(node),
+		optional
 	}];
 };
 
 const isPrivate = (node: Node) =>  Node.isJSDocable(node) && !!node.getJsDocs().find(d=>d.getTags().find(t=>t.getTagName() === "private"));
-
+const isOptional = (node: Node) => ('getQuestionTokenNode' in node && typeof node.getQuestionTokenNode === 'function') ? !!node.getQuestionTokenNode():false;
 const toPathDir = (filePath: string, name:string='', header: string='') => filePath.startsWith(__src) ? '/?path=/docs/' + filePath
 .replace(__src+'/', '')
 .slice(0, -3)
 .replace(/\//g, '-') + `${name ? '-'+name:''}--docs${header ? '#'+header:''}`
 :undefined;
+
 export const tsHref = (symbol: Symbol, name: string) => {
 	const fp = symbol.getDeclarations()[0].getSourceFile().getFilePath();
 	if(!fp.startsWith(__src)) return undefined; //Dont link to external types
@@ -155,7 +173,7 @@ export const tsHref = (symbol: Symbol, name: string) => {
 export const tsKind = (node: Node) => {
 	switch(node.getKind()){
 		case SK.TypeAliasDeclaration: return 'type';
-		case SK.VariableDeclaration: return Node.isArrowFunction(node) ? 'function':'const';
+		case SK.VariableDeclaration: return node.getType().getCallSignatures().length ? 'function':'const';
 		case SK.InterfaceDeclaration: return 'interface';
 		case SK.FunctionDeclaration: return 'function'; //todo build in special generator type here
 		case SK.ClassDeclaration: return 'class';
@@ -170,7 +188,8 @@ export const tsKind = (node: Node) => {
 		case SK.SetAccessor: return getNestedKind(node as AccessorDeclaration, 'set');
 	}
 	return undefined;
-}
+};
+
 const getNestedKind = (node: MethodDeclaration | PropertyDeclaration | AccessorDeclaration, suffix: string) => [
 	node.isStatic() && 'static',
 	node.isAbstract() && 'abstract',

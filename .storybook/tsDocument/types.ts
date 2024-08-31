@@ -7,4 +7,6 @@ export type TsNode = {
 	code?: string
 	depth: number
 	src?: string
+	optional: boolean
+	generics?: string
 }
