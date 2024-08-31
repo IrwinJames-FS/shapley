@@ -1,6 +1,18 @@
 import { ComponentPropsWithoutRef } from "react";
+import { WithComponents } from "../types";
 
-export type PathDefinitionProps = ComponentPropsWithoutRef<"path"> & {
+
+/**
+ * The component based props. This is separated in the event the component property needs to be modified.
+ */
+export type PathDefinitionProps = WithComponents<BasePathDefinitionProps & ComponentPropsWithoutRef<"path">, PathDefinitionComponents>;
+
+/**
+ * A path definition is the lowest level component used to render a &lt;path&gt; component.
+ * 
+ * this component renders a path and clipPath component.
+ */
+export type BasePathDefinitionProps = {
 	/**
 	 * The no clip command is a flag that can be used to prevent a path from being automatically closed with the *z* command
 	 */
@@ -12,13 +24,14 @@ export type PathDefinitionProps = ComponentPropsWithoutRef<"path"> & {
 	id: string
 
 	/**
-	 * The options method will be a place to tweak the rendering beyond the Points path command method. 
+	 * If object bounding is pass through the all geometries will be normalized. This is benefitial if using the same path to clip an html element.
 	 */
-	options?: {
-		/**
-		 * Custom clip path properties can be passed to the clip path component that is used to refine the stroke.
-		 */
-		clipPath?: Omit<ComponentPropsWithoutRef<"clipPath">, "id">
-	}
+	objectBounding?: boolean
 };
 
+/**
+ * The &lt;clipPath&gt; components props can be overriden as well by passing the properties to the **components.clipPath** property
+ */
+export type PathDefinitionComponents = {
+	clipPath?: Omit<ComponentPropsWithoutRef<"clipPath">, "id">
+}

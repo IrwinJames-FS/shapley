@@ -1,3 +1,4 @@
+
 type TemplateFn = (strings: TemplateStringsArray, ...args: string[]) => string;
 
 /**
@@ -52,7 +53,38 @@ export const $a = (href:string): TemplateFn => (strings, ...args) => `<a href="$
  * @param value 
  * @returns 
  */
-export const $code = (value: string) => "\n```ts\n"+value+"\n```\n";
+export const $code = (value: string, lineNums?: boolean) => {
+	if(lineNums){
+		
+		const count = countLines(value);
+		const lines = createLineNumbers(count);
+		return `
+<div className="numbered-code">
+<div>
+	${lines}
+</div>
+\`\`\`ts\n${value}\n\`\`\`
+</div>`;
+	}
+	return `\`\`\`ts\n${value}\n\`\`\``;
+}
+
+const countLines = (value: string):number => {
+	let c = 0;
+	for(let i = 0; i < value.length; i++){
+		if(value[i] === '\n') c++;
+	}
+	return c;
+}
+const createLineNumbers = (count: number):string => {
+	let s = '';
+	for(let i = 0; i < count; i++){
+		s += `###### ${i+1}\n`;
+	}
+	return s;
+}
+
+
 
 /**
  * Creates a label element but only if a value is provided

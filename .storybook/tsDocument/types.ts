@@ -6,4 +6,8 @@ export type TsNode = {
 	signature?: string
 	code?: string
 	depth: number
+	src?: string
+	optional: boolean
+	generics?: string
+	extension?: string
 }

@@ -11,13 +11,18 @@ import { PathDefinitionProps } from "./types";
  */
 const PathDefinition: FC<PathDefinitionProps> = ({
 	noclip,
-	options:{
+	objectBounding,
+	components:{
 		clipPath={},
 	}={}, 
 	id,
 	...props})=>(<>
 <path {...{id, ...props}}/>
-{!noclip && <clipPath id={id+'-clip'} {...clipPath}>
+{!noclip && <clipPath {...{
+	id:id+'-clip',
+	clipPathUnits: objectBounding ? 'objectBoundingBox':undefined,
+	...clipPath
+}} {...clipPath}>
 	<use href={"#"+id}/>
 </clipPath>}
 </>);

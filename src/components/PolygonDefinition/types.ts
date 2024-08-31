@@ -1,6 +1,6 @@
 import { GeometryDefinitionProps } from "../GeometryDefinition/types";
 
-export type PolygonDefinitionProps = Omit<GeometryDefinitionProps, "geometry"> & {
+export type BasePolygonDefinitionProps = {
 	/**
 	 * The number of sides used to generate the polygon
 	 */
@@ -15,3 +15,6 @@ export type PolygonDefinitionProps = Omit<GeometryDefinitionProps, "geometry"> &
 	 */
 	cornerRadius?: number | number[]
 }
+
+
+export type PolygonDefinitionProps = Omit<GeometryDefinitionProps, "geometry"> & BasePolygonDefinitionProps;

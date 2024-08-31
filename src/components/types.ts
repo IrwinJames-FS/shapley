@@ -62,3 +62,16 @@ export type CSSPropertiesPlusVars = CSSProperties & {
 }
 
 export type Docked<T> = (props:T)=>ReactNode
+
+/**
+ * Shapely Components Utilize this component to inherit parts of Inherited properties in a logical manner
+ */
+export type WithComponents<T extends object, C extends object> = T & ComponentsRecord<C>;
+
+
+export type ComponentsRecord<T extends object> = {
+	/**
+	 * Components will be a record of prop overrides available.
+	 */
+	components?:T
+}

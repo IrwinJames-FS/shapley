@@ -1,8 +1,8 @@
 
-import { AccessorDeclaration, MethodDeclaration, NamedNode, Node, PropertyDeclaration, Signature, SyntaxKind as SK, Symbol, Type} from "ts-morph";
+import { AccessorDeclaration, MethodDeclaration, NamedNode, Node, PropertyDeclaration, Signature, SyntaxKind as SK, Symbol, Type, TypeAliasDeclaration } from "ts-morph";
 import { __src } from "../constants";
 import { TsNode } from "./types";
-import { $a, $dec, $lit, $wrap } from "./tsDecs";
+import { $a, $dec, $lit, $param, $wrap } from "./tsDecs";
 
 
 const selfSymbol = '&lcub;...&rcub;';
@@ -14,12 +14,24 @@ const selfSymbol = '&lcub;...&rcub;';
  * @returns 
  */
 export  const tsTypeProperty = (node: Node, depth:number):TsNode[] => {
+	const name = ('getName' in node) && typeof node.getName === 'function' ? node.getName():'N/A'
 	
+	const isSelf = (t: Type) => {
+		if(!t.isObject()) return false;
+		const alias = t.getAliasSymbol();
+		if(!alias){
+			const nm = t.getSymbol()?.getName();
+
+			return !!nm && (name === nm || nm.startsWith("__"));
+		}
+		const nm = alias?.getName();
+		return nm === name;
+	}
 	const findProps = (t: Type) => {
-		return t.isUnion() ? t.getUnionTypes().flatMap(findProps)
+		return isSelf(t) ? t.getProperties().flatMap(s=>s.getDeclarations().flatMap(n=>tsNode(n, depth)))
+		: t.isUnion() ? t.getUnionTypes().flatMap(findProps)
 		: t.isIntersection() ? t.getIntersectionTypes().flatMap(findProps)
 		: t.isTuple() ? t.getTupleElements().flatMap(findProps)
-		: (t.isObject() && t.isAnonymous()) ? t.getProperties().flatMap(s=>s.getDeclarations().flatMap(n=>tsNode(n, depth)))
 		: [];
 	}
 	const p = findProps(node.getType());
@@ -32,8 +44,9 @@ export const getTypeName = (node: Node) => {
 	return symbol?.getName()
 }
 export const tsNode = (node: Node, depth: number): TsNode[] => {
+	if(isPrivate(node)) return [];
 	if(Node.isVariableStatement(node)) return node.getDeclarations().flatMap(tsNode)
-	if(!('getName' in node) || typeof node.getName !== 'function') return [];
+		if(!('getName' in node) || typeof node.getName !== 'function') return [];
 	const name = (node as unknown as NamedNode).getName();
 	const kind = tsKind(node);
 	
@@ -41,7 +54,6 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		return [];
 	} 
 	const type = node.getType();
-	//if(Node.isPropertySignature(node)) console.log(name, kind, type);
 	const comment = Node.isJSDocable(node) ? node.getJsDocs().reduce((o,v)=>{
 		const cmt = v.getComment();
 		return o === cmt ? o:o+'\n'+cmt;
@@ -49,7 +61,7 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	const id = node.getSourceFile().getFilePath().slice(0, -3).replace(__src+'/', '').replace(/\//g, '-')+'-'+name.toLowerCase();
 
 	const tsSignature = (t: Type) => {
-		const link = tsAliasLink(t);
+		const link = tsAliasLink(t) ?? tsSymbol(t);
 		return link ? link
 		: t.isUndefined() ? $dec`undefined`
 		: t.isUnknown() ? $dec`unknown`
@@ -64,7 +76,7 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		: t.isUnion() ? t.getUnionTypes().map(tsSignature).join(' | ')
 		: t.isIntersection() ? t.getIntersectionTypes().map(tsSignature).join(' & ')
 		: t.isTuple() ? $wrap('[%]', t.getTupleElements().map(tsSignature).join(', '))
-		: tsSymbol(t) ?? 'N/A';
+		: tsSymbol(t) ?? undefined;
 	}
 	const tsFunction = ([signature]: Signature[]) => {
 		if(!signature) return undefined;
@@ -73,15 +85,16 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	const tsSymbol = (t: Type) => {
 		const symbol = t.getSymbol();
 		if(!symbol) {
-			console.log("No symbol", !!t.getAliasSymbol(), t.getText());
 			return undefined;
 		}
 		const nm = symbol.getName();
 		if(nm.startsWith('__') || nm === name){
-			
-			return tsFunction(t.getCallSignatures()) ?? selfSymbol;
+			const tsf = tsFunction(t.getCallSignatures())
+			if(!tsf){
+				return t.isAnonymous() ? selfSymbol:undefined;
+			}
+			return tsf;
 		}
-		if(name === 'rayDeg') console.log("Raydeg", nm)
 		const href = tsHref(symbol);
 		return tsLink(nm, href, t.getTypeArguments());
 	}
@@ -98,28 +111,65 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	const tsHref = (symbol: Symbol) => {
 		const nm = symbol.getName();
 		const src = symbol.getDeclarations()[0].getSourceFile().getFilePath();
-		if(!src.startsWith(__src)) return undefined;
-		return '/?path=/docs/' + src
-		.replace(__src+'/', '') //remove path up to source
-		.slice(0, -3) //remove the file extension
-		.replace(/\//g, '-') + `--docs#${nm.toLowerCase()}` //add the hyphen notation storybook uses
+		const pth = toPathDir(src, '', nm);
+		if(!pth) return undefined;
+		return pth
 	}
 
 	const tsLink = (name: string, href?:string, args?: Type[]) => {
-		return (href ? $a(href)`${name}`:$dec`${name}`)+((args && args.length) ? `&lt;${args.map(tsSignature)}&gt;`:'');
+		return (href ? $a(href)`${name}`:$dec`${name}`)+((args && args.length) ? `&lt;${args.map(tsSignature).filter(a=>a)}&gt;`:'');
 	}
 
+	const tsSourceLink = (node: Node) => {
+		const src = node.getSourceFile().getFilePath();
+		const ln = node.getStartLineNumber()
+		const p = toPathDir(src, 'source', ''+ln);
+		if(!p) return undefined;
+		return `<a href="${p}">${src.replace(__src+'/', '')}(ln: ${ln})</a>`;
+	};
+
+	const getGenerics = ()=>{
+		if(!(Node.isTypeAliasDeclaration(node) || Node.isClassDeclaration(node) || Node.isInterfaceDeclaration(node))) return undefined;
+		const params = (node as TypeAliasDeclaration).getTypeParameters();
+		if(!params.length) return undefined;
+		return params.map(p=>{
+			const constraint = p.getConstraint()?.getType()
+			return $param`${p.getName()}`+`${constraint ? ' extends '+tsSignature(constraint):''}`
+		}).join(', ');
+	}
+
+	const getExtends = () => {
+		if(!(Node.isClassDeclaration(node) || Node.isInterfaceDeclaration(node))) return undefined;
+		
+		const constraint = node.getExtends()
+		if(!constraint) return undefined
+		return Array.isArray(constraint) ? constraint.map(c=>tsSignature(c.getType())).join(', '):tsSignature(constraint.getType())
+	};
+
 	const signature = tsSignature(type);
+	const optional = isOptional(node);
+	
 	return [{
 		id,
+		generics: getGenerics(),
 		name,
 		comment,
 		kind,
 		signature,
-		depth
+		depth,
+		src: tsSourceLink(node),
+		optional,
+		extension: getExtends()
 	}];
 };
 
+const isPrivate = (node: Node) =>  Node.isJSDocable(node) && !!node.getJsDocs().find(d=>d.getTags().find(t=>t.getTagName() === "private"));
+const isOptional = (node: Node) => ('getQuestionTokenNode' in node && typeof node.getQuestionTokenNode === 'function') ? !!node.getQuestionTokenNode():false;
+const toPathDir = (filePath: string, name:string='', header: string='') => filePath.startsWith(__src) ? '/?path=/docs/' + filePath
+.replace(__src+'/', '')
+.slice(0, -3)
+.replace(/\//g, '-') + `${name ? '-'+name:''}--docs${header ? '#'+header:''}`
+:undefined;
 
 export const tsHref = (symbol: Symbol, name: string) => {
 	const fp = symbol.getDeclarations()[0].getSourceFile().getFilePath();
@@ -133,7 +183,7 @@ export const tsHref = (symbol: Symbol, name: string) => {
 export const tsKind = (node: Node) => {
 	switch(node.getKind()){
 		case SK.TypeAliasDeclaration: return 'type';
-		case SK.VariableDeclaration: return Node.isArrowFunction(node) ? 'function':'const';
+		case SK.VariableDeclaration: return node.getType().getCallSignatures().length ? 'function':'const';
 		case SK.InterfaceDeclaration: return 'interface';
 		case SK.FunctionDeclaration: return 'function'; //todo build in special generator type here
 		case SK.ClassDeclaration: return 'class';
@@ -148,7 +198,8 @@ export const tsKind = (node: Node) => {
 		case SK.SetAccessor: return getNestedKind(node as AccessorDeclaration, 'set');
 	}
 	return undefined;
-}
+};
+
 const getNestedKind = (node: MethodDeclaration | PropertyDeclaration | AccessorDeclaration, suffix: string) => [
 	node.isStatic() && 'static',
 	node.isAbstract() && 'abstract',

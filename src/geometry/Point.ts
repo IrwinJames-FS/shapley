@@ -11,8 +11,16 @@ class Point extends Array<number>{
 	constructor(x: number, y: number) {
 		super(x, y);
 	}
+
+	/**
+	 * The x property reads from the first entry of the array.
+	 */
 	get x(){return this[0]}
 	set x(n:number){this[0] = n}
+
+	/**
+	 * The y property reads from the second entry of the array
+	 */
 	get y(){return this[1]}
 	set y(n:number){this[1] = n}
 
@@ -74,6 +82,9 @@ class Point extends Array<number>{
 		return new Point(this.x - x, this.y - y);
 	}
 
+	/**
+	 * Subtracts another point from this point without creating a new Point.
+	 */
 	public subtracting([x,y]: SupportedPointMathTypes){
 		this.x -= x;
 		this.y -= y;
@@ -156,6 +167,11 @@ class Point extends Array<number>{
 		return new Point(this.x / n, this.y / n);
 	}
 
+	/**
+	 * Returns a point that contains the smallest values between the provided point and this point.
+	 * @param param0 
+	 * @returns 
+	 */
 	min([x, y]: SupportedPointMathTypes | RoundedCorner){
 		return new Point(
 			Math.min(this.x, x),
@@ -163,6 +179,11 @@ class Point extends Array<number>{
 		)
 	}
 
+	/**
+	 * Returns a point that contains the largest values between the provided point and this point.
+	 * @param param0 
+	 * @returns 
+	 */
 	max([x, y]: SupportedPointMathTypes | RoundedCorner){
 		return new Point(
 			Math.max(this.x, x),
@@ -182,8 +203,7 @@ class Point extends Array<number>{
 		return this;
 	}
 	/**
-	 * Get the info needed to plot a ray to a point.
-	 * This is typically used in rotation methods to rotate around a point
+	 * Calculates the angle and distance to the provided point
 	 * @param point 
 	 */
 	to([x, y]: SupportedPointMathTypes){
@@ -195,6 +215,11 @@ class Point extends Array<number>{
 		}
 	}
 
+	/**
+	 * Calculates the angle and distance from a provided point to this point
+	 * @param param0 
+	 * @returns 
+	 */
 	from([x, y]: SupportedPointMathTypes) {
 		const dx = this.x-x;
 		const dy = this.y-y;
@@ -204,7 +229,7 @@ class Point extends Array<number>{
 		}
 	}
 	/**
-	 * Rotates a point around another point
+	 * Rotates a point around another point.
 	 * @param point 
 	 * @param angle 
 	 * @returns 
@@ -214,8 +239,14 @@ class Point extends Array<number>{
 		return this.ray(a+angle, distance);
 	}
 
+	/**
+	 * This Class converts itself to a comma separated string. x, y and fixes the precision to 5 decimal points. 
+	 */
 	toString():string { return Point.toString(this)}
 
+	/**
+	 * Returns the x and y values in an array.
+	 */
 	toArray(){return [this.x, this.y]}
 	//Static methods
 
