@@ -9,11 +9,7 @@ import PathDefinition from "../PathDefinition";
  */
 const GeometryDefinition: FC<GeometryDefinitionProps> = ({geometry, objectBounding, ...props}) => (<PathDefinition {...{
 	d: ''+(objectBounding ? geometry.normalize():geometry),
-	options: {
-		clipPath:{
-			clipPathUnits: objectBounding ? 'objectBoundingBox':undefined,
-		}
-	},
+	objectBounding,
 	...props
 }}/>);
 

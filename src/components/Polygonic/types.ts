@@ -1,5 +1,7 @@
 import { GeometricProps } from "../Geometric";
 
+export type PolygonicProps = Omit<GeometricProps, "geometry"> & BasePolygonicProps;
+
 export type BasePolygonicProps = {
 	/**
 	 * The number of sides the polygon should have
@@ -21,4 +23,3 @@ export type BasePolygonicProps = {
 	cornerRadius?: number | number[]
 }
 
-export type PolygonicProps = Omit<GeometricProps, "geometry"> & BasePolygonicProps

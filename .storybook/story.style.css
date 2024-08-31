@@ -40,3 +40,30 @@
 	content: "*";
 	color: var(--ts-doc-primary-red);
 }
+
+.numbered-code{
+	display: flex;
+}
+.numbered-code > div:first-of-type{
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: start;
+	align-items: end;
+	margin-top:45px;
+	padding: 0 0.5rem;
+	width: 5rem;
+}
+.numbered-code > div:first-of-type h6{
+	line-height: 19px;
+	font-size: 13px;
+	text-align: right;
+	display:block;
+	margin: 0;
+	color:#777;
+	height: 19px;
+}
+.numbered-code > pre {
+	flex-shrink:1;
+	flex-grow:1;
+	max-width: calc(100% - 6rem);
+}

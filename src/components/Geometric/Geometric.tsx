@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import GeometryDefinition from "../GeometryDefinition";
 import SVGCanvas from "../SVGCanvas";
-import { FC, useReducer } from "react";
+import { FC } from "react";
 import { GeometricProps } from "./types";
 import { clsfy, shadowfy, vars } from "../../utilities";
 import './style.scss';
@@ -24,8 +24,8 @@ const Geometric: FC<GeometricProps> = ({
 	defs,
 	viewBox,
 	components: {
-		use,
-		def,
+		reference,
+		definition,
 		clipPath
 	}={},
 	...svg
@@ -53,7 +53,7 @@ const Geometric: FC<GeometricProps> = ({
 		},
 		defs:geometry ? (<>
 		{defs}
-		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, noclip, components:{clipPath}, ...def}}/>):<GeometryDefinition {...{geometry, id, noclip, components:{clipPath}, ...def}}/>}
+		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, noclip, components:{clipPath}, objectBounding, ...definition}}/>):<GeometryDefinition {...{geometry, id, noclip, components:{clipPath}, objectBounding, ...definition}}/>}
 		</>):defs,
 		...svg
 	}}>
@@ -62,13 +62,13 @@ const Geometric: FC<GeometricProps> = ({
 			bgColor,
 			borderColor,
 			borderWidth,
-			...use,
+			...reference,
 		}}/>):<GeometryRef {...{
 			src,
 			bgColor,
 			borderColor,
 			borderWidth,
-			...useReducer
+			...reference
 		}}/>}
 	</SVGCanvas>);
 }

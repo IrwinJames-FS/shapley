@@ -14,12 +14,21 @@ const selfSymbol = '&lcub;...&rcub;';
  * @returns 
  */
 export  const tsTypeProperty = (node: Node, depth:number):TsNode[] => {
+	const name = ('getName' in node) && typeof node.getName === 'function' ? node.getName():'N/A'
 	
+	const isSelf = (t: Type) => {
+		if(!t.isObject()) return false;
+		const alias = t.getAliasSymbol();
+		if(!alias) return true;
+		const nm = alias?.getName();
+		console.log(name, nm)
+		return nm === name;
+	}
 	const findProps = (t: Type) => {
-		return t.isUnion() ? t.getUnionTypes().flatMap(findProps)
+		return isSelf(t) ? t.getProperties().flatMap(s=>s.getDeclarations().flatMap(n=>tsNode(n, depth)))
+		: t.isUnion() ? t.getUnionTypes().flatMap(findProps)
 		: t.isIntersection() ? t.getIntersectionTypes().flatMap(findProps)
 		: t.isTuple() ? t.getTupleElements().flatMap(findProps)
-		: (t.isObject() && t.isAnonymous()) ? t.getProperties().flatMap(s=>s.getDeclarations().flatMap(n=>tsNode(n, depth)))
 		: [];
 	}
 	const p = findProps(node.getType());
@@ -32,8 +41,9 @@ export const getTypeName = (node: Node) => {
 	return symbol?.getName()
 }
 export const tsNode = (node: Node, depth: number): TsNode[] => {
+	if(isPrivate(node)) return [];
 	if(Node.isVariableStatement(node)) return node.getDeclarations().flatMap(tsNode)
-	if(!('getName' in node) || typeof node.getName !== 'function') return [];
+		if(!('getName' in node) || typeof node.getName !== 'function') return [];
 	const name = (node as unknown as NamedNode).getName();
 	const kind = tsKind(node);
 	
@@ -49,7 +59,7 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	const id = node.getSourceFile().getFilePath().slice(0, -3).replace(__src+'/', '').replace(/\//g, '-')+'-'+name.toLowerCase();
 
 	const tsSignature = (t: Type) => {
-		const link = tsAliasLink(t);
+		const link = tsAliasLink(t) ?? tsSymbol(t);
 		return link ? link
 		: t.isUndefined() ? $dec`undefined`
 		: t.isUnknown() ? $dec`unknown`
@@ -73,12 +83,11 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	const tsSymbol = (t: Type) => {
 		const symbol = t.getSymbol();
 		if(!symbol) {
-			console.log("No symbol", !!t.getAliasSymbol(), t.getText());
 			return undefined;
 		}
 		const nm = symbol.getName();
 		if(nm.startsWith('__') || nm === name){
-			
+			if(name==="PathDefinitionProps") console.log(nm, name, t.getText())
 			return tsFunction(t.getCallSignatures()) ?? selfSymbol;
 		}
 		if(name === 'rayDeg') console.log("Raydeg", nm)
@@ -120,6 +129,7 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	}];
 };
 
+const isPrivate = (node: Node) =>  Node.isJSDocable(node) && !!node.getJsDocs().find(d=>d.getTags().find(t=>t.getTagName() === "private"));
 
 export const tsHref = (symbol: Symbol, name: string) => {
 	const fp = symbol.getDeclarations()[0].getSourceFile().getFilePath();

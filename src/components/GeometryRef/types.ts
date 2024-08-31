@@ -1,6 +1,8 @@
 import { ComponentPropsWithoutRef } from "react";
 import { PStyle } from "../types";
 
+export type GeometryRefProps = Omit<ComponentPropsWithoutRef<"use">, "href"> & PStyle & BaseGeomtryRefProps;
+
 /**
  * The Base Geometry props are the props specific to the the rendering process.
  */
@@ -11,9 +13,5 @@ export type BaseGeomtryRefProps = {
 	src?: string
 }
 
-/**
- * The BaseGeometryElementProps Adopts all of the props available to the **&lt;use&gt;** component
- */
-export type BaseGeometryRefElementProps = Omit<ComponentPropsWithoutRef<"use">, "href" | "src"> 
 
-export type GeometryRefProps = BaseGeometryRefElementProps & PStyle & BaseGeomtryRefProps
+

@@ -3,14 +3,15 @@ import { GeometryProps } from "./types";
 import Geometric from "./Geometry";
 import { fromCircle, Points } from "../../geometry";
 import Preview from "../Preview";
-
+import { PolyMorphic } from "../types";
+type GeoProps = PolyMorphic<GeometryProps, "div">;
 export default {
 	component: Geometric,
 	decorators: Preview,
 	tags: ['autodocs']
-} as Meta<GeometryProps>;
+} as Meta<GeoProps>;
 
-type Story = StoryObj<GeometryProps>;
+type Story = StoryObj<GeoProps>;
 
 /**
  * I made a heart!!!
@@ -130,6 +131,4 @@ export const Star: Story = {
 		children: <h1>Star</h1>
 	}
 };
-
-
 

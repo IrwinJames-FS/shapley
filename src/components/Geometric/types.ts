@@ -1,10 +1,11 @@
-import { BaseGeometryDefinitionElementProps, BaseGeometryDefinitionProps } from "../GeometryDefinition";
-import { SVGCanvasProps } from "../SVGCanvas";
-import { BaseGeomtryRefProps } from "../GeometryRef";
+import { GeometryDefinitionProps } from "../GeometryDefinition";
+import { BaseGeomtryRefProps, GeometryRefProps } from "../GeometryRef";
 import { Points } from "../../geometry";
-import { PStyle } from "../types";
-import { PathDefinitionComponents } from "../PathDefinition";
+import { PStyle, WithComponents } from "../types";
+import { BasePathDefinitionProps, PathDefinitionComponents } from "../PathDefinition";
+import { SVGCanvasProps } from "../SVGCanvas";
 
+export type GeometricProps = WithComponents<BaseGeometricProps & SVGCanvasProps & PStyle, GeometricComponents>;
 /**
  * The Base Geometric Props type provides an interface to interact with the SVG backing layer as well as its underlying components. 
  * 
@@ -14,11 +15,6 @@ import { PathDefinitionComponents } from "../PathDefinition";
  */
 export type BaseGeometricProps = {
 	/**
-	 * By setting this to true a clip path is not used to limit the shape.
-	 */
-	noclip?: boolean,
-
-	/**
 	 * If a pathId is provided this property should also be applied
 	 */
 	aspectRatio?: string
@@ -27,22 +23,18 @@ export type BaseGeometricProps = {
 	 * Multiple geometries can be rendered in a Geometric but only the first will be reference to define the viewbox. A custom viewbox can be provided.
 	 */
 	geometry?: Points | Points[]
-}
+} & Omit<BasePathDefinitionProps, "id"> & BaseGeomtryRefProps;
 
 export type GeometricComponents = {
 	/**
-	 * If custom use properties are necessary you can provide them here.
+	 * If definition &lt;path&gt;s are being defined props can be overriden using this property
 	 */
-	use?: BaseGeomtryRefProps
+	definition?: Omit<GeometryDefinitionProps, "geometry" | "components">
 
 	/**
-	 * If you have custom properties for the paths that are used to define the shape(s) you can provide them here. 
+	 * Reference &lt;use&gt; default props can be overriden. 
 	 */
-	def?: BaseGeometryDefinitionElementProps
+	reference?: Omit<GeometryRefProps, "src">
+	
 } & PathDefinitionComponents
 
-export type GeometricComponentsProp = {
-	components?: GeometricComponents
-}
-
-export type GeometricProps = GeometricComponentsProp & BaseGeometricProps & BaseGeomtryRefProps & Partial<Omit<BaseGeometryDefinitionProps, "geometry">> & SVGCanvasProps & PStyle;

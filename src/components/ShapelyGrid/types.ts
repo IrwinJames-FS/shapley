@@ -61,5 +61,12 @@ export type ShapelyGridProps = {
 	row?: string
 } & PStyle
 
+/**
+ * The Layout function is a method that provides the current index and column size.
+ * 
+ * the return method should return the [column, row, id?]
+ * 
+ * The id can be optional if only one geometry is used.
+ */
 export type ShapelyGridLayoutFn = (index: number, count: number) => [number, number] | [number, number, string]
 	
