@@ -25,10 +25,11 @@ const tsSourceFile = (file: SourceFile) => {
 <Meta title="${title}" />
 
 `;
-	for(const {kind, name, signature, comment, code, depth} of nodes) {
+	for(const {kind, name, signature, comment, code, depth, src} of nodes) {
 		doc += `<div className="doc-block" style={{marginLeft: '${depth*2}rem'}}>
 ${$dec`${kind}`}\n\n
 ${name ? $h(2+depth, name):''}
+${src ? `**Source:** ${src}\n`:''}
 ${$lbl('Signature', signature)}
 
 ${comment ?? ''}

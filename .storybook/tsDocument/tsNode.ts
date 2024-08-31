@@ -107,16 +107,22 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	const tsHref = (symbol: Symbol) => {
 		const nm = symbol.getName();
 		const src = symbol.getDeclarations()[0].getSourceFile().getFilePath();
-		if(!src.startsWith(__src)) return undefined;
-		return '/?path=/docs/' + src
-		.replace(__src+'/', '') //remove path up to source
-		.slice(0, -3) //remove the file extension
-		.replace(/\//g, '-') + `--docs#${nm.toLowerCase()}` //add the hyphen notation storybook uses
+		const pth = toPathDir(src, '', nm);
+		if(!pth) return undefined;
+		return pth
 	}
 
 	const tsLink = (name: string, href?:string, args?: Type[]) => {
 		return (href ? $a(href)`${name}`:$dec`${name}`)+((args && args.length) ? `&lt;${args.map(tsSignature)}&gt;`:'');
 	}
+
+	const tsSourceLink = (node: Node) => {
+		const src = node.getSourceFile().getFilePath();
+		const ln = node.getStartLineNumber()
+		const p = toPathDir(src, 'source', ''+ln);
+		if(!p) return undefined;
+		return `<a href="${p}">${src.replace(__src+'/', '')}(ln: ${ln})</a>`;
+	};
 
 	const signature = tsSignature(type);
 	return [{
@@ -125,12 +131,18 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		comment,
 		kind,
 		signature,
-		depth
+		depth,
+		src: tsSourceLink(node)
 	}];
 };
 
 const isPrivate = (node: Node) =>  Node.isJSDocable(node) && !!node.getJsDocs().find(d=>d.getTags().find(t=>t.getTagName() === "private"));
 
+const toPathDir = (filePath: string, name:string='', header: string='') => filePath.startsWith(__src) ? '/?path=/docs/' + filePath
+.replace(__src+'/', '')
+.slice(0, -3)
+.replace(/\//g, '-') + `${name ? '-'+name:''}--docs${header ? '#'+header:''}`
+:undefined;
 export const tsHref = (symbol: Symbol, name: string) => {
 	const fp = symbol.getDeclarations()[0].getSourceFile().getFilePath();
 	if(!fp.startsWith(__src)) return undefined; //Dont link to external types
