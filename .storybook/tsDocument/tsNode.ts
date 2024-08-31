@@ -54,7 +54,6 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		return [];
 	} 
 	const type = node.getType();
-	//if(Node.isPropertySignature(node)) console.log(name, kind, type);
 	const comment = Node.isJSDocable(node) ? node.getJsDocs().reduce((o,v)=>{
 		const cmt = v.getComment();
 		return o === cmt ? o:o+'\n'+cmt;
@@ -77,9 +76,8 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		: t.isUnion() ? t.getUnionTypes().map(tsSignature).join(' | ')
 		: t.isIntersection() ? t.getIntersectionTypes().map(tsSignature).join(' & ')
 		: t.isTuple() ? $wrap('[%]', t.getTupleElements().map(tsSignature).join(', '))
-		: tsSymbol(t) ?? noNameFound(t);
+		: tsSymbol(t) ?? undefined;
 	}
-	const noNameFound = (t:Type) => t.getText();
 	const tsFunction = ([signature]: Signature[]) => {
 		if(!signature) return undefined;
 		return `(${signature.getParameters().map(p=>`${p.getName()}: ${tsSignature(p.getValueDeclaration()!.getType())}`).join(', ')})=>${tsSignature(signature.getReturnType())}`
@@ -91,10 +89,12 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		}
 		const nm = symbol.getName();
 		if(nm.startsWith('__') || nm === name){
-			if(name==="PathDefinitionProps") console.log(nm, name, t.getText())
-			return tsFunction(t.getCallSignatures()) ?? selfSymbol;
+			const tsf = tsFunction(t.getCallSignatures())
+			if(!tsf){
+				return t.isAnonymous() ? selfSymbol:undefined;
+			}
+			return tsf;
 		}
-		if(name === 'rayDeg') console.log("Raydeg", nm)
 		const href = tsHref(symbol);
 		return tsLink(nm, href, t.getTypeArguments());
 	}
@@ -117,7 +117,7 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 	}
 
 	const tsLink = (name: string, href?:string, args?: Type[]) => {
-		return (href ? $a(href)`${name}`:$dec`${name}`)+((args && args.length) ? `&lt;${args.map(tsSignature)}&gt;`:'');
+		return (href ? $a(href)`${name}`:$dec`${name}`)+((args && args.length) ? `&lt;${args.map(tsSignature).filter(a=>a)}&gt;`:'');
 	}
 
 	const tsSourceLink = (node: Node) => {
@@ -128,8 +128,8 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 		return `<a href="${p}">${src.replace(__src+'/', '')}(ln: ${ln})</a>`;
 	};
 
-	const getGenerics = (node:Node)=>{
-		if(!Node.isTypeAliasDeclaration(node)) return undefined;
+	const getGenerics = ()=>{
+		if(!(Node.isTypeAliasDeclaration(node) || Node.isClassDeclaration(node) || Node.isInterfaceDeclaration(node))) return undefined;
 		const params = (node as TypeAliasDeclaration).getTypeParameters();
 		if(!params.length) return undefined;
 		return params.map(p=>{
@@ -137,19 +137,29 @@ export const tsNode = (node: Node, depth: number): TsNode[] => {
 			return $param`${p.getName()}`+`${constraint ? ' extends '+tsSignature(constraint):''}`
 		}).join(', ');
 	}
+
+	const getExtends = () => {
+		if(!(Node.isClassDeclaration(node) || Node.isInterfaceDeclaration(node))) return undefined;
+		
+		const constraint = node.getExtends()
+		if(!constraint) return undefined
+		return Array.isArray(constraint) ? constraint.map(c=>tsSignature(c.getType())).join(', '):tsSignature(constraint.getType())
+	};
+
 	const signature = tsSignature(type);
 	const optional = isOptional(node);
 	
 	return [{
 		id,
-		generics: getGenerics(node),
+		generics: getGenerics(),
 		name,
 		comment,
 		kind,
 		signature,
 		depth,
 		src: tsSourceLink(node),
-		optional
+		optional,
+		extension: getExtends()
 	}];
 };
 

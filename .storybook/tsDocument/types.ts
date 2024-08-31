@@ -9,4 +9,5 @@ export type TsNode = {
 	src?: string
 	optional: boolean
 	generics?: string
+	extension?: string
 }
