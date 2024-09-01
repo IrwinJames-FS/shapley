@@ -57,7 +57,7 @@ class Points {
 	 * Calling this property will trigger an iteration of points if the shape has not been measured since its last Mutation. That being said subsequent calls will not trigger additional iterations through the points.
 	 */
 	get viewBox() {
-		if(!this._vw) this.measure();
+		if(!this._vw)this.measure()
 		return this._vw;
 	}
 
@@ -102,8 +102,7 @@ class Points {
 	 */
 	public translate(point:Point):Points {
 		this.center.adding(point);
-		this.generator = translate(this.generator, point);
-		return this;
+		return this.applyGenerator(translate(this.generator, point));
 	}
 
 	/**
@@ -112,9 +111,7 @@ class Points {
 	 * @param point - The point to rotate around assumes 0,0 if no point is provided
 	 */
 	public rotate(angle: number){
-		this.generator = rotate(this.generator, angle, this.center);
-		
-		return this;
+		return this.applyGenerator(rotate(this.generator, angle, this.center));
 	}
 
 	/**
@@ -124,8 +121,7 @@ class Points {
 	 */
 	public scale(scaleFactor: Point){
 		this.center.multiplying(scaleFactor);
-		this.generator = scale(this.generator, scaleFactor);
-		return this;
+		return this.applyGenerator(scale(this.generator, scaleFactor));
 	}
 
 	/**
@@ -143,11 +139,8 @@ class Points {
 	 * @returns 
 	 */
 	public normalize(bounds: Rect = this.measure()){
-		
 		this.center.subtracting(bounds[0]);
-		console.log(this.center);
-		this.generator = normalize(this.generator, bounds);
-		return this;
+		return this.applyGenerator(normalize(this.generator, bounds))
 	}
 
 	/**
@@ -159,8 +152,7 @@ class Points {
 	 * @param cornerRadius 
 	 */
 	public round(cornerRadius: number | number[]){
-		this.generator = rounded(this.generator, cornerRadius);
-		return this;
+		return this.applyGenerator(rounded(this.generator, cornerRadius))
 	}
 
 	/**
@@ -170,11 +162,9 @@ class Points {
 	 */
 	public scaleByScalar(scalar: number){
 		const gen = this.generator;
-		function* rotator(){
+		return this.applyGenerator(function* rotator(){
 			for(const p of gen()) yield p.multiplyScalar(scalar);
-		}
-		this.generator = rotator;
-		return this;
+		});
 	}
 
 
@@ -191,12 +181,34 @@ class Points {
 		}
 		const size = max.subtract(min);
 		const [w, h] = size;
-		this._vw = $d`${min} ${size}`;
+		this._vw = `${min[0]} ${min[1]} ${size[0]} ${size[1]}`;
 		this._ar = w > h ? `${roundNumber(w/h, 3)} / 1`:`${roundNumber(h/w, 3)} / 1`;
 		this._bounds = [min, size, max];
 		return this._bounds!;
 	}
 
+	public precision(prec: number){
+		const gen = this.generator;
+		return this.applyGenerator(function* Precision(){
+			for(const p of gen()) yield p.precision(prec);
+		})
+	}
+
+	public invalidateDimensions(){
+		this._ar = undefined;
+		this._vw = undefined;
+		this._bounds = undefined;
+		return this;
+	}
+	public applyGenerator(gen: VertexGenerator) {
+		this.generator = gen;
+		return this.invalidateDimensions();
+	}
+
+	public shouldClose(close: boolean){
+		this.noClose = !close;
+		return this;
+	}
 	/**
 	 * Converts the shape to an array of points or Rounded Corners. 
 	 * @returns 

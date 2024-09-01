@@ -27,7 +27,7 @@ class Point extends Array<number>{
 
 	//this is a concession I am making for objects like rounded corners. and potential future special types. This allows the control point to be picked without redundant type checking
 	get control(){
-		return this;
+		return new Point(this.x, this.y);
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Point extends Array<number>{
 	 * @param point
 	 * @returns 
 	 */
-	public add([x,y]: SupportedPointMathTypes){
+	public add([x,y]: SupportedPointMathTypes):Point{
 		return new Point(this.x + x, this.y + y);
 	}
 
@@ -71,6 +71,15 @@ class Point extends Array<number>{
 		this.x += x;
 		this.y += y;
 		return this;
+	}
+
+	/**
+	 * Add a value to both coordinate values.
+	 * @param n 
+	 * @returns 
+	 */
+	public addScalar(n: number){
+		return new Point(this.x + n, this.y + n);
 	}
 
 	/**
@@ -92,6 +101,15 @@ class Point extends Array<number>{
 	}
 
 	/**
+	 * Subtracts a value from both coordinate values.
+	 * @param n 
+	 * @returns 
+	 */
+	public subtractScalar(n: number){
+		return new Point(this.x - n, this.y - n);
+	}
+
+	/**
 	 * Multiply this point by another point
 	 * @param point
 	 * @returns 
@@ -108,6 +126,15 @@ class Point extends Array<number>{
 		this.x *= x;
 		this.y *= y;
 		return this;
+	}
+
+	/**
+	 * Multiplies the point by a single value.
+	 * @param n 
+	 * @returns 
+	 */
+	public multiplyScalar(n: number){
+		return new Point(this.x * n, this.y * n);
 	}
 
 	/**
@@ -131,39 +158,11 @@ class Point extends Array<number>{
 	}
 
 	/**
-	 * Add a value to both coordinate values.
-	 * @param n 
-	 * @returns 
-	 */
-	addScalar(n: number){
-		return new Point(this.x + n, this.y + n);
-	}
-
-	/**
-	 * Subtracts a value from both coordinate values.
-	 * @param n 
-	 * @returns 
-	 */
-	subtractScalar(n: number){
-		return new Point(this.x - n, this.y - n);
-	}
-
-	/**
-	 * Multiplies the point by a single value.
-	 * @param n 
-	 * @returns 
-	 */
-	multiplyScalar(n: number){
-		return new Point(this.x * n, this.y * n);
-	}
-
-	
-	/**
 	 * Divides the point by a single value.
 	 * @param n 
 	 * @returns 
 	 */
-	divideScalar(n: number){
+	public divideScalar(n: number){
 		return new Point(this.x / n, this.y / n);
 	}
 
@@ -172,7 +171,7 @@ class Point extends Array<number>{
 	 * @param param0 
 	 * @returns 
 	 */
-	min([x, y]: SupportedPointMathTypes | RoundedCorner){
+	public min([x, y]: SupportedPointMathTypes | RoundedCorner){
 		return new Point(
 			Math.min(this.x, x),
 			Math.min(this.y, y)
@@ -184,7 +183,7 @@ class Point extends Array<number>{
 	 * @param param0 
 	 * @returns 
 	 */
-	max([x, y]: SupportedPointMathTypes | RoundedCorner){
+	public max([x, y]: SupportedPointMathTypes | RoundedCorner){
 		return new Point(
 			Math.max(this.x, x),
 			Math.max(this.y, y)
@@ -197,7 +196,7 @@ class Point extends Array<number>{
 	 * This method mutates the existing values
 	 * @param prec 
 	 */
-	precision(prec: number){
+	public precision(prec: number){
 		this.x = round(this.x, prec);
 		this.y = round(this.y, prec);
 		return this;
@@ -234,7 +233,7 @@ class Point extends Array<number>{
 	 * @param angle 
 	 * @returns 
 	 */
-	rotateAround(point: SupportedPointMathTypes, angle:number){
+	public rotateAround(point: SupportedPointMathTypes, angle:number){
 		const {angle:a, distance} = this.from(point);
 		return this.ray(a+angle, distance);
 	}
@@ -242,12 +241,12 @@ class Point extends Array<number>{
 	/**
 	 * This Class converts itself to a comma separated string. x, y and fixes the precision to 5 decimal points. 
 	 */
-	toString():string { return Point.toString(this)}
+	public toString():string { return Point.toString(this)}
 
 	/**
 	 * Returns the x and y values in an array.
 	 */
-	toArray(){return [this.x, this.y]}
+	public toArray(){return [this.x, this.y]}
 	//Static methods
 
 	

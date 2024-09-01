@@ -24,7 +24,7 @@ export const bufferIterator = (points: number[]):VertexGenerator => function*() 
  * @returns 
  */
 export const fromCircle = (stops: number, rotation: number=0, center: Point = Point.zero): VertexGenerator => function*(){
-	if(!stops) throw new Error("At least two stop must be requested");
+	if(stops < 2) throw new Error("At least two stop must be requested");
 	if(stops < 3) console.warn("The smallest polygon typically has 3 sides");
 	const delta = (Math.PI*2)/stops;
 	for(let i = 0; i<stops; i++) yield center.ray((delta*i)+rotation, 0.5);
@@ -76,18 +76,15 @@ export const scale = (gen: VertexGenerator, scaleFactor: Point): VertexGenerator
 export const rounded = (gen: VertexGenerator, cornerRadius: number | number[]): VertexGenerator => function*(){
 	const generator = gen();
 	let cursor = generator.next();
+	if(cursor.done) return;
 	let a = cursor.value;
-	if(cursor.done) {
-		yield a;
-		return; //cant round a single point
-	}
 	cursor = generator.next();
-	let b = cursor.value;
 	if(cursor.done) {
-		yield a;
-		yield b;
-		return; //cant really round two points either
+		yield a; //cant round a single point
+		return;
 	}
+	let b = cursor.value;
+	
 	const first = a;
 	const second = b;
 	let i = 1;
