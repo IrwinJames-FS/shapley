@@ -20,6 +20,10 @@ export type BaseGeometricProps = {
 	aspectRatio?: string
 	
 	/**
+	 * viewBox is an exising SVG Property however because it is passed as a base property later it seems we need to include it explicitly
+	 */
+	viewBox?: string //while this is defined in svg it wont be defined later on
+	/**
 	 * Multiple geometries can be rendered in a Geometric but only the first will be reference to define the viewbox. A custom viewbox can be provided.
 	 */
 	geometry?: Points | Points[]

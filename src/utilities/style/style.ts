@@ -33,8 +33,18 @@ export const standardizeValue = (value: string | number | undefined, unit:string
  ? value:value+unit
  :"none";
 
-
+/**
+ * By using the arguments as class names clsfy creates a space delimited list without leading or trailing spaces.
+ * @param names 
+ * @returns 
+ */
 export const clsfy = (...names: (string | undefined)[]): string => names.filter(n=>n).join(' ');
 
+/**
+ * Shadows are applied via filters. because of this the shadow is wrapped in a drop-shadow function. In addition this complies with the Hoverable type to allow for a change in shadow when an object is being hovered over.
+ * @param str 
+ * @returns 
+ */
 export const shadowfy = (str?: Hoverable<string>)=> str ? (Array.isArray(str) ? str:[str]).map(s=>s.split(',').map(v=>`drop-shadow(${v})`).join(' ')):"none";
+
 const toSnake = (str:string)=>str.replace(/[A-Z]/g, l=>'-'+l.toLowerCase());

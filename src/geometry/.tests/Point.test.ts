@@ -124,5 +124,24 @@ describe("Test the Point class to ensure it works as designed", () => {
 	test("Test Point to String Method", ()=>{
 		const s = Point.px(0,1)+'';
 		expect(s).toBe('0, 1');
-	})
+	});
+
+	test("Test Point to Array Method", ()=>{
+		const s = Point.px(0,1).toArray();
+		expect(s.length).toBe(2);
+		expect(s[0]).toBe(0);
+		expect(s[1]).toBe(1);
+	});
+
+	test("Test Point zero static method", ()=>{
+		const s = Point.zero;
+		expect(s.x).toBe(0);
+		expect(s.y).toBe(0);
+	});
+
+	test("Test Point control getter", ()=>{
+		const s = Point.zero.control;
+		expect(s.x).toBe(0);
+		expect(s.y).toBe(0);
+	});
 });

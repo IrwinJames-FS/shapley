@@ -39,6 +39,9 @@ const Geometry = <T extends ElementType="div">({
 		if(Array.isArray(geometry)){
 			aspectRatio = ar ?? geometry[0].aspectRatio;
 			viewBox = vb ?? geometry[0].viewBox; 
+		} else {
+			aspectRatio = ar ?? geometry?.aspectRatio;
+			viewBox = vb ?? geometry?.viewBox;
 		}
 	}
 	return (<El {...{
@@ -59,7 +62,7 @@ const Geometry = <T extends ElementType="div">({
 			borderColor,
 			borderWidth,
 			shadow,
-			pathId,
+			src:pathId,
 			className: clsfy(geometryClassName, 'shapely-geometric-bg'),
 			viewBox,
 			components,

@@ -4,7 +4,6 @@ import { __docs, __src } from "../constants";
 import path from "path";
 import { $code, $dec, $h, $lbl } from "./tsDecs";
 import fs from "fs";
-import { printCode } from "./utils";
 
 /**
  * Curates a series of nodes and displays them as a documentation file
@@ -47,7 +46,7 @@ ${code ? $code(code):''}
 	
 <Meta title="${title}/source" />
 
-${$code(printCode(file.getText()), true)}`);
+${$code(file.getText(), true)}`);
 }
 
 export default tsSourceFile;

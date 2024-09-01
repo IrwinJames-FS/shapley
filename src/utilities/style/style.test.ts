@@ -1,4 +1,4 @@
-import { clsfy, standardizeValue, vars } from "./style"
+import { clsfy, shadowfy, standardizeValue, vars } from "./style"
 
 describe("Test the styling methods", ()=>{
 	test("Test vars() appropriately converts object names", () => {
@@ -38,5 +38,14 @@ describe("Test the styling methods", ()=>{
 		const b = clsfy(a, "addt-class")
 		expect(a).toBe("test-class");
 		expect(b).toBe("test-class addt-class");
-	})
+	});
+
+	test("Test shadowfy to ensure it generate the appropate code for multiple shadows", () => {
+		const a = shadowfy('0 0 4px #000');
+		const b = shadowfy(['0 0 4px #000', '2px 2px 4px #000'])
+		const c = shadowfy();
+		expect(a).toStrictEqual(['drop-shadow(0 0 4px #000)']);
+		expect(b).toStrictEqual(['drop-shadow(0 0 4px #000)', 'drop-shadow(2px 2px 4px #000)']);
+		expect(c).toBe("none");
+	});
 })

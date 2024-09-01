@@ -43,16 +43,19 @@ const ShapelyGrid = <T extends ElementType="div">({
 	//handle all geometries as an array.
 	const gridTemplateColumns = `${columnPrefix ? columnPrefix+" ":""}repeat(${columns}, ${columnCell})${columnSuffix ? " "+columnSuffix:""}`;
 	const els = Children.map(children, (child: ReactElement<{className:string, children: ReactNode}>, i)=>{
-		const [column, row, t] = layout(i, columns)
-		const {props:{children, className, ...props}} = child;
-		const c = isValidElement(child) ? cloneElement(child, {
-			className: clsfy(className,'shapely-grid-cell'),
-			children: <>
-			<Geometric {...{src: t, bgColor, borderColor, borderWidth, shadow}} objectBounding/>
-			{children}
-			</>,
-			...props
-		}):child;
+		const [column, row, t] = layout(i, columns);
+		let c = child;
+		if(isValidElement(child)){
+			const {props:{children, className, ...props}} = child;
+			c = cloneElement(child, {
+				className: clsfy(className,'shapely-grid-cell'),
+				children: <>
+				<Geometric {...{src: t, bgColor, borderColor, borderWidth, shadow}} objectBounding/>
+				{children}
+				</>,
+				...props
+			});
+		}
 		return <div className="shapely-grid-cell-wrapper" style={{
 			...vars({
 				clipPath: `url(${t}-clip)`,

@@ -1,3 +1,4 @@
+import { round } from "./arithmetic";
 import Point from "./Point";
 import { SupportedPointMathTypes } from "./types";
 
@@ -7,26 +8,31 @@ import { SupportedPointMathTypes } from "./types";
  * 
  * Currently RoundedCorner does not replicate the full range of math from the 
  */
-class RoundedCorner extends Array<number> {
-	get x(){return this[0]}
-	set x(n: number){this[0] = n}
-	get y(){return this[1]}
-	set y(n: number){this[1] = n}
+class RoundedCorner extends Point {
 
+	/**
+	 * The starting x value of the curve.
+	 */
 	get sx(){return this[2]}
 	set sx(n: number){this[2] = n}
+
+	/**
+	 * The starting y value of the curve.
+	 */
 	get sy(){return this[3]}
 	set sy(n: number){this[3] = n}
 
+	/**
+	 * The ending x value of the curve.
+	 */
 	get ex(){return this[4]}
 	set ex(n: number){this[4] = n}
-	get ey(){return this[5]}
-	set ey(n: number){this[5] = n}
 
 	/**
-	 * Creates a Point from the x and y control coordinates (the first two points in the array).
+	 * The ending y value of the curve.
 	 */
-	get control(){return new Point(this.x, this.y);}
+	get ey(){return this[5]}
+	set ey(n: number){this[5] = n}
 
 	/**
 	 * Stores the *start*, *control*, and *end* points to a flat array.
@@ -37,7 +43,8 @@ class RoundedCorner extends Array<number> {
 	 * @param param2 
 	 */
 	constructor([sx, sy]: SupportedPointMathTypes, [x,y]: SupportedPointMathTypes, [ex, ey]: SupportedPointMathTypes){
-		super(x, y, sx, sy, ex,ey)
+		super(x, y)
+		this.push(sx, sy, ex, ey);
 	}
 
 	/**
@@ -45,7 +52,7 @@ class RoundedCorner extends Array<number> {
 	 * @param param0 
 	 * @returns 
 	 */
-	add([x, y]: SupportedPointMathTypes){
+	override add([x, y]: SupportedPointMathTypes){
 		return new RoundedCorner(
 			[this.sx + x, this.sy + y],
 			[this.x + x, this.y + y],
@@ -54,11 +61,36 @@ class RoundedCorner extends Array<number> {
 	}
 
 	/**
+	 * Adds the x and y values of the provided **Point** or **array** to the the three stored points.
+	 * @param param0 
+	 * @returns 
+	 */
+	override adding([x,y]:SupportedPointMathTypes){
+		this.x += x;
+		this.sx += x;
+		this.ex += x;
+
+		this.y += y;
+		this.sy += y;
+		this.ey += y;
+		return this;
+	}
+
+	/**
+	 * Adds a single value to all the points stored in the **RoundedCorner**.
+	 * @param n 
+	 * @returns 
+	 */
+	override addScalar(n: number) {
+		return this.add([n,n]);
+	}
+
+	/**
 	 * Subtracts the x and y values of the provided **Point** or **array** from the three stored points.
 	 * @param param0 
 	 * @returns 
 	 */
-	subtract([x, y]: SupportedPointMathTypes){
+	override subtract([x, y]: SupportedPointMathTypes){
 		return new RoundedCorner(
 			[this.sx - x, this.sy - y],
 			[this.x - x, this.y - y],
@@ -67,11 +99,36 @@ class RoundedCorner extends Array<number> {
 	}
 
 	/**
+	 * Subtracts the **x** and **y** values provided from the points stored in the **RoundedCorner**
+	 * @param param0 
+	 * @returns 
+	 */
+	override subtracting([x, y]: SupportedPointMathTypes) {
+		this.x -= x;
+		this.sx -= x;
+		this.ex -= x;
+
+		this.y -= y;
+		this.sy -= y;
+		this.ey -= y;
+		return this;
+	}
+
+	/**
+	 * Subtracts the **x** and **y** values provided from the points stored in the **RoundedCorner**
+	 * @param n 
+	 * @returns 
+	 */
+	override subtractScalar(n: number) {
+		return this.subtract([n,n]);
+	}
+
+	/**
 	 * Multiplies the x and y values of the provided **Point** or **array** from the three stored points.
 	 * @param param0 
 	 * @returns 
 	 */
-	multiply([x, y]: SupportedPointMathTypes){
+	override multiply([x, y]: SupportedPointMathTypes){
 		return new RoundedCorner(
 			[this.sx * x, this.sy * y],
 			[this.x * x, this.y * y],
@@ -80,11 +137,27 @@ class RoundedCorner extends Array<number> {
 	}
 
 	/**
+	 * Multiplies the **x** and **y** values of the provided **Point** or **array** by the three stored points.
+	 * @param param0 
+	 * @returns 
+	 */
+	override multiplying([x, y]: SupportedPointMathTypes) {
+		this.x *= x;
+		this.sx *= x;
+		this.ex *= x;
+
+		this.y *= y;
+		this.sy *= y;
+		this.ey *= y;
+		return this;
+	}
+	
+	/**
 	 * Multiplies the three stored points by the provided scalar value.
 	 * @param n 
 	 * @returns 
 	 */
-	multiplyScalar(n: number){
+	override multiplyScalar(n: number){
 		return new RoundedCorner(
 			[this.sx * n, this.sy * n],
 			[this.x * n, this.y * n],
@@ -97,7 +170,7 @@ class RoundedCorner extends Array<number> {
 	 * @param param0 
 	 * @returns 
 	 */
-	divide([x, y]: SupportedPointMathTypes){
+	override divide([x, y]: SupportedPointMathTypes){
 		return new RoundedCorner(
 			[this.sx / x, this.sy / y],
 			[this.x / x, this.y / y],
@@ -106,12 +179,37 @@ class RoundedCorner extends Array<number> {
 	}
 
 	/**
+	 * Divides the stored points by the **x** and **y** values of the provided **Point** or **array** without creating an instance.
+	 * @param param0 
+	 * @returns 
+	 */
+	override dividing([x, y]: SupportedPointMathTypes) {
+		this.x /= x;
+		this.sx /= x;
+		this.ex /= x;
+
+		this.y /= y;
+		this.sy /= y;
+		this.ey /= y;
+		return this;
+	}
+
+	/**
+	 * Divides the stored points by the **x** and **y** values provided by the **Point** or **array**.
+	 * @param n 
+	 * @returns 
+	 */
+	override divideScalar(n: number) {
+		return this.divide([n,n]);
+	}
+
+	/**
 	 * Rotates the three stored points around a provided **Point** or **array** by a provided angle.
 	 * @param point 
 	 * @param angle 
 	 * @returns 
 	 */
-	rotateAround(point: SupportedPointMathTypes, angle:number){
+	override rotateAround(point: SupportedPointMathTypes, angle:number){
 		return new RoundedCorner(
 			Point.px(this.sx, this.sy).rotateAround(point, angle),
 			Point.px(this.x, this.y).rotateAround(point, angle),
@@ -119,17 +217,27 @@ class RoundedCorner extends Array<number> {
 		)
 	}
 
+	override precision(prec: number) {
+		this.x = round(this.x, prec);
+		this.y = round(this.y, prec);
+		this.sx = round(this.sx, prec);
+		this.sy = round(this.sy, prec);
+		this.ex = round(this.ex, prec);
+		this.ey = round(this.ey, prec);
+		return this;
+	}
+
 	/**
 	 * Converts the three points into an initial point and a Subsequent Q Command to curve a corner.
 	 * @returns 
 	 */
-	toString(){ return `${Point.toString([this.sx, this.sy])} Q ${Point.toString([this.x, this.y])} ${Point.toString([this.ex, this.ey])}`;}
+	override toString(){ return `${Point.toString([this.sx, this.sy])} Q ${Point.toString([this.x, this.y])} ${Point.toString([this.ex, this.ey])}`;}
 
 	/**
 	 * Returns a flat array of points essencially ejecting the values. 
 	 * @returns 
 	 */
-	toArray(){ return [this.x, this.y, this.sx, this.sy, this.ex, this.ey] }
+	override toArray(){ return [this.x, this.y, this.sx, this.sy, this.ex, this.ey] }
 }
 
 export default RoundedCorner;
