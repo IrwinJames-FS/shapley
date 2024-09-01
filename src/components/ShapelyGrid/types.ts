@@ -17,7 +17,7 @@ export type ShapelyGridProps = {
 	/**
 	 * This is the number of fractional units that dimension should span in gridRowEnd and gridColumnEnd.
 	 */
-	cellSize: [number, number]
+	cellSize?: [number, number]
 
 	/**
 	 * This value is the representation of the cell width in fractional units this will be used within a repeat function to generate the columnTemplate

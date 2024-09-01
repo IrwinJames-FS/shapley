@@ -9,7 +9,7 @@ import { Points, toRad } from "../../geometry";
  * @returns 
  */
 const Polygonic: FC<PolygonicProps> = ({
-	sides,
+	sides=3,
 	rotation=0,
 	cornerRadius=0,
 	...props

@@ -29,5 +29,5 @@ export type HexagonGridProps = {
 	/**
 	 * The distance between each cell
 	 */
-	gap: CSSNumeric | [CSSNumeric | CSSNumeric]
+	gap?: CSSNumeric | [CSSNumeric | CSSNumeric]
 } & PStyle

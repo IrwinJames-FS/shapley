@@ -10,7 +10,7 @@ import { Points, toRad } from "../../geometry";
  */
 const Polygon = <T extends ElementType="div">({
 	as,
-	sides,
+	sides=3,
 	rotation=0,
 	cornerRadius=0,
 	...props

@@ -6,7 +6,7 @@ export type BasePolygonicProps = {
 	/**
 	 * The number of sides the polygon should have
 	 */
-	sides: number,
+	sides?: number,
 
 	/**
 	 * The degrees the polygon should be rotated

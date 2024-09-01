@@ -2,7 +2,9 @@ import { round } from "../arithmetic";
 import Point from "../Point";
 import Points from "../Points";
 
+const warnlog = console.warn.bind(console.warn);
 describe("Test Points class to ensure its working properly", ()=>{
+	beforeAll(()=>console.warn=()=>{});
 	test("Test Points Point Initialization Method", ()=>{
 		const points = new Points([
 			0.5, 0,
@@ -187,4 +189,5 @@ describe("Test Points class to ensure its working properly", ()=>{
 		expect(bounds).toStrictEqual([[-0.5, -0.5], [1,1], [0.5, 0.5]]);
 		expect(b).toStrictEqual([[-0.5, -0.5], [1,1], [0.5, 0.5]]);
 	});
+	afterAll(()=>console.warn=warnlog);
 });
