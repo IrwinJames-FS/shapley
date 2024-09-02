@@ -3,6 +3,7 @@ import { PolygonProps } from "./types";
 import Polygon from "./Polygon";
 import Preview from "../Preview";
 import { PolyMorphic } from "../types";
+import { useEffect, useRef, useState } from "react";
 
 type Poly = PolyMorphic<PolygonProps, "div">
 export default {
@@ -21,6 +22,28 @@ const defaultProps: Partial<Poly> = {
 	cornerRadius: 0.05
 }
 
+export const Growing: Story = {
+	render: () => {
+		const d = 0.005
+		const [[sides, rotation], setSides] = useState([3, 0]);
+		const dir = useRef(d);
+		useEffect(()=>{
+			let animId = -1;
+
+			const renderShape = (time:number=0) => {
+				setSides(([s])=>[s+dir.current, ((time/1e3)%360)*Math.PI/180]);
+				animId = window.requestAnimationFrame(renderShape);
+			}
+			renderShape();
+			return () => window.cancelAnimationFrame(animId);
+		}, [])
+		useEffect(()=>{
+			if(sides >= 8) dir.current = -d;
+			else if(sides <= 3) dir.current = d;
+		}, [sides])
+		return <Polygon sides={sides} rotation={rotation} cornerRadius={0.01} bgColor="rgb(28,128,248)" borderColor="#000" shadow="0 0 4px #000" borderWidth={0.01}>Shapely</Polygon>
+	}
+}
 export const Triangle: Story = {
 	args: {
 		sides: 3,

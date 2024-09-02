@@ -1,8 +1,6 @@
 import { FC } from "react";
 import { SVGCanvasProps } from "./types";
 import { clsfy } from "../../utilities";
-
-import './style.scss';
 /**
  * The SVGCanvas is an SVG element that does not preserveAspectRatio. 
  * 

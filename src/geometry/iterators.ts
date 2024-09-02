@@ -27,7 +27,7 @@ export const fromCircle = (stops: number, rotation: number=0, center: Point = Po
 	if(stops < 2) throw new Error("At least two stop must be requested");
 	if(stops < 3) console.warn("The smallest polygon typically has 3 sides");
 	const delta = (Math.PI*2)/stops;
-	for(let i = 0; i<stops; i++) yield center.ray((delta*i)+rotation, 0.5);
+	for(let i = 0; i<stops; i+= Math.min(stops-i, 1)) yield center.ray((delta*i)+rotation, 0.5);
 }
 
 /*
