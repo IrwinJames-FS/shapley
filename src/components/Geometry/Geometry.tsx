@@ -23,6 +23,7 @@ const Geometry = <T extends ElementType="div">({
 	shadow,
 	pathId,
 	style={},
+	pstyle={},
 	components: {
 		svg:{
 			className: geometryClassName ="",
@@ -66,6 +67,7 @@ const Geometry = <T extends ElementType="div">({
 			className: clsfy(geometryClassName, 'shapely-geometric-bg'),
 			viewBox,
 			components,
+			...pstyle,
 			...shapeProps
 		}}/>
 		{children}

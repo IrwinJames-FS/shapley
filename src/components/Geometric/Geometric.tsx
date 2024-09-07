@@ -3,7 +3,7 @@ import GeometryDefinition from "../GeometryDefinition";
 import SVGCanvas from "../SVGCanvas";
 import { FC } from "react";
 import { GeometricProps } from "./types";
-import { clsfy, shadowfy, vars } from "../../utilities";
+import { clsfy, shadowfy} from "../../utilities";
 import './style.scss';
 import GeometryRef from "../GeometryRef";
 
@@ -14,13 +14,10 @@ const Geometric: FC<GeometricProps> = ({
 	geometry, 
 	className,
 	style={},
-	bgColor,
-	borderColor,
-	borderWidth,
 	shadow,
 	src:pathId,
 	objectBounding,
-	noclip,
+	clip,
 	defs,
 	viewBox,
 	components: {
@@ -46,28 +43,22 @@ const Geometric: FC<GeometricProps> = ({
 		: (multiple ? geometry[0]:geometry)?.viewBox 
 		?? '-0.5 -0.5 1 1',
 		style: {
-			...vars({
-				shadow: shadowfy(shadow)
-			}),
+			...shadowfy(shadow),
 			...style
 		},
 		defs:geometry ? (<>
 		{defs}
-		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, noclip, components:{clipPath}, objectBounding, ...definition}}/>):<GeometryDefinition {...{geometry, id, noclip, components:{clipPath}, objectBounding, ...definition}}/>}
+		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, clip, components:{clipPath}, objectBounding, ...definition}}/>):<GeometryDefinition {...{geometry, id, clip, components:{clipPath}, objectBounding, ...definition}}/>}
 		</>):defs,
 		...svg
 	}}>
 		{multiple ? geometry.map((_, i)=><GeometryRef key={i} {...{
 			src:src+'-'+i,
-			bgColor,
-			borderColor,
-			borderWidth,
+			clip,
 			...reference,
 		}}/>): <GeometryRef {...{
 			src,
-			bgColor,
-			borderColor,
-			borderWidth,
+			clip,
 			...reference
 		}}/>}
 	</SVGCanvas>):undefined;

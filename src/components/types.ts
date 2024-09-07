@@ -26,16 +26,20 @@ export type CSSNumeric =
  * Numbers are automatically converted to a px value
  */
 number 
+
+
 /**
  * Strings are treated with as raw css
  */
 | string
 
-export type PStyle = {
-	bgColor?: Hoverable<string>
-	borderColor?: Hoverable<string>
-	borderWidth?: Hoverable<CSSNumeric>
-	shadow?: Hoverable<string>
+type PathComponent = ComponentPropsWithoutRef<"use">
+export type PStyle = Pick<PathComponent, "fill" | "stroke" | "strokeWidth"> & {shadow?: string};
+
+
+
+export type PStyled = {
+	pstyle?: PStyle
 }
 
 

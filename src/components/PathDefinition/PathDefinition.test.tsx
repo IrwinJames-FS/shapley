@@ -23,10 +23,5 @@ describe("Test Path Definition", () => {
 		expect(path.getAttribute("clipPathUnits")).toBe("objectBoundingBox");
 	});
 
-	test("Test rendered path properties with noclip enabled", () => {
-		render(<PathDefinition data-testid="test-path" id="test-path" d="M 0, 0 L 1, 0 L 0.5, 1z" noclip/>);
-		const path = screen.getByTestId("test-path").nextElementSibling; //if it passed previous no reason to believe it wont work here
-		expect(path).toBeNull()
-	});
 	afterAll(()=>console.error = errlog);
 });

@@ -16,12 +16,12 @@ describe("Test Points class to ensure its working properly", ()=>{
 
 	test("Test from circle initializer", ()=>{
 		const points = Points.fromCircle(3, Math.PI)
-		expect(''+points).toBe("M 0, -0.5 L -0.43301, 0.25 L 0.43301, 0.25z");
+		expect(''+points).toBe("M 0, -50 L -43.30127, 25 L 43.30127, 25z");
 	});
 
 	test("Test translate", () => {
 		const points = Points.fromCircle(4).translate(Point.px(2,2));
-		const pnts = [2,2.5,2.5,2,2,1.5,1.5,2];
+		const pnts = [2,52,52,2,2,-48,-48,2];
 		for(const [x,y] of points.generator()){
 			const a = pnts.shift();
 			const b = pnts.shift();
@@ -32,7 +32,7 @@ describe("Test Points class to ensure its working properly", ()=>{
 
 	test("Test rotate", () => {
 		const points = Points.fromCircle(4).rotate(Math.PI/2);
-		const pnts = [0.5,0.5,0.5,-0.5,-0.5,-0.5, -0.5,0.5];
+		const pnts = [50,50,50,-50,-50,-50, -50,50];
 		for(const [x,y] of points.generator()){
 			const a = pnts.shift();
 			const b = pnts.shift();
@@ -43,7 +43,7 @@ describe("Test Points class to ensure its working properly", ()=>{
 
 	test("Test scale", () => {
 		const points = Points.fromCircle(4).scale(Point.px(2,2));
-		const pnts = [0,1,1,0,0,-1,-1,-0]
+		const pnts = [0,100,100,0,0,-100,-100,-0]
 		for(const [x,y] of points.generator()){
 			const a = pnts.shift();
 			const b = pnts.shift();
@@ -116,7 +116,7 @@ describe("Test Points class to ensure its working properly", ()=>{
 	test("Test round", () => {
 		const points = Points.fromCircle(4).round(0.1);
 		const rpts = points.toArray().flatMap(r=>r.precision(5));
-		const pts = [0.5,0,0.42929,0.07071,0.42929,-0.07071,0,-0.5,0.07071,-0.42929,-0.07071,-0.42929,-0.5,-0,-0.42929,-0.07071,-0.42929,0.07071,0,0.5, -0.07071,0.42929,  0.07071,  0.42929];
+		const pts = [50,0, 49.92929, 0.07071, 49.92929,-0.07071,0,-50,0.07071,-49.92929,-0.07071,-49.92929,-50,-0,-49.92929,-0.07071,-49.92929,0.07071,0,50, -0.07071,49.92929,  0.07071,  49.92929];
 		expect(rpts).toStrictEqual(pts);
 	});
 
@@ -124,13 +124,13 @@ describe("Test Points class to ensure its working properly", ()=>{
 	test("Test round with custom rounding", () => {
 		const points = Points.fromCircle(4).round([0.1, 0.1, 0.1]);
 		const rpts = points.toArray().flatMap(r=>r.precision(5));
-		const pts = [0.5,0,0.42929,0.07071,0.42929,-0.07071,0,-0.5,0.07071,-0.42929,-0.07071,-0.42929,-0.5,-0,-0.5,-0,-0.5,-0,0,0.5, -0.07071,0.42929,0.07071,0.42929]
+		const pts = [50,0,49.92929,0.07071,49.92929,-0.07071,0,-50,0.07071,-49.92929,-0.07071,-49.92929,-50,-0,-50,-0,-50,-0,0,50, -0.07071,49.92929,0.07071,49.92929]
 		expect(rpts).toStrictEqual(pts);
 	});
 
 	test("Test scale by scalar", () => {
 		const points = Points.fromCircle(4).scaleByScalar(2);
-		const pnts = [0,1,1,0,0,-1,-1,-0]
+		const pnts = [0,100,100,0,0,-100,-100,-0]
 		for(const [x,y] of points.generator()){
 			const a = pnts.shift();
 			const b = pnts.shift();
@@ -143,27 +143,27 @@ describe("Test Points class to ensure its working properly", ()=>{
 		const points = Points.fromCircle(3).precision(5)
 		const rect = points.measure().flatMap(a=>a);
 		const rect2 = points.rotate(Math.PI/2).precision(5).measure().flatMap(a=>a);
-		expect(rect).toStrictEqual([-0.43301,-0.25,0.86602,0.75,0.43301,0.5]);
-		expect(rect2).toStrictEqual([-0.68301,-0.68301,1.18301,1.18301,0.5,0.5]);
+		expect(rect).toStrictEqual([-43.30127,-25,86.60254,75,43.30127,50]);
+		expect(rect2).toStrictEqual([-68.30127,-68.30127,118.30127,118.30127,50,50]);
 		
 	});
 
 	test("Test toString", () => {
 		const d = Points.fromCircle(4).toString();
-		expect(d).toBe("M 0, 0.5 L 0.5, 0 L 0, -0.5 L -0.5, 0z");
+		expect(d).toBe("M 0, 50 L 50, 0 L 0, -50 L -50, 0z");
 	});
 
 	test("Test toString with noClose", () => {
 		const d = Points.fromCircle(4).shouldClose(false).toString();
-		expect(d).toBe("M 0, 0.5 L 0.5, 0 L 0, -0.5 L -0.5, 0");
+		expect(d).toBe("M 0, 50 L 50, 0 L 0, -50 L -50, 0");
 	});
 
 	test("Test the viewBox", () => {
 		const points = Points.fromCircle(4)
 		const viewBox = points.viewBox;
 		const vb = points.viewBox;
-		expect(viewBox).toBe('-0.5 -0.5 1 1');
-		expect(vb).toBe('-0.5 -0.5 1 1');
+		expect(viewBox).toBe('-50 -50 100 100');
+		expect(vb).toBe(viewBox); //verify that vb is equal to viewBox
 	});
 
 	test("Test aspectRatio", () => {
@@ -178,16 +178,16 @@ describe("Test Points class to ensure its working properly", ()=>{
 		const points = Points.fromCircle(4)
 		const viewInfo = points.viewInfo;
 		const info = points.viewInfo;
-		expect(viewInfo).toStrictEqual(['1 / 1', '-0.5 -0.5 1 1'])
-		expect(info).toStrictEqual(['1 / 1', '-0.5 -0.5 1 1'])
+		expect(viewInfo).toStrictEqual(['1 / 1', '-50 -50 100 100'])
+		expect(info).toStrictEqual(viewInfo)
 	});
 	
 	test("Test the bounds", () => {
 		const points = Points.fromCircle(4)
 		const bounds = points.bounds;
 		const b = points.bounds;
-		expect(bounds).toStrictEqual([[-0.5, -0.5], [1,1], [0.5, 0.5]]);
-		expect(b).toStrictEqual([[-0.5, -0.5], [1,1], [0.5, 0.5]]);
+		expect(bounds).toStrictEqual([[-50, -50], [100,100], [50, 50]]);
+		expect(b).toStrictEqual(bounds);
 	});
 	afterAll(()=>console.warn=warnlog);
 });
