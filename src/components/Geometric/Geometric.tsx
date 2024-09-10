@@ -17,9 +17,12 @@ const Geometric: FC<GeometricProps> = ({
 	shadow,
 	src:pathId,
 	objectBounding,
-	clip,
+	clipped,
 	defs,
 	viewBox,
+	fill,
+	stroke,
+	strokeWidth,
 	components: {
 		reference,
 		definition,
@@ -48,17 +51,23 @@ const Geometric: FC<GeometricProps> = ({
 		},
 		defs:geometry ? (<>
 		{defs}
-		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, clip, components:{clipPath}, objectBounding, ...definition}}/>):<GeometryDefinition {...{geometry, id, clip, components:{clipPath}, objectBounding, ...definition}}/>}
+		{multiple ? geometry.map((g, i)=><GeometryDefinition key={i} {...{geometry:g, id:id+'-'+i, clipped, components:{clipPath}, objectBounding, ...definition}}/>):<GeometryDefinition {...{geometry, id, clipped, components:{clipPath}, objectBounding, ...definition}}/>}
 		</>):defs,
 		...svg
 	}}>
 		{multiple ? geometry.map((_, i)=><GeometryRef key={i} {...{
+			fill,
+			stroke,
+			strokeWidth,
 			src:src+'-'+i,
-			clip,
+			clipped,
 			...reference,
 		}}/>): <GeometryRef {...{
+			fill,
+			stroke,
+			strokeWidth,
 			src,
-			clip,
+			clipped,
 			...reference
 		}}/>}
 	</SVGCanvas>):undefined;

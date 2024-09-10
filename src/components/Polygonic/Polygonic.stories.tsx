@@ -12,9 +12,9 @@ export default {
 type Story = StoryObj<PolygonicProps>;
 
 const defaultProps: Partial<PolygonicProps> = {
-	bgColor: 'rgb(28,128,248)',
-	borderColor: '#000',
-	borderWidth: 0.01,
+	fill: 'rgb(28,128,248)',
+	stroke: '#000',
+	strokeWidth: 2,
 	shadow: '0 0 4px #000',
 	cornerRadius: 0.05
 };

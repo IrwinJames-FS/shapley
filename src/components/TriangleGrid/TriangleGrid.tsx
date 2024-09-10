@@ -31,7 +31,7 @@ const TriangleGrid = <T extends ElementType = "div">({
 		cellSize: horizontal ? [1,2]:[2, 1],
 		columnCell: '1fr',
 		columnSuffix: '1fr',
-		aspectRatio: '1.1547 / 1',
+		aspectRatio: horizontal ? '2638827906662401 / 3047056004513266':'3047056004513267 / 2638827906662401',
 		layout: (i, c) => {
 			const x = i%c;
 			const y = Math.floor(i/c)

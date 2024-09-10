@@ -15,10 +15,12 @@ export default {
 type Story = StoryObj<Poly>;
 
 const defaultProps: Partial<Poly> = {
-	bgColor: 'rgb(28,128,248)',
-	borderColor: '#000',
-	borderWidth: 0.01,
-	shadow: '0 0 4px #000',
+	style: {
+		backgroundColor: 'rgb(28,128,248)',
+		borderColor: "#000",
+		borderWidth: 2,
+		boxShadow: "0 0 4px #000",
+	},
 	cornerRadius: 0.05
 }
 
@@ -41,7 +43,7 @@ export const Growing: Story = {
 			if(sides >= 8) dir.current = -d;
 			else if(sides <= 3) dir.current = d;
 		}, [sides])
-		return <Polygon sides={sides} rotation={rotation} cornerRadius={0.01} bgColor="rgb(28,128,248)" borderColor="#000" shadow="0 0 4px #000" borderWidth={0.01}>Shapely</Polygon>
+		return <div style={{height: '25rem', margin: '10rem'}}><Polygon sides={sides} rotation={rotation} cornerRadius={0.01} {...defaultProps}>Shapely</Polygon></div>
 	}
 }
 export const Triangle: Story = {

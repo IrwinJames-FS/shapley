@@ -38,10 +38,13 @@ export const Heart: Story = {
 			0.2,
 			0.15
 		]),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style:{
+			backgroundColor: 'rgb(28,128,248)',
+			borderColor: '#000',
+			borderWidth: 0.02,
+			boxShadow: "0 0 4px #000",
+		},
+		
 		children: <h1>Heart</h1>
 	}
 };
@@ -49,10 +52,12 @@ export const Heart: Story = {
 export const Triangle: Story = {
 	args: {
 		geometry: Points.fromCircle(3, Math.PI),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			borderWidth: 2,
+			borderColor: '#000',
+			boxShadow: '0 0 4px #000'
+		},
 		children: <h1>Triangle</h1>
 	}
 };
@@ -60,10 +65,12 @@ export const Triangle: Story = {
 export const Diamond: Story = {
 	args: {
 		geometry: Points.fromCircle(4, Math.PI),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			borderColor: "#000",
+			borderWidth: 2,
+			boxShadow: "0 0 4px #000",
+		},
 		children: <h1>Diamond</h1>
 	}
 };
@@ -71,10 +78,12 @@ export const Diamond: Story = {
 export const Pentagon: Story = {
 	args: {
 		geometry: Points.fromCircle(5, Math.PI),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			borderColor: "#000",
+			borderWidth: 2,
+			boxShadow: "0 0 4px #000",
+		},
 		children: <h1>Pentagon</h1>
 	}
 };
@@ -82,10 +91,12 @@ export const Pentagon: Story = {
 export const Hexagon: Story = {
 	args: {
 		geometry: Points.fromCircle(6, Math.PI),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			borderColor: "#000",
+			borderWidth: 2,
+			boxShadow: "0 0 4px #000",
+		},
 		children: <h1>Hexagon</h1>
 	}
 };
@@ -93,10 +104,12 @@ export const Hexagon: Story = {
 export const Heptagon: Story = {
 	args: {
 		geometry: Points.fromCircle(7, Math.PI),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			borderColor: "#000",
+			borderWidth: 2,
+			boxShadow: "0 0 4px #000",
+		},
 		children: <h1>Heptagon</h1>
 	}
 };
@@ -104,10 +117,12 @@ export const Heptagon: Story = {
 export const Octagon: Story = {
 	args: {
 		geometry: Points.fromCircle(8, Math.PI),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			borderColor: "#000",
+			borderWidth: 2,
+			boxShadow: "0 0 4px #000",
+		},
 		children: <h1>Octagon</h1>
 	}
 };
@@ -118,16 +133,17 @@ export const Star: Story = {
 			const g1 = fromCircle(5, Math.PI)();
 			const g2 = fromCircle(5, Math.PI + (Math.PI/5))();
 			for(const p of g1) {
-				
 				yield p;
 				const d = g2.next().value;
 				yield d.multiplyScalar(0.4);
 			}
 		}),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: "#000",
-		borderWidth: 0.01,
-		shadow: "0 0 4px #000",
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			borderColor: "#000",
+			borderWidth: 2,
+			boxShadow: "0 0 4px #000",
+		},
 		children: <h1>Star</h1>
 	}
 };
