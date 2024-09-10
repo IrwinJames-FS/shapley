@@ -4,7 +4,6 @@ import Geometric from "./Geometric";
 import Preview from "../Preview";
 import { fromCircle, Points } from "../../geometry";
 import { CSSPropertiesPlusVars } from "../types";
-import './Geometric.stories.scss';
 
 export default {
 	title: "Components/Geometric",
@@ -31,26 +30,18 @@ export const TriangleLattice: Story = {
 			0.5, 2,
 			0,1
 		], true),
-		bgColor: 'transparent',
-		borderColor: '#000',
-		borderWidth: 0.1,
-		noclip: true,
+		fill: 'transparent',
+		stroke: '#000',
+		strokeWidth: 0.1,
 		style: {
 			'--aspect-ratio': `1/2`,
 			flexGrow: 0,
 			width: '400px',
-			backgroundColor: 'rgb(28,128,248)'
 		} as CSSPropertiesPlusVars,
+		clipped: true
 	}
 }
-/**
- * Using the lattice generated in the previous story heres the repeating resul
- */
-export const TriLatticeResult: Story = {
-	render: ()=>{
-		return (<div id="tri-lattice"></div>)
-	}
-}
+
 const [mx, my] = [-0.433012716284439, -0.75];
 const [Mx, My] = [0.433012716284439, 0.75];
 const [w, h] = [0.866025432568878, 1.5];
@@ -68,27 +59,19 @@ export const HexagonLattice: Story = {
 			Mx,my+0.5,
 			0, my+0.25			
 		], true),
-		bgColor: 'transparent',
-		borderColor: '#000',
-		borderWidth: 0.1,
-		noclip: true,
+		fill:"transparent",
+		stroke: '#000',
+		strokeWidth: 0.1,
 		viewBox: `${mx} ${my} ${w} ${h}`,
+		
 		style: {
 			'--aspect-ratio': `${w}/${h}`,
 			flexGrow: 0,
 			width: '400px',
-			backgroundColor: 'rgb(28,128,248)'
 		} as CSSPropertiesPlusVars,
 	}
 	
 }
-
-export const HexLatticeResult: Story = {
-	render: ()=>{
-		return (<div id="hex-lattice"></div>)
-	}
-}
-
 
 export const Logo: Story = {
 	args: {
@@ -252,7 +235,7 @@ export const Logo: Story = {
 			width: '400px',
 			height: '200px',
 		} as CSSPropertiesPlusVars,
-		bgColor: '#000',
+		fill: '#000',
 	}
 }
 export const Triangle: Story = {
@@ -260,8 +243,9 @@ export const Triangle: Story = {
 		geometry: Points
 		.fromCircle(3, Math.PI)
 		.round(0.1),
-		bgColor: "rgb(28,128,248)",
-		borderColor: "#000",
+		fill: "rgb(28,128,248)",
+		stroke: "#000",
+		strokeWidth: 10,
 		shadow: "0 0 4px #000"
 	}
 }
@@ -271,8 +255,9 @@ export const Diamond: Story = {
 		geometry: Points
 		.fromCircle(4, Math.PI)
 		.round(0.1),
-		bgColor: "rgb(28,128,248)",
-		borderColor: "#000",
+		fill: "rgb(28,128,248)",
+		stroke: "#000",
+		strokeWidth: 10,
 		shadow: "0 0 4px #000"
 	}
 };
@@ -282,8 +267,9 @@ export const Pentagon: Story = {
 		geometry: Points
 		.fromCircle(5, Math.PI)
 		.round(0.1),
-		bgColor: "rgb(28,128,248)",
-		borderColor: "#000",
+		fill: "rgb(28,128,248)",
+		stroke: "#000",
+		strokeWidth: 10,
 		shadow: "0 0 4px #000"
 	}
 };
@@ -293,8 +279,9 @@ export const Hexagon: Story = {
 		geometry: Points
 		.fromCircle(6, Math.PI)
 		.round(0.1),
-		bgColor: "rgb(28,128,248)",
-		borderColor: "#000",
+		fill: "rgb(28,128,248)",
+		stroke: "#000",
+		strokeWidth: 10,
 		shadow: "0 0 4px #000"
 	}
 };
@@ -304,8 +291,9 @@ export const Heptagon: Story = {
 		geometry: Points
 		.fromCircle(7, Math.PI)
 		.round(0.1),
-		bgColor: "rgb(28,128,248)",
-		borderColor: "#000",
+		fill: "rgb(28,128,248)",
+		stroke: "#000",
+		strokeWidth: 10,
 		shadow: "0 0 4px #000"
 	}
 };
@@ -313,10 +301,11 @@ export const Heptagon: Story = {
 export const Octagon: Story = {
 	args:{
 		geometry: Points
-		.fromCircle(3, Math.PI)
+		.fromCircle(8, Math.PI)
 		.round(0.1),
-		bgColor: "rgb(28,128,248)",
-		borderColor: "#000",
+		fill: "rgb(28,128,248)",
+		stroke: "#000",
+		strokeWidth: 10,
 		shadow: "0 0 4px #000"
 	}
 }
@@ -336,8 +325,10 @@ export const Star: Story = {
 				yield d.multiplyScalar(0.4);
 			}
 		}),
-		bgColor: "rgb(28,128,248)",
-		borderColor: "#000",
+		fill: "rgb(28,128,248)",
+		stroke: "#000",
+		strokeWidth: 10,
+		clipped: true,
 		shadow: "0 0 4px #000"
 	}
 }

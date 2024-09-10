@@ -8,10 +8,14 @@ export default {
 	component: GeometryRef,
 	tags: ['autodocs'],
 	decorators: Story => (<SVGCanvas {...{
-		viewBox: '0 0 1 1',
+		viewBox: '-50 -50 100 100',
+		style:{
+			padding: '1rem',
+			filter: 'drop-shadow(0 0 4px #000)'
+		},
 		defs:<>
-		<PolygonDefinition id="triangle" sides={3} objectBounding/>
-		<PolygonDefinition id="diamond" sides={4} objectBounding/>
+		<PolygonDefinition id="triangle" sides={3}/>
+		<PolygonDefinition id="diamond" sides={4} cornerRadius={10}/>
 		<PolygonDefinition id="pentagon" sides={5}objectBounding/>
 		<PolygonDefinition id="hexagon" sides={6} objectBounding/>
 		<PolygonDefinition id="heptagon" sides={7} objectBounding/>
@@ -22,9 +26,25 @@ export default {
 
 type Story = StoryObj<GeometryRefProps>;
 
+/**
+ * The triangle definition is object bounding this means the units for stroke need to be between 0 and 1. where 1 represents the largest value for x and y like a percentage.
+ */
 export const Triangle: Story = {
 	args: {
 		src: '#triangle',
-		bgColor: 'rgb(28,128,248)'
+		fill: 'rgb(28,128,248)',
+		stroke: "#000",
+		strokeWidth: 2,
 	}
 }
+
+export const Square: Story = {
+	args: {
+		src: '#diamond',
+		fill: 'rgb(28,128,248)',
+		stroke: '#000',
+		strokeWidth: 2,
+		strokeLinejoin: 'round'
+	}
+}
+

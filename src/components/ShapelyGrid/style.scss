@@ -1,33 +1,34 @@
 .shapely-grid{
 	color: #000;
 	display: grid;
-	column-gap: var(--column-gap, 0);
-	row-gap: var(--row-gap, 0);
+	filter: var(--shadow);
 	.shapely-grid-cell-wrapper{
 		box-sizing: border-box;
-		width: 100%;
 		grid-row-start: var(--row);
 		grid-column-start: var(--column);
 		grid-column-end: span var(--column-size);
 		grid-row-end: span var(--row-size);
 		clip-path: var(--clip-path);
+		
 		aspect-ratio: var(--aspect-ratio, 1/1);
-		object-fit: contain;
+		/*center vertically or horizontally in a client size ambiguous manner*/
 		display: flex;
-		flex-flow: column nowrap;
+		flex-flow: column-nowrap;
 		justify-content: center;
 		align-items: center;
-		
+		margin-bottom: var(--row-gap, 0);
+		margin-right: var(--column-gap, 0);
 		& > .shapely-grid-cell{
-			margin: 0; /* Grid doesnt like margins */
+			margin: 0;
 			display: flex;
 			flex-flow: column nowrap;
 			justify-content: center;
 			align-items: center;
 			text-align: center;
 			position: relative;
-			flex: 1;
-			
+			width: calc((200% - var(--column-gap, 0%)) / 2);
+
+			/* Flex is responsible for layout not sizing the grid handles that */
 			aspect-ratio: var(--aspect-ratio, 1/1);
 			&:hover{
 				--bg-color:#FF0;

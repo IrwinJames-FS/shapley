@@ -1,4 +1,4 @@
-import { CSSNumeric, PStyle } from "../types"
+import { CSSNumeric } from "../types"
 
 export type TriangleGridProps = {
 	/**
@@ -25,4 +25,4 @@ export type TriangleGridProps = {
 	 * Render the horizontal variation of this grid.
 	 */
 	horizontal?: boolean
-} & PStyle
+}

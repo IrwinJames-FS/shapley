@@ -1,7 +1,6 @@
 import { bufferIterator, fromCircle, normalize, rotate, rounded, scale, translate } from "./iterators";
 import { $d } from "./ngon";
 import Point from "./Point";
-import { round as roundNumber } from './arithmetic';
 import { Rect, VertexGenerator } from "./types";
 import RoundedCorner from "./RoundedCorner";
 
@@ -180,9 +179,9 @@ class Points {
 			max = max.max(p);
 		}
 		const size = max.subtract(min);
-		const [w, h] = size;
+		const [aw, ah] = size.simplify();
 		this._vw = `${min[0]} ${min[1]} ${size[0]} ${size[1]}`;
-		this._ar = w > h ? `${roundNumber(w/h, 3)} / 1`:`${roundNumber(h/w, 3)} / 1`;
+		this._ar = `${aw} / ${ah}`;
 		this._bounds = [min, size, max];
 		return this._bounds!;
 	}

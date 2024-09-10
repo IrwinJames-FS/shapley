@@ -1,7 +1,7 @@
 import { Children, cloneElement, ElementType, isValidElement, ReactElement, ReactNode } from "react";
-import { PolyMorphic } from "../types";
+import { CSSPropertiesPlusVars, PolyMorphic } from "../types";
 import { ShapelyGridProps } from "./types";
-import { clsfy, standardizeValue, vars } from "../../utilities";
+import { clsfy, shadowfy, standardizeValue, vars } from "../../utilities";
 import './style.scss';
 import Geometric from "../Geometric";
 
@@ -21,12 +21,8 @@ const ShapelyGrid = <T extends ElementType="div">({
 	gap,
 	aspectRatio='1/1',
 	layout=i=>[i%columns, Math.floor(i/columns), ''],
-	bgColor,
-	borderColor,
-	borderWidth,
-	shadow,
 	row: gridAutoRows,
-	style={},
+	style:{backgroundColor:fill=undefined, borderColor:stroke=undefined, borderWidth:strokeWidth=undefined, boxShadow:shadow=undefined, ...style}={},
 	...props
 }:PolyMorphic<ShapelyGridProps, T>)=>{
 	const El = as || "div";
@@ -50,7 +46,7 @@ const ShapelyGrid = <T extends ElementType="div">({
 			c = cloneElement(child, {
 				className: clsfy(className,'shapely-grid-cell'),
 				children: <>
-				<Geometric {...{src: t, bgColor, borderColor, borderWidth, shadow}} objectBounding/>
+				<Geometric {...{src: t, fill, stroke, strokeWidth}} objectBounding/>
 				{children}
 				</>,
 				...props
@@ -63,7 +59,7 @@ const ShapelyGrid = <T extends ElementType="div">({
 				row: row + 1,
 				aspectRatio
 			})
-		}}>{c}</div>
+		} as CSSPropertiesPlusVars}>{c}</div>
 	})
 	return (<El {...{
 	className: clsfy(className, 'shapely-grid'),
@@ -81,6 +77,7 @@ const ShapelyGrid = <T extends ElementType="div">({
 			clipPath,
 			
 		}),
+		...shadowfy(shadow),
 		...style
 	},
 	...props

@@ -14,11 +14,6 @@ export type PathDefinitionProps = WithComponents<BasePathDefinitionProps & Compo
  */
 export type BasePathDefinitionProps = {
 	/**
-	 * The no clip command is a flag that can be used to prevent a path from being automatically closed with the *z* command
-	 */
-	noclip?: boolean
-	
-	/**
 	 * A path definition must be provided a unique id. This is used to reference the path.
 	 */
 	id: string

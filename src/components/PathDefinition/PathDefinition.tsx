@@ -10,7 +10,6 @@ import { PathDefinitionProps } from "./types";
  * it is important to note that the id provided will be reused to identify multiple components. For example this component creates both a path and clip path using the provided path commands. the id for the clip path is <id>-clip. In the future masks and feEffects may be added 
  */
 const PathDefinition: FC<PathDefinitionProps> = ({
-	noclip,
 	objectBounding,
 	components:{
 		clipPath={},
@@ -18,13 +17,13 @@ const PathDefinition: FC<PathDefinitionProps> = ({
 	id,
 	...props})=>(<>
 <path {...{id, ...props}}/>
-{!noclip && <clipPath {...{
+<clipPath {...{
 	id:id+'-clip',
 	clipPathUnits: objectBounding ? 'objectBoundingBox':undefined,
 	...clipPath
 }} {...clipPath}>
 	<use href={"#"+id}/>
-</clipPath>}
+</clipPath>
 </>);
 
 export default PathDefinition;

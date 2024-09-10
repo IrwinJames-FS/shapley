@@ -17,12 +17,10 @@ const Geometry = <T extends ElementType="div">({
 	className,
 	geometry,
 	children,
-	bgColor,
-	borderColor,
-	borderWidth,
-	shadow,
 	pathId,
-	style={},
+	style:{backgroundColor:fill=undefined, borderColor:stroke=undefined, borderWidth:strokeWidth=undefined, boxShadow:shadow=undefined, ...style}={},
+
+	pstyle={},
 	components: {
 		svg:{
 			className: geometryClassName ="",
@@ -57,15 +55,15 @@ const Geometry = <T extends ElementType="div">({
 		
 		<Geometric {...{
 			geometry, 
-			
-			bgColor,
-			borderColor,
-			borderWidth,
-			shadow,
 			src:pathId,
+			fill,
+			stroke,
+			strokeWidth,
+			shadow,
 			className: clsfy(geometryClassName, 'shapely-geometric-bg'),
 			viewBox,
 			components,
+			...pstyle,
 			...shapeProps
 		}}/>
 		{children}

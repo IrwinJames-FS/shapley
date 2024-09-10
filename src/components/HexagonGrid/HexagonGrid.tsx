@@ -31,7 +31,7 @@ const HexagonGrid = <T extends ElementType = "div">({
 			cellSize: horizontal ? [3,2]:[2,3],
 			columnCell: horizontal ? '1fr 2fr':'1fr',
 			columnSuffix: '1fr',
-			aspectRatio: '1.1547 / 1',
+			aspectRatio: horizontal ? '3518437208883200 / 3047056004513267':'3047056004513267 / 3518437208883200',
 			row: horizontal ? '1fr' : '1fr 2fr',
 			layout: (i, c) => {
 				const x = i%c;

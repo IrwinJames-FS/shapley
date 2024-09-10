@@ -31,6 +31,15 @@ class Point extends Array<number>{
 	}
 
 	/**
+	 * Post MVP I will be moving to a explicit copy method. 
+	 * 
+	 * This will give the end user more granular control without having to have a robust arithmetic lexicon.
+	 * @returns 
+	 */
+	public cp(){
+		return new Point(this.x, this.y);
+	}
+	/**
 	 * This method finds a point on a circle's circumference of the provided **radius** at the provided **angle**
 	 * @param angle - The angle should be provided in radians.
 	 * @param radius 
@@ -49,7 +58,7 @@ class Point extends Array<number>{
 	 * @param angle - The angle should be provided in degrees
 	 * @param radius 
 	 */
-	rayDeg(angle: number, radius: number):Point{
+	public rayDeg(angle: number, radius: number):Point{
 		return this.ray(toRad(angle), radius);
 	}
 
@@ -201,11 +210,12 @@ class Point extends Array<number>{
 		this.y = round(this.y, prec);
 		return this;
 	}
+
 	/**
 	 * Calculates the angle and distance to the provided point
 	 * @param point 
 	 */
-	to([x, y]: SupportedPointMathTypes){
+	public to([x, y]: SupportedPointMathTypes){
 		const dx = x-this.x;
 		const dy = y-this.y;
 		return {
@@ -219,7 +229,7 @@ class Point extends Array<number>{
 	 * @param param0 
 	 * @returns 
 	 */
-	from([x, y]: SupportedPointMathTypes) {
+	public from([x, y]: SupportedPointMathTypes) {
 		const dx = this.x-x;
 		const dy = this.y-y;
 		return {
@@ -239,6 +249,19 @@ class Point extends Array<number>{
 	}
 
 	/**
+	 * If an aspect ratio is defined as width / height then a point can be treated as a fraction. More to the point fractions can be simplified which should be more desirable then current method of calculating a css aspect ratio.
+	 */
+	public simplify(){
+		const gcd = (a: number, b: number):number => b===0 ? a:gcd(b, a%b);
+		const divisor = gcd(this.x, this.y);
+		const p = this.cp().divideScalar(divisor);
+		return p;
+	}
+	/*
+	Type Casting
+	*/
+
+	/**
 	 * This Class converts itself to a comma separated string. x, y and fixes the precision to 5 decimal points. 
 	 */
 	public toString():string { return Point.toString(this)}
@@ -249,6 +272,9 @@ class Point extends Array<number>{
 	public toArray(){return [this.x, this.y]}
 	//Static methods
 
+	/*
+	STATIC METHODS
+	*/
 	
 	/**
 	 * A convenience method to initialize a point at origin.

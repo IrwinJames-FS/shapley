@@ -15,12 +15,14 @@ export const VerticalTriangleGrid: Story = {
 	args: {
 		columns: 7,
 		children: new Array(50).fill("Triangle").map((s,i)=><h3 key={i}>{s}</h3>),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: '#000',
-		borderWidth: 0.05,
-		cornerRadius: 0.025,
-		shadow: '0 0 4px #000',
-		gap:10
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			stroke: '#000',
+			strokeWidth: 0.05,
+			boxShadow: '0 0 4px #000',
+		},
+		cornerRadius: 0.05,
+		gap:['1rem', '0.5rem']
 	}
 }
 
@@ -28,12 +30,14 @@ export const HorizontalTriangleGrid: Story = {
 	args: {
 		columns: 7,
 		children: new Array(50).fill("Triangle").map((s,i)=><h3 key={i}>{s}</h3>),
-		bgColor: 'rgb(28,128,248)',
-		borderColor: '#000',
-		borderWidth: 0.05,
+		style: {
+			backgroundColor: 'rgb(28,128,248)',
+			stroke: '#000',
+			strokeWidth: 0.05,
+			boxShadow: '0 0 4px #000',
+		},
 		cornerRadius: 0.025,
-		shadow: '0 0 4px #000',
-		gap:[5,10],
+		gap:['0.5rem', '1rem'],
 		horizontal: true
 	}
 }

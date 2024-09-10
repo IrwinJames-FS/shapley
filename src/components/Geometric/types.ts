@@ -1,11 +1,11 @@
 import { GeometryDefinitionProps } from "../GeometryDefinition";
 import { BaseGeomtryRefProps, GeometryRefProps } from "../GeometryRef";
 import { Points } from "../../geometry";
-import { PStyle, WithComponents } from "../types";
+import { WithComponents } from "../types";
 import { BasePathDefinitionProps, PathDefinitionComponents } from "../PathDefinition";
 import { SVGCanvasProps } from "../SVGCanvas";
 
-export type GeometricProps = WithComponents<BaseGeometricProps & SVGCanvasProps & PStyle, GeometricComponents>;
+export type GeometricProps = WithComponents<BaseGeometricProps & SVGCanvasProps, GeometricComponents>;
 /**
  * The Base Geometric Props type provides an interface to interact with the SVG backing layer as well as its underlying components. 
  * 
@@ -27,7 +27,9 @@ export type BaseGeometricProps = {
 	 * Multiple geometries can be rendered in a Geometric but only the first will be reference to define the viewbox. A custom viewbox can be provided.
 	 */
 	geometry?: Points | Points[]
-} & Omit<BasePathDefinitionProps, "id"> & BaseGeomtryRefProps;
+
+	shadow?: string
+} & Omit<BasePathDefinitionProps, "id" | "clip"> & BaseGeomtryRefProps;
 
 export type GeometricComponents = {
 	/**
