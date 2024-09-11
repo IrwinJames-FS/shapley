@@ -1,20 +1,12 @@
-# Shapely
-Shapely is a library designed to simplify the rendering of shapes in an html document. Shapely is not a replacement for the full capability of SVG so all components are designed to accept all the properties accepted by the used underlying svg components. With that the Components work greate as foundational elements to build and style from.
+import { Meta, Canvas } from "@storybook/blocks";
+import * as GettingStarted from "./gettingstarted.stories.tsx";
 
-## WARNING
-Shapely is very much in the early alpha states. Use Shapely at your own risk. That being said during this stage I will be actively addressing issues as quickly as possible. Please let me know if you find any issues and please let me know how to reproduce said issues.  
+<Meta title="Getting Started"/>
 
-## Viewing the documentation. 
+# Getting Started
 
-In the next few weeks I will be hosting the documentation however for now the documentation can be viewed via storybook by running
+## Installation
 
-```
-cd node_modules/@irwinproject/shapely
-npm run storybook. 
-```
-## Getting Started
-
-Install Shapely
 ```bash
 npm install @irwinproject/shapely
 ```
@@ -38,7 +30,7 @@ const Tri = ()=>(<Triangle {...{
 Above we implemented a Triangle component 
 When using a Geometry or Polgyon Component the backgroundColor, borderColor, borderWidth, and boxShadow components are intercepted and aliased to the fill, stroke, strokeWidth and backdropFilter properties. with that being said the background and border shorthand properties can still be used to directly interface with a components bounding rect.
 Resulting in...
-
+<Canvas of={GettingStarted.FirstExample}/>
 
 ## Overridable
 
@@ -64,6 +56,8 @@ const HexLink = ()=>(<Hexagon {...{
 ```
 
 Utilizing the as component you can override the tagname very simply. In addition it will update the arguments it accepts.
+
+<Canvas of={GettingStarted.SecondExample}/>
 
 And just like that you can turn just about any element into a shapely component.
 
@@ -115,6 +109,7 @@ Then style just style it up.
 	}
 }
 ```
+<Canvas of={GettingStarted.ThirdExample}/>
 
 Because corner radius requires a modification to the geometry the corner radius cannot be set in css. 
 

@@ -13,4 +13,11 @@
 		height: 100%;
 		z-index: -1;
 	}
+
+}
+
+a, span, strong, em, img, input, label, button, abbr, cite{
+	&.shapely-geometric{
+		display: inline-flex;
+	}
 }
