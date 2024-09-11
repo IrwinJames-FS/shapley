@@ -1,0 +1,23 @@
+.my-awesome-hexagon {
+	--background-color: rgb(28,128,248);
+	--border-color: #FFF;
+	--border-width: 2;
+	--shadow: drop-shadow(0 0 4px #000);
+	padding: 1rem;
+	color:#FFF;
+}
+
+.my-awesome-hexagon:hover{
+	--shadow: drop-shadow(0 0 2px #000);
+	--background-color: rgb(48,148,255);
+	animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+	0% {
+		transform: rotate(1deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

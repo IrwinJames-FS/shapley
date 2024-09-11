@@ -6,6 +6,9 @@ import './style.scss';
 const GeometryRef: FC<GeometryRefProps> = ({
 	className,
 	src,
+	fill,
+	stroke,
+	strokeWidth,
 	clipped,
 	style={},
 	...props
@@ -14,6 +17,9 @@ const GeometryRef: FC<GeometryRefProps> = ({
 	href: src,
 	style: {
 		clipPath: (clipped && src) ? `url(${src}-clip)`:undefined,
+		fill,
+		stroke,
+		strokeWidth,
 		...style
 	},
 	...props
