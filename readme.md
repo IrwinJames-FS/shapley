@@ -9,9 +9,17 @@ Shapely is very much in the early alpha states. Use Shapely at your own risk. Th
 In the next few weeks I will be hosting the documentation however for now the documentation can be viewed via storybook by running
 
 ```
-cd node_modules/@irwinproject/shapely
-npm run storybook. 
+cd node_modules/@irwinproject/shapely/storybook-static
+serve
 ```
+
+if you do not have serve installed you can install it with
+
+```
+npm i -g serve
+```
+
+This documentation will be removed from the package upon hosting. 
 ## Getting Started
 
 Install Shapely
