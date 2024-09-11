@@ -1,0 +1,6 @@
+.shapely-geometry{
+	--fill: var(--background-color);
+	--stroke: var(--border-color);
+	--stroke-width: var(--border-width);
+	filter: var(--shadow, none);
+}
