@@ -1,6 +1,6 @@
 {
-  "name": "@irwinproject/shapley",
-  "version": "0.0.01",
+  "name": "@irwinproject/shapely",
+  "version": "0.0.2",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
@@ -13,9 +13,9 @@
     "lint": "eslint src/**/*.{ts,tsx}"
   },
   "keywords": [],
-  "author": "",
+  "author": "James Irwin",
   "license": "ISC",
-  "description": "",
+  "description": "Give your site some shape.",
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
@@ -77,6 +77,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IrwinJames-FS/shapley"
+    "url": "git+https://github.com/IrwinJames-FS/shapley.git"
   }
 }
