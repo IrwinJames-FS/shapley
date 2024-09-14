@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" preserveAspectRatio="xMidYMid slice">
-	<defs>
-		<pattern id="hex-pattern" viewBox="-0.433012716284439 -0.75 0.866025432568878 1.5" width="08.66%" height="15%" preserveAspectRatio="xMinYMin meet">
-			<path d="M 0, -0.75 L 0, -0.5 L -0.43301, -0.25 L -0.43301, 0.25 L 0, 0.5 L 0, 0.75 L 0, 0.5 L 0.43301, 0.25 L 0.43301, -0.25 L 0, -0.5" stroke="#FFF" stroke-width="0.1" fill="none"/>
-		</pattern>
-	</defs>
-	<rect width="1000" height="1000" fill="url(#hex-pattern)"/>
-</svg>
