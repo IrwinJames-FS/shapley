@@ -1,0 +1,73 @@
+:root {
+	--ts-doc-primary-blue: rgb(28,128,248);
+	--ts-doc-primary-purple: #7B2CBF;
+	--ts-doc-primary-green: #5CB85C;
+	--ts-doc-primary-red: #FF0F0F;
+}
+
+.doc-block{
+	background-color: rgba(0,0,0,0.015);
+	margin-bottom: 1rem !important;
+	border-radius: 1rem;
+	padding: 1rem;
+	box-shadow: 2px 2px 4px #000;
+}
+.declaration-text {
+	color: var(--ts-doc-primary-blue);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
+.literal-text {
+	color: var(--ts-doc-primary-red);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
+.type-param-name {
+	color: var(--ts-doc-primary-purple);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
+.default-equals {
+	color: var(--ts-doc-primary-green);
+	font-size: 0.9em;
+	font-weight: inherit;
+}
+
+.required:after{
+	content: "*";
+	color: var(--ts-doc-primary-red);
+}
+
+.numbered-code{
+	display: flex;
+}
+.numbered-code > div:first-of-type{
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: start;
+	align-items: end;
+	margin-top:45px;
+	padding: 0 0.5rem;
+	width: 5rem;
+}
+.numbered-code > div:first-of-type h6{
+	line-height: 19px;
+	font-size: 13px;
+	text-align: right;
+	display:block;
+	margin: 0;
+	color:#777;
+	height: 19px;
+}
+.numbered-code > pre {
+	flex-shrink:1;
+	flex-grow:1;
+	max-width: calc(100% - 6rem);
+}
+
+.geometry-canvas use{
+	fill: rgb(28,128,248);
+}

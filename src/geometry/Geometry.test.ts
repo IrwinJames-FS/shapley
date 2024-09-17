@@ -19,11 +19,13 @@ describe("Test the Geometry Class", ()=>{
 	test("Test the Geometry fromBuffer static method", ()=>{
 		const points = [[0,-1],[-1,1],[1,1]];
 		const triangle = Geometry.fromBuffer(points.flatMap(v=>v));
+		const liangle = Geometry.fromBuffer(points.flatMap(v=>v), true);
 		let i = 0;
 		for(const p of triangle.geometry()){
 			expect(p.equals(points[i])).toBe(true);
 			i++;
 		}
+		expect(''+liangle).toBe('L 0, -1L -1, 1L 1, 1z')
 	});
 
 	test("Test the Geometry fromBuffer static method with an invalid points buffer", ()=>{
@@ -73,5 +75,25 @@ describe("Test the Geometry Class", ()=>{
 		const diamond = Geometry.fromCircle(4);
 		const a = diamond.clone().rotate(Math.PI/4).round();
 		expect(a.toBuffer()).toStrictEqual([35,35,35,-35,-35,-35,-35,35]);
-	})
+	});
+
+	test("Test the Geometry append method", () => {
+		const diamond = Geometry.fromCircle(4).append(Geometry.CircleGenerator(4, Math.PI/4)).round();
+		expect(diamond.toBuffer()).toStrictEqual([0,50,50,0,0,-50,-50,-0,35,35,35,-35,-35,-35,-35,35]);
+	});
+
+	test("Test the Geometry prepend method", () => {
+		const diamond = Geometry.fromCircle(4).prepend(Geometry.CircleGenerator(4, Math.PI/4)).round();
+		expect(diamond.toBuffer()).toStrictEqual([35,35,35,-35,-35,-35,-35,35,0,50,50,0,0,-50,-50,-0]);
+	});
+
+	test("Test the Geometry to String method", () => {
+		const triangle = Geometry.fromBuffer([
+			0.5,0,
+			0,1,
+			1,1,
+		]);
+		expect(''+triangle).toBe('M 0.5, 0L 0, 1L 1, 1z')
+		expect(triangle.toString(true)).toBe('M 0.5, 0L 0, 1L 1, 1')
+	});
 });

@@ -1,6 +1,14 @@
 import { Point } from "./Point";
 import { GeometryGenerator, GeometryMutationGenerator, Pointish } from "./types";
-const CIRCLE = Math.PI*2;
+
+/**
+ * This convenience method simply represents 360 degrees in radians. 
+ */
+export const CIRCLE = Math.PI*2;
+
+/**
+ * The Geometry class creates an interface to make geometries using js Generator methods.
+ */
 export class Geometry {
 	geometry: GeometryGenerator
 
@@ -55,6 +63,20 @@ export class Geometry {
 	 * @returns 
 	 */
 	public rotate(offset: number, center?: Pointish){ return this.applyGenerator(Geometry.RotateMutator(offset,center)); }
+
+	/**
+	 * Add a generator to the end of the existing generator.
+	 * @param gen 
+	 */
+	public append(gen: GeometryGenerator){ return this.applyGenerator(Geometry.AppendMutator(gen)); }
+
+	/**
+	 * Add a generator to the beginning of the existing generator.
+	 * @param gen 
+	 */
+	public prepend(gen: GeometryGenerator){ return this.applyGenerator(Geometry.PrependMutator(gen)); }
+
+
 	/**
 	 * Applies the generator to the current stack 
 	 * 
@@ -83,6 +105,10 @@ export class Geometry {
 	public toBuffer(){
 		return Array.from(this.geometry()).flatMap(p=>p.toArray());
 	}
+
+	public toString(noclose?:boolean){
+		return Array.from(this.geometry()).reduce((o,v)=>o+v,'')+(!noclose ? 'z':'');
+	}
 	/*
 	Static methods
 	*/
@@ -92,8 +118,8 @@ export class Geometry {
 	 * @param points 
 	 * @returns 
 	 */
-	static fromBuffer(points: number[]){
-		return new Geometry(this.PointsGenerator(points));
+	static fromBuffer(points: number[], lineTo?:boolean){
+		return new Geometry(this.PointsGenerator(points, lineTo));
 	}
 
 	/**
@@ -127,11 +153,11 @@ export class Geometry {
 	 * @param buffer 
 	 * @returns 
 	 */
-	static PointsGenerator(buffer: Array<number>){
+	static PointsGenerator(buffer: Array<number>, lineTo?: boolean){
 		if(buffer.length % 2 !== 0) throw new Error("Invalid buffer provided");
 		return function*(){
 			for(let i=0; i<buffer.length; i+=2){
-				yield new Point(buffer[i], buffer[i+1]);
+				yield new Point(buffer[i], buffer[i+1], lineTo ? "L":i===0 ? "M":"L");
 			}
 		}
 	}
@@ -144,11 +170,11 @@ export class Geometry {
 	 * @param center 
 	 * @returns 
 	 */
-	static CircleGenerator(stops: number, rotation: number=0, radius:number=50, center:Point = Point.zero()){
+	static CircleGenerator(stops: number, rotation: number=0, radius:number=50, center:Point = Point.zero("M")){
 		const delta = CIRCLE/stops;
 		return function*(){
 			for(let i = 0; i<stops; i++){
-				yield center.clone().ray((delta*i)+rotation, radius);
+				yield center.clone(!i ? 'M':'L').ray((delta*i)+rotation, radius);
 			}
 		}
 	}
@@ -228,6 +254,28 @@ export class Geometry {
 		return gen => function*(){
 			for(const p of gen()){
 				yield p.rotateAround(center, offset)
+			}
+		}
+	}
+
+	static AppendMutator(newGen: GeometryGenerator): GeometryMutationGenerator{
+		return gen => function*(){
+			for(const p of gen()){
+				yield p;
+			}
+			for(const p of newGen()){
+				yield p;
+			}
+		}
+	}
+
+	static PrependMutator(newGen: GeometryGenerator):GeometryMutationGenerator{
+		return gen => function*(){
+			for(const p of newGen()){
+				yield p;
+			}
+			for(const p of gen()){
+				yield p;
 			}
 		}
 	}

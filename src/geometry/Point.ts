@@ -56,8 +56,8 @@ export class Point extends Array<number> {
 	 * Clones the point any inheriting class will need to override this method. 
 	 * @returns 
 	 */
-	public clone(){
-		return new Point(this.x, this.y);
+	public clone(cmd?:string){
+		return new Point(this.x, this.y, ''+(cmd ?? this.cmd));
 	}
 
 	/**
@@ -309,8 +309,8 @@ export class Point extends Array<number> {
 	}
 
 	/** Just a convenience method to initialize a zero point */
-	static zero(){
-		return new Point(0, 0);
+	static zero(cmd?:string){
+		return new Point(0, 0, cmd);
 	}
 
 
