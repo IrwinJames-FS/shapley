@@ -1,282 +1,184 @@
 import { Point } from "./Point";
-import { GeometryGenerator, GeometryMutationGenerator, Pointish } from "./types";
+import { GeometryGenerator, GeometryMutator, Pointish } from "./types";
 
-/**
- * This convenience method simply represents 360 degrees in radians. 
- */
-export const CIRCLE = Math.PI*2;
-
-/**
- * The Geometry class creates an interface to make geometries using js Generator methods.
- */
 export class Geometry {
-	geometry: GeometryGenerator
-
-	constructor(geometry: GeometryGenerator){
-		this.geometry = geometry;
+	/**
+	 * Instead of storing an array a function which generates Points is expected. This is beneficial as thise generators can be combined only resulting in operations being added to the render loop without additional iterations through the points.
+	 */
+	generator: GeometryGenerator
+	autoClose: boolean = true
+	constructor(gen: GeometryGenerator){
+		this.generator = gen;
 	}
 
-	public clone(){
-		return new Geometry(this.geometry);
+	/**
+	 * Clone the existing points
+	 * @returns 
+	 */
+	public clonePoints(){ return this.appendGenerator(Geometry.cloneMutator); }
+
+	/**
+	 * Translate the existing points to a specified position.
+	 * @param pt 
+	 * @returns 
+	 */
+	public translate(point: Pointish){ return this.appendGenerator(Geometry.translateMutator(point)); }
+
+
+	public scale(point: Pointish) { return this.appendGenerator(Geometry.scaleMutator(point)); }
+
+
+	/**
+	 * This method returns an array of points
+	 * @returns 
+	 */
+	public toPoints(){
+		return Array.from(this.generator());
 	}
 
 	/**
-	 * Applies an operation to the render cycle that will round all values down to a specific precision.
-	 * @param precision 
-	 * @returns 
+	 * Similar to the toPoints method this method will return an array of arrays that do not reference a points instance. 
 	 */
-	public floor(precision?: number){ return this.applyGenerator(Geometry.FloorMutator(precision)); }
-
+	public toArrays(){
+		return this.toPoints().map(v=>[...v]);
+	}
 	/**
-	 * Applies an operation to the render cycle that will round all the values up at a provided precision.
-	 * @param precision 
-	 * @returns 
-	 */
-	public ceil(precision?: number){ return this.applyGenerator(Geometry.CeilMutator(precision)); }
-
-	/**
-	 * Applies an operation to the render cycle that will round all the values at a provided precision.
-	 * @param precision 
-	 * @returns 
-	 */
-	public round(precision?: number){ return this.applyGenerator(Geometry.RoundMutator(precision)); }
-
-
-	/**
-	 * Applies a translation operation to the render cycle.
-	 * @param delta 
-	 * @returns 
-	 */
-	public translate(delta: Pointish){ return this.applyGenerator(Geometry.TranslateMutator(delta)) }
-
-	/**
-	 * Applies a scale operation to the render cycle
-	 * @param delta 
-	 * @returns 
-	 */
-	public scale(delta: Pointish){ return this.applyGenerator(Geometry.ScaleMutator(delta)); }
-
-	/**
-	 * Rotates the existing points in the Geometry around a provided point by a provided offset radian.
-	 * @param center 
-	 * @param offset 
-	 * @returns 
-	 */
-	public rotate(offset: number, center?: Pointish){ return this.applyGenerator(Geometry.RotateMutator(offset,center)); }
-
-	/**
-	 * Add a generator to the end of the existing generator.
+	 * Adds a mutator to the generators loop this can be used to add translation or scale operations this can also be used to append or filter points from the render as well.
 	 * @param gen 
+	 * @returns 
 	 */
-	public append(gen: GeometryGenerator){ return this.applyGenerator(Geometry.AppendMutator(gen)); }
-
-	/**
-	 * Add a generator to the beginning of the existing generator.
-	 * @param gen 
-	 */
-	public prepend(gen: GeometryGenerator){ return this.applyGenerator(Geometry.PrependMutator(gen)); }
-
-
-	/**
-	 * Applies the generator to the current stack 
-	 * 
-	 * If and when there needs to be cached data this is the point said data should be invalidated.
-	 * @param gen 
-	 */
-	public applyGenerator(gen: GeometryMutationGenerator){
-		const geo = this.geometry;
-		this.geometry = gen(geo);
+	public appendGenerator(gen: GeometryMutator){
+		const g = gen(this.generator);
+		this.generator = g;
 		return this;
 	}
 
-	/**
-	 * Creates an array of points from the geometry class. 
-	 * @returns 
-	 */
-	public toArray(){
-		return Array.from(this.geometry());
+	public floor(precision?: number){
+		return this.appendGenerator(Geometry.floorMutator(precision));
 	}
 
-	/**
-	 * Creates a flat list of points.
-	 * 
-	 * **Warning** this will strip command paths so curves and multi point commands may have unexpected results.
-	 */
-	public toBuffer(){
-		return Array.from(this.geometry()).flatMap(p=>p.toArray());
+	public ceil(precision?: number){
+		return this.appendGenerator(Geometry.ceilMutator(precision));
 	}
 
-	public toString(noclose?:boolean){
-		return Array.from(this.geometry()).reduce((o,v)=>o+v,'')+(!noclose ? 'z':'');
+	public setAutoClose(close: boolean = true){
+		this.autoClose = close;
+		return this;
 	}
-	/*
-	Static methods
-	*/
+	public toString(){
+		const gen = this.generator();
+		const first = gen.next().value;
+		if(!first) return "";
+		let cmd = ""+first.setCmd("M")
+		for(const p of gen){
+			cmd += ' ' + p;
+		}
+		return cmd+(this.autoClose ? 'z':'');
+	}
 
+	public round(precision?: number){
+		return this.appendGenerator(Geometry.roundMutator(precision));
+	}
+
+	static fromBuffer(points: number[]) {
+		return new Geometry(Geometry.bufferGenerator(points));
+	}
+
+	static fromPoints(points: Point[]){
+		return new Geometry(Geometry.pointGenerator(points));
+	}
+
+	static fromCircle(stops: number, rotation?: number, radius?: number, center?: Point){
+		return new Geometry(Geometry.circleGenerator(stops, rotation, radius, center));
+	}
 	/**
-	 * Commonly used to create freeform shapes this 
+	 * This buffer allows for the static declaration of points similar to how a vertex buffer is created in a 3d model.
 	 * @param points 
 	 * @returns 
 	 */
-	static fromBuffer(points: number[], lineTo?:boolean){
-		return new Geometry(this.PointsGenerator(points, lineTo));
+	static bufferGenerator(points: number[]){
+		if(points.length % 2 !== 0) throw new Error("Invalid buffer length");
+		return function*(){
+			for(let i = 0; i<points.length; i+=2) yield new Point(points[i], points[i+1]);
+		}
 	}
 
 	/**
-	 * Utilizing the CircleGenerator this method initializes a Geometry Instance
+	 * Generates points by picking them from the circumference of a circle.
 	 * @param stops 
-	 * @param rotation 
 	 * @param radius 
 	 * @param center 
-	 * @returns 
 	 */
-	static fromCircle(stops: number, rotation?: number, radius?: number, center?: Point){
-		return new Geometry(this.CircleGenerator(stops, rotation, radius, center))
-	}
-
-	/*
-	Generators
-
-	Because these methods can be used indivually and in conjunction with a Geometry instance the generators are available to use separate from the Geometry instance.
-	*/
-
-	/**
-	 * Programatically based shapes are likely to be built based on statefull values as such this is a convenience generator that creates an empty geometry.
-	 * @returns 
-	 */
-	static EmptyGenerator(){
-		return function*(){};
-	}
-
-	/**
-	 * Using a flat array of numbers this creates a generator that iterates over all the 
-	 * @param buffer 
-	 * @returns 
-	 */
-	static PointsGenerator(buffer: Array<number>, lineTo?: boolean){
-		if(buffer.length % 2 !== 0) throw new Error("Invalid buffer provided");
+	static circleGenerator(stops: number, rotation: number=0, radius:number=0.5, center:Point=new Point(0,0)){
+		const delta = (Math.PI*2)/stops;
 		return function*(){
-			for(let i=0; i<buffer.length; i+=2){
-				yield new Point(buffer[i], buffer[i+1], lineTo ? "L":i===0 ? "M":"L");
-			}
+			for(let i = 0; i<stops;i++)yield center.clone().ray((delta*i)+rotation, radius);
 		}
 	}
 
 	/**
-	 * Finds equidistance points around a circle. This is useful when quickly generating regular polygons.
-	 * @param stops 
-	 * @param rotation 
-	 * @param radius 
-	 * @param center 
+	 * The Points generator is a generator that iterates over a static list of points and renders them. additionally this can have unexpected results if math is performed on the source point repeatedly.
+	 * @param points 
 	 * @returns 
 	 */
-	static CircleGenerator(stops: number, rotation: number=0, radius:number=50, center:Point = Point.zero("M")){
-		const delta = CIRCLE/stops;
+	static pointGenerator(points: Point[]){
 		return function*(){
-			for(let i = 0; i<stops; i++){
-				yield center.clone(!i ? 'M':'L').ray((delta*i)+rotation, radius);
-			}
-		}
-	}
-
-	/*
-	Geometry Mutator Generators
-
-	This generators are used to facilitate point manipulation however in some instance one might want to apply additional tranformations on select point by separating these methods this can be used to generate more complex geometries in a simplified manner.
-	*/
-
-	/**
-	 * Rounds each value down to the provided precision.
-	 * @param precision 
-	 * @returns 
-	 */
-	static FloorMutator(precision?:number):GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of gen()){
-				yield p.floor(precision);
-			}
+			for(const point of points) yield point;
 		}
 	}
 
 	/**
-	 * Rounds each value up to the nearest provided precision.
-	 * @param precision 
-	 * @returns 
+	 * Similar to a poiint generator this generator method will clone each point before performing subsequent iterations this will prevent math from being performed multiple times on the same reference.
+	 * @param points 
 	 */
-	static CeilMutator(precision?:number):GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of gen()){
-				yield p.ceil(precision);
-			}
+	static clonedPointGenerator(points: Point[]){
+		return function*(){
+			for(const point of points) yield point.clone();
 		}
 	}
 
 	/**
-	 * Rounds each value to the nearest provided precision.
-	 * @param precision 
+	 * Creates clones the points value while breaking reference to the previous instance. 
+	 * @param gen 
 	 * @returns 
 	 */
-	static RoundMutator(precision?:number):GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of gen()){
-				yield p.round(precision);
-			}
-		}
+	static cloneMutator(gen: GeometryGenerator){ return function*(){ for (const p of gen()) yield p.clone(); }}
+
+
+	/**
+	 * Translate the generators current point values to a new position
+	 * 
+	 * This is simply utilizing the Points add method to create an affine transformation.
+	 * 
+	 * This method directly mutates the point reference. if the reference point is statically declared this may result in multiple operations being performed on the same reference if the operation is performed each redraw.
+	 * @param gen 
+	 */
+	static translateMutator(point: Pointish){
+		return (gen: GeometryGenerator)=>function*(){ for(const p of gen()) yield p.add(point); }
 	}
 
 	/**
-	 * Applies a translation by adding the delta to the existing point.
-	 * @param delta 
+	 * Scale the generators current point values to a new position
+	 * 
+	 * This utilizes the points multiply method. 
+	 * 
+	 * This method directly mutates the point reference. if the reference point is statically declared this may result in multiple operations being performed on the same reference if the operation is performed each redraw.
+	 * @param point 
 	 * @returns 
 	 */
-	static TranslateMutator(delta: Pointish):GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of gen()){
-				yield p.add(delta);
-			}
-		}
+	static scaleMutator(point: Pointish):GeometryMutator{
+		return gen=>function*(){ for(const p of gen()) yield p.multiply(point); }
 	}
 
-	/**
-	 * Scales the values in the provided generator. 
-	 * @param delta 
-	 * @returns 
-	 */
-	static ScaleMutator(delta: Pointish):GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of gen()){
-				yield p.multiply(delta);
-			}
-		}
+	static floorMutator(precision?: number):GeometryMutator{
+		return gen=>function*(){ for (const p of gen()) yield p.floor(precision); }
 	}
 
-	static RotateMutator(offset: number, center: Pointish=Point.zero()):GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of gen()){
-				yield p.rotateAround(center, offset)
-			}
-		}
+	static ceilMutator(precision?: number):GeometryMutator{
+		return gen=>function*(){ for (const p of gen()) yield p.ceil(precision); }
 	}
 
-	static AppendMutator(newGen: GeometryGenerator): GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of gen()){
-				yield p;
-			}
-			for(const p of newGen()){
-				yield p;
-			}
-		}
-	}
-
-	static PrependMutator(newGen: GeometryGenerator):GeometryMutationGenerator{
-		return gen => function*(){
-			for(const p of newGen()){
-				yield p;
-			}
-			for(const p of gen()){
-				yield p;
-			}
-		}
+	static roundMutator(precision?: number):GeometryMutator{
+		return gen=>function*(){ for (const p of gen()) yield p.round(precision); }
 	}
 }

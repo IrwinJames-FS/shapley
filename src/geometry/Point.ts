@@ -1,317 +1,193 @@
+import Arithmetic from "./arithmetic";
 import { Pointish } from "./types";
-import Arithmetic from './arithmetic';
 
-/**
- * The point class will act as a base class for most path based commands. With each being converted into a class structure which can be consumed by a generational type.
+/** 
+ * The Point class is the foundation of shapley. This adds a series of two dimensional methods that are helpful when drawing without creating a reliance on a platform specific technolory.
  * 
- * This is a general use type. While its first goal is to create an interface to easily create and mutate path commands within an SVG path. The Point class also contains methods allowing one to interact with the values as if it were a fraction.
- * 
- * All mathematical methods by default modify this instance before returning a reference to this instance.
+ * I have made the concession to invert ray casting methods use of sin and cos the result of this is casting an array of 0 deg 1 unit will result in the point [0, 1] instead of [1, 0]... This is benefitial when rendering regular polygons. 
  */
 export class Point extends Array<number> {
-	cmd: string
-	constructor(x: number=0, y: number=0, cmd: string = "L"){
-		super(x, y);
+	cmd: string = "L"
+	/**
+	 * 
+	 * @param pt 
+	 * @returns 
+	 */
+	stringr: (pt: Point)=>string = pt=>{
+		let str = ''
+		for(let i = 0; i<pt.length; i+=2) str += ` ${pt[i]},${pt[i+1]}`;
+		return str
+	}
+	/**
+	 * All points will have at least two values however may contain more then two values.
+	 * 
+	 * At this time the only commands expected to be supported are M L and Q all of which can be treated in a similar manner. 
+	 * 
+	 * @param param0 
+	 */
+	constructor(...[x=0, y=0, ...values]: number[]){
+		super(x, y, ...values);
+	}
+
+	public setCmd(cmd: string){
 		this.cmd = cmd;
+		return this;
 	}
 
+	public setStringr(stringr: (pt: Point)=>string){
+		this.stringr = stringr;
+		return this;
+	}
 	/**
-	 * x is always the first position of a point instance. in classes that inherit this class this practice must be followed as well.
-	 */
-	get x(){
-		return this[0];
-	}
-
-	set x(n:number){
-		this[0] = n;
-	}
-
-	/**
-	 * y is always the first position of a point instance. in classes that inherit this class this practice must be followed as well.
-	 */
-	get y(){
-		return this[1];
-	}
-
-	set y(n: number){
-		this[1] = n;
-	}
-
-	/**
-	 * Throughout the Point class I will use the Pointish alias which accepts Points, number array, and singular numbers.
-	 * 
-	 * Later the the Pointish method may also include other types.
-	 * 
-	 * to maintain a dry pattern it makes sense to standardize the way this argument is handled.
-	 * 
-	 * Currently if an array or Point instance is provided that is returned.
-	 * 
-	 * If the value is a number that number will be duplicated and used for both the x an y values.
+	 * Standardizes a pointish value to an array type.
 	 * @param point 
 	 * @returns 
 	 */
-	private standardize(point: Pointish){ return typeof point === 'number' ? [point, point]:point}
-
-	/**
-	 * Clones the point any inheriting class will need to override this method. 
-	 * @returns 
-	 */
-	public clone(cmd?:string){
-		return new Point(this.x, this.y, ''+(cmd ?? this.cmd));
+	public standardize(point: Pointish, defaultValue: number=0){
+		if(Array.isArray(point)) return [point[0] ?? defaultValue, point[1] ?? defaultValue];
+		return [point, point]
 	}
 
 	/**
-	 * Add a point to this instance. 
+	 * As most operations will require a similar iteration method when applying different operations to the point values.
 	 * 
-	 * If a singular value is provided it will be applied to all the values.
+	 * This iterates over each containing value and yields a tuple containing the index, the value of the pointish array and finally the value of the contained element. 
 	 * 
-	 * If an array or Point class is provided x and y will be added to contained values assuming values are added in [..., x, y] pattern. 
-	 * 
-	 * If an array or Point that does not contain at least two points missing values will be assumed as 0.
-	 * @param pt 
+	 * this may seem like a strange pattern however in cases where I use += or other ternary operators it is easier to read.
+	 * @param point 
+	 */
+	public *eachWithArgs(point: Pointish, defaultValue?: number){
+		const pt = this.standardize(point, defaultValue)
+		for(let i=0; i<this.length; i++) yield [i, pt[i%2], this[i]];
+	}
+
+	/**
+	 * Clone the values in the point but breaking reference to the exising point values.
 	 * @returns 
 	 */
-	public add(point:Pointish){
-		const pt = this.standardize(point);
-		for(let i = 0; i < this.length; i++){
-			this[i] += pt[i%2] ?? 0;
-		}
+	public clone(){ return new Point(...this); }
+
+	/**
+	 * Add the provided value(s) to the values contained.
+	 * @param point 
+	 * @returns 
+	 */
+	public add(point: Pointish){
+		for(const [i, v] of this.eachWithArgs(point)) this[i] += v;
 		return this;
 	}
 
 	/**
-	 * Subtracts a point from this instance
-	 * If a singular value is provided it will be applied to all the values.
-	 * 
-	 * If an array or Point class is provided x and y will be subtracted from the contained values assuming values are added in [..., x, y] pattern. 
-	 * 
-	 * If an array or Point that does not contain at least two points missing values will be assumed as 0.
-	 * @param pt 
+	 * Subtract the provided value(s) from the values contained.
+	 * @param point 
 	 * @returns 
 	 */
 	public subtract(point: Pointish){
-		const pt = this.standardize(point);
-		for(let i = 0; i < this.length; i++){
-			this[i] -= pt[i%2] ?? 0;
-		}
+		for(const [i, v] of this.eachWithArgs(point)) this[i] -= v;
 		return this;
 	}
 
 	/**
-	 * Multiplies this instance by a provided point
-	 * If a singular value is provided it will be applied to all the values.
-	 * 
-	 * If an array or Point class is provided the contained values will be multipled by the provided x and y values assuming values are added in [..., x, y] pattern. 
-	 * 
-	 * If an array or Point that does not contain at least two points missing values will be assumed as 1.
+	 * Multiply the values contained by the provided value(s)
 	 * @param point 
 	 * @returns 
 	 */
 	public multiply(point: Pointish){
-		const pt = this.standardize(point);
-		for(let i = 0; i < this.length; i++){
-			this[i] *= pt[i%2] ?? 1;
-		}
+		for(const [i, v] of this.eachWithArgs(point, 1)) this[i] *= v;
 		return this;
 	}
 
 	/**
-	 * Divides this instance by a provided point
-	 * If a singular value is provided it will be applied to all the values.
-	 * 
-	 * If an array or Point class is provided the contained values will be divided by the provided x and y values assuming values are added in [..., x, y] pattern. 
-	 * 
-	 * If an array or Point that does not contain at least two points missing values will be assumed as 1.
+	 * Divide the values contained by the provided value(s)
 	 * @param point 
 	 * @returns 
 	 */
 	public divide(point: Pointish){
-		const pt = this.standardize(point);
-		for(let i = 0; i < this.length; i++){
-			this[i] /= pt[i%2] ?? 1;
-		}
+		for(const [i, v] of this.eachWithArgs(point, 1)) this[i] /= v;
 		return this;
 	}
 
 	/**
-	 * Increase the values by the power ofthe values provided.
+	 * raise the values contained to the power of the provided value(s)
 	 * @param point 
 	 * @returns 
 	 */
 	public pow(point: Pointish){
-		const pt = this.standardize(point);
-		for(let i = 0; i<this.length; i++){
-			this[i] = Math.pow(this[i], pt[i%2] ?? 1);
-		}
+		for(const [i, v] of this.eachWithArgs(point, 1)) this[i] **= v;
 		return this;
 	}
 
 	/**
-	 * Find the sum of the point
-	 * @returns 
-	 */
-	public sum(){ return this.x + this.y; }
-
-	/**
-	 * Replace the existing points with the provided point values if the value is less then its respective value within the instance.
-	 * @param point 
-	 * @returns 
-	 */
-	public min(point: Pointish){
-		const pt = this.standardize(point);
-		for(let i = 0; i<this.length; i++){
-			this[i] = Math.min(this[i], pt[i%2] ?? 0);
-		}
-		return this;
-	}
-
-	/**
-	 * Replace the existing points with the provided point values if the value is less then its respective value within the instance.
-	 * @param point 
-	 * @returns 
-	 */
-	public max(point: Pointish){
-		const pt = this.standardize(point);
-		for(let i = 0; i<this.length; i++){
-			this[i] = Math.max(this[i], pt[i%2] ?? 0);
-		}
-		return this;
-	}
-
-	/**
-	 * Rounds down at a provided precision. this is helpful to reduce the difference in calculation between server side and client side.
-	 * For example calling this on [3.14,3.59] would return different results based on precision.
-	 * - precision 0: [3, 3]
-	 * - precision 1: [3.1, 3.5]
-	 * - precision 2: [3.14, 3.59]
-	 * 
-	 * using this is it possible to limit decimal precsion.
+	 * Round all the values in the point down to a provided precision if no precision is provided it rounds down to the next whole number.
 	 * @param precision 
 	 * @returns 
 	 */
-	public floor(precision?:number) {
-		for(let i = 0; i<this.length; i++){
-			this[i] = Arithmetic.floor(this[i], precision);
-		}
+	public floor(precision?: number){
+		for(let i = 0; i<this.length; i++)this[i] = Arithmetic.floor(this[i], precision);
 		return this;
 	}
 
 	/**
-	 * Rounds the value up at the desired precision
+	 * Round all the values in the point up to the provided precision if no precision is provided it will round the numbers up to the next whole number.
 	 * @param precision 
+	 * @returns 
 	 */
 	public ceil(precision?: number){
-		for(let i = 0; i<this.length;i++){
-			this[i] = Arithmetic.ceil(this[i], precision);
-		}
+		for(let i = 0; i<this.length; i++)this[i] = Arithmetic.ceil(this[i], precision);
 		return this;
 	}
 
 	/**
-	 * Rounds the value to the nearest provided precision.
+	 * Round all the values in the point to the provided precision if no precision is provided it will round to the nearest whole number.
 	 * @param precision 
+	 * @returns 
 	 */
 	public round(precision?: number){
-		for(let i = 0; i<this.length;i++){
-			this[i] = Arithmetic.round(this[i], precision);
-		}
-		return this;
-	}
-
-	public setPosition(point: Pointish){
-		const [x=0,y=0] = this.standardize(point);
-		this.x = x;
-		this.y = y;
+		for(let i = 0; i<this.length; i++)this[i] = Arithmetic.round(this[i], precision);
 		return this;
 	}
 
 	/**
-	 * To string turns points to path commands. 
+	 * Adds the first two values of the point together. 
 	 * 
-	 * This method assumes that x and y are the only defined values if additional values have been added to this array they will be ignored.
-	 * 
-	 * Additionally if extending the Point class to invoke a different Path command format the toString method will need to be overriden
+	 * Because of the necessity it should be noted that the first two values should be a control point to be used in measurements.
 	 * @returns 
 	 */
-	public toString(){
-		return `${this.cmd} ${this.x}, ${this.y}`;
-	}
+	public sum() { return this[0] + this[1]; }
+
 
 	/**
-	 * Converts a Point instance to an array. 
-	 * 
-	 * because the Point class extends an array this will effectively remove the custom methods offered by point from the prototype. 
-	 * @returns 
-	 */
-	public toArray():number[]{ return [...this]};
-
-	/**
-	 * Moves the point to a point derived by casting a ray to a specified angle and radius. 
+	 * Update the point by casting a ray from the current position to a new point at a specified angle and distance.
 	 * @param angle 
-	 * @param radius 
-	 * @returns 
+	 * @param distance 
 	 */
-	public ray(angle: number, radius: number){
-		this.x += radius * Math.sin(angle);
-		this.y += radius * Math.cos(angle);
-		return this;
+	public ray(angle: number, distance: number){
+		return this.add([
+			distance * Math.sin(angle),
+			distance * Math.cos(angle)
+		]);
 	}
 
 	/**
-	 * Finds the angle from this point to the provided point
+	 * Measures the distance between a point and the provided point
 	 * @param point 
 	 * @returns 
-	 */
-	public angle(point: Pointish){ 
-		const [x=0,y=0] = this.standardize(point)
-		return Math.atan2(x-this.x,y-this.y);
-	}
-
-	/**
-	 * Finds the distance between the provided point and this point
-	 * @param point 
 	 */
 	public distance(point: Pointish){
-		const [x=0, y=0] = this.standardize(point);
-		return Math.sqrt(this.clone().subtract(point).pow(2).sum());
+		const [x1, y1] = this;
+		const [x2, y2] = this.standardize(point)
+		return Math.sqrt((x2-x1)**2+(y2-y1)**2);
 	}
 
 	/**
-	 * Rotates a the instance around a provided point by an offset radian. 
-	 * @param point 
-	 * @param offset 
-	 * @returns 
+	 * A specialized iterator designed to allow for a simplified iteration strategy when multiple biValues are contained in a point.
+	 * @param defaultValue 
 	 */
-	public rotateAround(point: Pointish, offset: number){
-		const [x, y] = this.standardize(point);
-		const pt = new Point(x, y, this.cmd);
-		const angle = this.angle(pt) + Math.PI;
-		const distance = pt.distance(this);
-		return this.setPosition(pt.ray(angle+offset, distance));
-	}
-	/**
-	 * Checks if the provided value is equal in spacial location as a the instance. 
-	 * @param point 
-	 * @returns 
-	 */
-	public equals(point: Pointish){
-		const [x=0, y=0] = this.standardize(point);
-		return this.x===x && this.y===y;
+	public *bivalIterator(defaultValue: number = 0){
+		for(let i = 0; i<this.length; i+=2) yield [this[i], this[i+1] ?? defaultValue]
 	}
 
-	/**
-	 * Simplifies a point to its smallest hole number
-	 * @returns 
-	 */
-	public simplify(){
-		const gcd = (a: number, b:number):number => b===0 ? a:gcd(b, a%b);
-		return this.divide(gcd(this.x, this.y));
+	public toString(): string {
+		return `${this.cmd}${this.stringr(this)}`;
 	}
-
-	/** Just a convenience method to initialize a zero point */
-	static zero(cmd?:string){
-		return new Point(0, 0, cmd);
-	}
-
-
 }
