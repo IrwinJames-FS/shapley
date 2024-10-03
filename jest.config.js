@@ -1,12 +1,13 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} **/
 module.exports = {
-	testEnvironment: "jsdom",
-	moduleNameMapper: {
-		"^.+\\.scss$": "identity-obj-proxy"
-	},
-	moduleFileExtensions: [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ]
-}
+  testEnvironment: "jsdom",
+  roots: ["<rootDir>/src"],
+  transform: {
+    "^.+.tsx?$": ["ts-jest",{}],
+  },
+
+  moduleNameMapper: {
+    ".(css|less|scss|sass)$": "identity-obj-proxy"
+  },
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"]
+};

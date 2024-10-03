@@ -1,0 +1,7 @@
+.shapley-shape{
+	& > use:first-of-type{
+		fill: var(--fill, none);
+		stroke: var(--stroke, none);
+		stroke-width: var(--stroke-width, none);
+	}
+}

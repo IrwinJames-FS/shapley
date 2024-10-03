@@ -78,7 +78,7 @@ const countLines = (value: string):number => {
 }
 const createLineNumbers = (count: number):string => {
 	let s = '';
-	for(let i = 0; i < count; i++){
+	for(let i = 0; i < count+1; i++){
 		s += `###### ${i+1}\n`;
 	}
 	return s;

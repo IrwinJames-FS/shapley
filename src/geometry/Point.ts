@@ -1,302 +1,193 @@
-import { round, toRad } from "./arithmetic";
-import RoundedCorner from "./RoundedCorner";
-import { SupportedPointMathTypes } from "./types";
+import Arithmetic from "./arithmetic";
+import { Pointish } from "./types";
 
-/**
- * The point type is the basic unit used to create path commands in shapely.
+/** 
+ * The Point class is the foundation of shapley. This adds a series of two dimensional methods that are helpful when drawing without creating a reliance on a platform specific technolory.
+ * 
+ * I have made the concession to invert ray casting methods use of sin and cos the result of this is casting an array of 0 deg 1 unit will result in the point [0, 1] instead of [1, 0]... This is benefitial when rendering regular polygons. 
  */
-class Point extends Array<number>{
-	
-
-	constructor(x: number, y: number) {
-		super(x, y);
-	}
-
+export class Point extends Array<number> {
+	cmd: string = "L"
 	/**
-	 * The x property reads from the first entry of the array.
-	 */
-	get x(){return this[0]}
-	set x(n:number){this[0] = n}
-
-	/**
-	 * The y property reads from the second entry of the array
-	 */
-	get y(){return this[1]}
-	set y(n:number){this[1] = n}
-
-
-	//this is a concession I am making for objects like rounded corners. and potential future special types. This allows the control point to be picked without redundant type checking
-	get control(){
-		return new Point(this.x, this.y);
-	}
-
-	/**
-	 * Post MVP I will be moving to a explicit copy method. 
 	 * 
-	 * This will give the end user more granular control without having to have a robust arithmetic lexicon.
+	 * @param pt 
 	 * @returns 
 	 */
-	public cp(){
-		return new Point(this.x, this.y);
+	stringr: (pt: Point)=>string = pt=>{
+		let str = ''
+		for(let i = 0; i<pt.length; i+=2) str += ` ${pt[i]},${pt[i+1]}`;
+		return str
 	}
 	/**
-	 * This method finds a point on a circle's circumference of the provided **radius** at the provided **angle**
-	 * @param angle - The angle should be provided in radians.
-	 * @param radius 
-	 * @returns 
-	 */
-	public ray(angle: number, radius: number):Point{
-		const p = new Point(
-			radius * Math.sin(angle),
-			radius * Math.cos(angle)
-		).adding(this);
-		return p;
-	}
-
-	/**
-	 * This method finds a point on a circle's circumference of the provided **radius** at the provided **angle**
-	 * @param angle - The angle should be provided in degrees
-	 * @param radius 
-	 */
-	public rayDeg(angle: number, radius: number):Point{
-		return this.ray(toRad(angle), radius);
-	}
-
-	/**
-	 * Adds the current point to another
-	 * @param point
-	 * @returns 
-	 */
-	public add([x,y]: SupportedPointMathTypes):Point{
-		return new Point(this.x + x, this.y + y);
-	}
-
-	/**
-	 * Adds a provided value to the current value without creating a new Point
-	 * @param param0 
-	 * @returns 
-	 */
-	public adding([x,y]: SupportedPointMathTypes){
-		this.x += x;
-		this.y += y;
-		return this;
-	}
-
-	/**
-	 * Add a value to both coordinate values.
-	 * @param n 
-	 * @returns 
-	 */
-	public addScalar(n: number){
-		return new Point(this.x + n, this.y + n);
-	}
-
-	/**
-	 * Subtracts another point from this point
-	 * @param point
-	 * @returns 
-	 */
-	public subtract([x,y]: SupportedPointMathTypes){
-		return new Point(this.x - x, this.y - y);
-	}
-
-	/**
-	 * Subtracts another point from this point without creating a new Point.
-	 */
-	public subtracting([x,y]: SupportedPointMathTypes){
-		this.x -= x;
-		this.y -= y;
-		return this;
-	}
-
-	/**
-	 * Subtracts a value from both coordinate values.
-	 * @param n 
-	 * @returns 
-	 */
-	public subtractScalar(n: number){
-		return new Point(this.x - n, this.y - n);
-	}
-
-	/**
-	 * Multiply this point by another point
-	 * @param point
-	 * @returns 
-	 */
-	public multiply([x,y]: SupportedPointMathTypes){
-		return new Point(this.x * x, this.y * y);
-	}
-
-	/**
-	 * Multiplies the current point by another without making a new point
-	 * @param point
-	 */
-	public multiplying([x,y]: SupportedPointMathTypes) {
-		this.x *= x;
-		this.y *= y;
-		return this;
-	}
-
-	/**
-	 * Multiplies the point by a single value.
-	 * @param n 
-	 * @returns 
-	 */
-	public multiplyScalar(n: number){
-		return new Point(this.x * n, this.y * n);
-	}
-
-	/**
-	 * Divide this point by another point
-	 * @param point
-	 * @returns 
-	 */
-	public divide([x,y]: SupportedPointMathTypes){
-		return new Point(this.x / x, this.y / y);
-	}
-
-	/**
-	 * Divide this point by another point without making a new point
-	 * @param point
-	 * @returns 
-	 */
-	public dividing([x,y]: SupportedPointMathTypes){
-		this.x /= x;
-		this.y /= y;
-		return this;
-	}
-
-	/**
-	 * Divides the point by a single value.
-	 * @param n 
-	 * @returns 
-	 */
-	public divideScalar(n: number){
-		return new Point(this.x / n, this.y / n);
-	}
-
-	/**
-	 * Returns a point that contains the smallest values between the provided point and this point.
-	 * @param param0 
-	 * @returns 
-	 */
-	public min([x, y]: SupportedPointMathTypes | RoundedCorner){
-		return new Point(
-			Math.min(this.x, x),
-			Math.min(this.y, y)
-		)
-	}
-
-	/**
-	 * Returns a point that contains the largest values between the provided point and this point.
-	 * @param param0 
-	 * @returns 
-	 */
-	public max([x, y]: SupportedPointMathTypes | RoundedCorner){
-		return new Point(
-			Math.max(this.x, x),
-			Math.max(this.y, y)
-		)
-	}
-
-	/**
-	 * This method offers a way to round the values for x and y to a specific precision level. This is helpful in SSR as server side precision is usually different from client side.
+	 * All points will have at least two values however may contain more then two values.
 	 * 
-	 * This method mutates the existing values
-	 * @param prec 
+	 * At this time the only commands expected to be supported are M L and Q all of which can be treated in a similar manner. 
+	 * 
+	 * @param param0 
 	 */
-	public precision(prec: number){
-		this.x = round(this.x, prec);
-		this.y = round(this.y, prec);
+	constructor(...[x=0, y=0, ...values]: number[]){
+		super(x, y, ...values);
+	}
+
+	public setCmd(cmd: string){
+		this.cmd = cmd;
 		return this;
 	}
 
+	public setStringr(stringr: (pt: Point)=>string){
+		this.stringr = stringr;
+		return this;
+	}
 	/**
-	 * Calculates the angle and distance to the provided point
+	 * Standardizes a pointish value to an array type.
+	 * @param point 
+	 * @returns 
+	 */
+	public standardize(point: Pointish, defaultValue: number=0){
+		if(Array.isArray(point)) return [point[0] ?? defaultValue, point[1] ?? defaultValue];
+		return [point, point]
+	}
+
+	/**
+	 * As most operations will require a similar iteration method when applying different operations to the point values.
+	 * 
+	 * This iterates over each containing value and yields a tuple containing the index, the value of the pointish array and finally the value of the contained element. 
+	 * 
+	 * this may seem like a strange pattern however in cases where I use += or other ternary operators it is easier to read.
 	 * @param point 
 	 */
-	public to([x, y]: SupportedPointMathTypes){
-		const dx = x-this.x;
-		const dy = y-this.y;
-		return {
-			angle: Math.atan2(dx,dy), //inversed
-			distance: Math.sqrt(dx**2+dy**2)
-		}
+	public *eachWithArgs(point: Pointish, defaultValue?: number){
+		const pt = this.standardize(point, defaultValue)
+		for(let i=0; i<this.length; i++) yield [i, pt[i%2], this[i]];
 	}
 
 	/**
-	 * Calculates the angle and distance from a provided point to this point
-	 * @param param0 
+	 * Clone the values in the point but breaking reference to the exising point values.
 	 * @returns 
 	 */
-	public from([x, y]: SupportedPointMathTypes) {
-		const dx = this.x-x;
-		const dy = this.y-y;
-		return {
-			angle: Math.atan2(dx, dy),
-			distance: Math.sqrt(dx**2+dy**2)
-		}
-	}
+	public clone(){ return new Point(...this); }
+
 	/**
-	 * Rotates a point around another point.
+	 * Add the provided value(s) to the values contained.
 	 * @param point 
+	 * @returns 
+	 */
+	public add(point: Pointish){
+		for(const [i, v] of this.eachWithArgs(point)) this[i] += v;
+		return this;
+	}
+
+	/**
+	 * Subtract the provided value(s) from the values contained.
+	 * @param point 
+	 * @returns 
+	 */
+	public subtract(point: Pointish){
+		for(const [i, v] of this.eachWithArgs(point)) this[i] -= v;
+		return this;
+	}
+
+	/**
+	 * Multiply the values contained by the provided value(s)
+	 * @param point 
+	 * @returns 
+	 */
+	public multiply(point: Pointish){
+		for(const [i, v] of this.eachWithArgs(point, 1)) this[i] *= v;
+		return this;
+	}
+
+	/**
+	 * Divide the values contained by the provided value(s)
+	 * @param point 
+	 * @returns 
+	 */
+	public divide(point: Pointish){
+		for(const [i, v] of this.eachWithArgs(point, 1)) this[i] /= v;
+		return this;
+	}
+
+	/**
+	 * raise the values contained to the power of the provided value(s)
+	 * @param point 
+	 * @returns 
+	 */
+	public pow(point: Pointish){
+		for(const [i, v] of this.eachWithArgs(point, 1)) this[i] **= v;
+		return this;
+	}
+
+	/**
+	 * Round all the values in the point down to a provided precision if no precision is provided it rounds down to the next whole number.
+	 * @param precision 
+	 * @returns 
+	 */
+	public floor(precision?: number){
+		for(let i = 0; i<this.length; i++)this[i] = Arithmetic.floor(this[i], precision);
+		return this;
+	}
+
+	/**
+	 * Round all the values in the point up to the provided precision if no precision is provided it will round the numbers up to the next whole number.
+	 * @param precision 
+	 * @returns 
+	 */
+	public ceil(precision?: number){
+		for(let i = 0; i<this.length; i++)this[i] = Arithmetic.ceil(this[i], precision);
+		return this;
+	}
+
+	/**
+	 * Round all the values in the point to the provided precision if no precision is provided it will round to the nearest whole number.
+	 * @param precision 
+	 * @returns 
+	 */
+	public round(precision?: number){
+		for(let i = 0; i<this.length; i++)this[i] = Arithmetic.round(this[i], precision);
+		return this;
+	}
+
+	/**
+	 * Adds the first two values of the point together. 
+	 * 
+	 * Because of the necessity it should be noted that the first two values should be a control point to be used in measurements.
+	 * @returns 
+	 */
+	public sum() { return this[0] + this[1]; }
+
+
+	/**
+	 * Update the point by casting a ray from the current position to a new point at a specified angle and distance.
 	 * @param angle 
+	 * @param distance 
+	 */
+	public ray(angle: number, distance: number){
+		return this.add([
+			distance * Math.sin(angle),
+			distance * Math.cos(angle)
+		]);
+	}
+
+	/**
+	 * Measures the distance between a point and the provided point
+	 * @param point 
 	 * @returns 
 	 */
-	public rotateAround(point: SupportedPointMathTypes, angle:number){
-		const {angle:a, distance} = this.from(point);
-		return this.ray(a+angle, distance);
+	public distance(point: Pointish){
+		const [x1, y1] = this;
+		const [x2, y2] = this.standardize(point)
+		return Math.sqrt((x2-x1)**2+(y2-y1)**2);
 	}
 
 	/**
-	 * If an aspect ratio is defined as width / height then a point can be treated as a fraction. More to the point fractions can be simplified which should be more desirable then current method of calculating a css aspect ratio.
+	 * A specialized iterator designed to allow for a simplified iteration strategy when multiple biValues are contained in a point.
+	 * @param defaultValue 
 	 */
-	public simplify(){
-		const gcd = (a: number, b: number):number => b===0 ? a:gcd(b, a%b);
-		const divisor = gcd(this.x, this.y);
-		const p = this.cp().divideScalar(divisor);
-		return p;
-	}
-	/*
-	Type Casting
-	*/
-
-	/**
-	 * This Class converts itself to a comma separated string. x, y and fixes the precision to 5 decimal points. 
-	 */
-	public toString():string { return Point.toString(this)}
-
-	/**
-	 * Returns the x and y values in an array.
-	 */
-	public toArray(){return [this.x, this.y]}
-	//Static methods
-
-	/*
-	STATIC METHODS
-	*/
-	
-	/**
-	 * A convenience method to initialize a point at origin.
-	 */
-	static get zero(){
-		return new Point(0, 0);
+	public *bivalIterator(defaultValue: number = 0){
+		for(let i = 0; i<this.length; i+=2) yield [this[i], this[i+1] ?? defaultValue]
 	}
 
-	/** Just a shortcut to initialize rather then needing to write new in a oneLiner */
-	static px(x: number, y: number) {
-		return new Point(x, y);
-	}
-
-	/**
-	 * With the two string method also being applicable to arrays this can replicate the Point toString functionality on other array types assuming the first two elements are the x and y coordinates. 
-	 * @param param0 
-	 * @param prec 
-	 * @returns 
-	 */
-	static toString([x, y]: SupportedPointMathTypes, prec:number = 5):string {
-		return `${round(x, prec)}, ${round(y, prec)}`
+	public toString(): string {
+		return `${this.cmd}${this.stringr(this)}`;
 	}
 }
-
-export default Point;

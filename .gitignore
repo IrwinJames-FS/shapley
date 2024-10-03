@@ -1,5 +1,3 @@
-# Docs
-docs
 # Logs
 logs
 *.log
@@ -108,7 +106,7 @@ dist
 
 # Docusaurus cache and generated files
 .docusaurus
-
+docs
 # Serverless directories
 .serverless/
 
@@ -131,7 +129,3 @@ dist
 .yarn/install-state.gz
 .pnp.*
 *storybook.log
-
-# yalc
-.yalc
-yalc.lock

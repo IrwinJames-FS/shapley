@@ -6,7 +6,7 @@
 }
 
 .doc-block{
-	background-color: rgba(0,0,0,0.05);
+	background-color: rgba(0,0,0,0.015);
 	margin-bottom: 1rem !important;
 	border-radius: 1rem;
 	padding: 1rem;
@@ -66,4 +66,8 @@
 	flex-shrink:1;
 	flex-grow:1;
 	max-width: calc(100% - 6rem);
+}
+
+.geometry-canvas use{
+	fill: rgb(28,128,248);
 }

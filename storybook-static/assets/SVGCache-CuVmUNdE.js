@@ -1,3 +1,0 @@
-import{j as t}from"./jsx-runtime-CkxqCPlQ.js";import{c as n}from"./Points-D1gxx6HH.js";const e=({children:o,className:a,...s})=>t.jsx("svg",{className:n(a,"shapely-cache"),...s,children:t.jsx("defs",{children:o})}),i=e;try{e.displayName="SVGCache",e.__docgenInfo={description:`SVGCache acts as a non visible component to store path definitions which can be refered to throughout the project.
-
-All path commands of these definitions are linked so if you wanted to animate a triangle turning to a diamond on hover you should use a Geometry component with a custom Geometry.`,displayName:"SVGCache",props:{}}}catch{}export{i as S};

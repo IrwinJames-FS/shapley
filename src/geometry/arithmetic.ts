@@ -1,25 +1,49 @@
 /**
- * I dont like the limit decimal method this forces conversion to string rather then just dropping precision
- * @param {number} num 
- * @param {number} limit 
- * @return {number}
+ * Because the names of these methods are so common I will be namespacing them to Arithmetic by default. 
  */
-export const round = (num: number, limit: number) => {
-	if(!limit) return Math.round(num);
-	const l = 10**limit;
-	return Math.round(Math.round(num*l))/l;
+const Arithmetic = {
+	/**
+	 * Rounds the value down by the desired precision.
+	 * @param value 
+	 * @param precision 
+	 * @returns 
+	 */
+	floor: (value: number, precision: number=0) => {
+		if(!precision) return Math.floor(value);
+		const pow = 10**precision;
+		const v = value * pow; //change the decimal location
+		return Math.floor(v)/pow; //move the decimal back.
+	},
+
+	/**
+	 * Rounds the value up by the desired precision.
+	 * @param value 
+	 * @param precision 
+	 * @returns 
+	 */
+	ceil: (value: number, precision: number=0) => {
+		if(!precision) return Math.ceil(value);
+		const pow = 10**precision;
+		const v = value * pow; //change the decimal location
+		return Math.ceil(v)/pow; //move the decimal back.
+	},
+
+	/**
+	 * Rounds the value to the nearest value by the desired precision. 
+	 * @param value 
+	 * @param precision 
+	 * @returns 
+	 */
+	round: (value: number, precision: number=0) => {
+		if(!precision) return Math.round(value);
+		const pow = 10**precision;
+		const v = value * pow; //change the decimal location
+		return Math.round(v)/pow; //move the decimal back.
+	},
+
+	toDegree: (value:number)=>(value*180)/Math.PI,
+	toRadian: (value:number)=>(value*Math.PI)/180
+
 }
 
-/**
- * Convert radians to degress
- * @param {number} rad 
- * @returns 
- */
-export const toDeg = (rad: number):number => rad * 180/Math.PI;
-
-/**
- * Convert degrees to radians
- * @param deg 
- * @returns 
- */
-export const toRad = (deg: number):number => deg * Math.PI/180;
+export default Arithmetic;
