@@ -6,7 +6,7 @@
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -29,6 +29,7 @@
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "storybook": "^8.3.6",
-    "ts-jest": "^29.2.5"
+    "ts-jest": "^29.2.5",
+    "ts-morph": "^24.0.0"
   }
 }
