@@ -148,11 +148,12 @@ export const PathCommands: Record<PathCommandChars, (...vals:number[])=>PathComm
 export const isSupported = (k: string): k is PathCommandChars => {
 	return k in PathCommands;
 }
+export type PathCommandGenerator = Generator<PathCommand>
 /**
  * This method is intended to allow for a complete parsing and manipulation of an svg path command
  * @param commands 
  */
-export function* parseD(commands: string): Generator<PathCommand> {
+export function* parseD(commands: string): PathCommandGenerator {
 	commands = commands.trim(); //make sure it doesnt start with a space or newline
 	for(let i = 0; i<commands.length;){
 		const cmd = commands[i];
