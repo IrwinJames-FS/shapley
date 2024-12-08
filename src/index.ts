@@ -1,2 +1,2 @@
-import './style.scss';
 export * from './geometry';
+export * from './components';

@@ -82,6 +82,28 @@ class psimd extends Array<number> {
 	}
 
 	/**
+	 * Unlike perform op that modifies the sourc this method will create a new source matching the size of the input. 
+	 * 
+	 * This method is effective when finding minimum or maximum or trying to minimize a repeating pattern
+	 * @param value 
+	 * @param op 
+	 */
+	public reducedOp(value: PSIMDable, op: (value: number, sup: number)=>number){
+		value = typeof value === 'number' ? [value]:value;
+		for(let i = 0; i<value.length; i++){
+			const j = i%this.length;
+			this[j] = op(this[j], value[i]);
+		}
+
+		return this;
+	}
+	public min(value: PSIMDable){
+		return this.reducedOp(value, (v,s)=>Math.min(v,s));
+	}
+	public max(value: PSIMDable){
+		return this.reducedOp(value, (v,s)=>Math.max(v,s));
+	}
+	/**
 	 * Designed to replicate the functionality of stride from swift or range form python
 	 * 
 	 * @param step 

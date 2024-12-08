@@ -1,3 +1,25 @@
-export const Shapley = () => (<svg viewBox="0 0 100 100" width="100px" height="100px">
-	<path d="M 50,0 L 100,100 0,100z" fill="rgb(28,128,248)"/>
-</svg>)
+import { FC, isValidElement } from "react";
+import { ShapleyProps } from "./types";
+import { Geometry, psimd } from "~/geometry";
+
+/**
+ * Directly interface with Geometry classes.
+ * 
+ * @returns 
+ */
+export const Shapley:FC<ShapleyProps> = ({d, children, viewBox, ...props}) => {
+	if(!viewBox && children){
+		if(Array.isArray(children)){
+		} else if (isValidElement(children)) {
+			if('d' in children.props && typeof children.props.d === "string"){
+				const [[mx, my], [Mx, My]] = new Geometry(children.props.d).bounds;
+				viewBox = `${mx} ${my} ${Mx-mx} ${My-my}`;
+			}
+		}
+	}
+	return (<svg {...{
+		viewBox,
+		...props}}>
+		{children}
+	</svg>);
+}
