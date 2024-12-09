@@ -1,11 +1,56 @@
+import Command from "./Command";
+import D from "./D"
 
-import D, { fromArray } from "./D";
-describe(`Test the D class`, ()=>{
-	test(`Test initializer`, ()=>{
-		const d = new D("M 50,0 L 100,100, 0,100z");
-		const d1 = new D([50,0,100,100,0,100]);
+describe(`Test D functionality`, () => {
+	test(`Test D string initializer`, () => {
+		const d = new D("M 50,0 100,100 0,100 z");
+		//slightly more forgiving then svg syntax
+		const d1 = new D("M50,0,100,100X0X100z");
+		expect(''+d).toBe("M 50,0 100,100 0,100 z");
+		expect(''+d1).toBe("M 50,0 100,100 0,100 z");
+	});
 
-		console.log(''+d);
-		console.log(''+d1);
+	test(`Test D number array initializer`, () => {
+		const d = new D([50,0,100,100,0,100]);
+		expect(''+d).toBe("M 50,0 100,100 0,100 z");
+	});
+
+	test(`Test D CMD[] initializer`, ()=>{
+		const d = new D([
+			new Command("M", function*(){
+				yield [50,0];
+			}),
+			new Command("L", function*(){
+				yield [100,100];
+				yield [0,100];
+			}),
+			new Command("Z")
+		]);
+		expect(''+d).toBe("M 50,0 L 100,100 0,100 Z");
+	});
+
+	test(`Test D Generator initializer`, ()=>{
+		const d = new D(function*(){
+			yield new Command("M", function*(){
+				yield [50,0];
+				yield [100,100];
+				yield [0,100];
+			});
+			yield new Command("z")
+		});
+		expect(''+d).toBe("M 50,0 100,100 0,100 z");
+	});
+
+	test(`Test Invalid D initializer`, ()=>{
+		expect(()=>{
+			const d = new D("M 50,0 100");
+			console.log(''+d);
+		}).toThrow();
+	})
+
+	test(`Test unsupported D generator initializer`, ()=>{
+		//@ts-ignore
+		const d = new D(["M 50,0 100,100 0,100z"])
+		expect(''+d).toBe('');
 	});
 });

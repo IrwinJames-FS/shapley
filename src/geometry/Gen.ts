@@ -5,6 +5,8 @@ export type GeneratorMutator<T> = (gen: GeneratorList<T>)=>GeneratorList<T>;
  * Gen uses javascript Generators to allow multiple sources of truth within a method. 
  * 
  * In addition operations can be appended to each iteration declaratively.
+ * 
+ * @todo - Instead of using a reusable generator use a raw generator and in the each method build a new generator for the next iteration. 
  */
 class Gen<T> {
 	generator: GeneratorList<T>
@@ -20,12 +22,21 @@ class Gen<T> {
 	}
 
 	/**
-	 * 
+	 * Applies a generator on top of the existing allowing multiple modification operations to be performed in a single iteration.
 	 * @param gen 
 	 * @returns 
 	 */
 	apply(gen: GeneratorMutator<T>){
 		this.generator = gen(this.generator);
+		return this;
+	}
+
+	/**
+	 * Flattens the Generators existing operations down to the last known value.
+	 */
+	flatten(){
+		const s = Array.from(this.generator());
+		this.generator = function*(){yield* s;}
 		return this;
 	}
 }

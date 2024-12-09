@@ -1,8 +1,8 @@
-import { Tuple } from "./types";
+import { Point, Tuple } from "./types";
 
-export const ray = (distance: number, angle: number, x: number = 0, y: number = 0): [x: number, y:number] => [
-	distance * Math.cos(angle) + x,
-	distance * Math.sin(angle) + y
+export const ray = (distance: number, angle: number, [x,y]:Point = [0,0]): [x: number, y:number] => [
+	toPrecision(distance * Math.cos(angle) + x),
+	toPrecision(distance * Math.sin(angle) + y)
 ]
 
 /**
@@ -13,6 +13,9 @@ export const ray = (distance: number, angle: number, x: number = 0, y: number = 
  */
 export const toPrecision = (value: number, precision: number = 6) => {
 	if(!value)return value;
+	if(!precision) return Math.floor(value);
+	const floor = parseFloat(`0.1e${-precision}`)
+	if(value > -floor && value < floor) return 0;
 	const mult = 10**precision;
 	return Math.floor(value*mult)/mult;
 }
@@ -33,4 +36,5 @@ export function* stride<T, N extends number>(iterator: Iterable<T>, ln: N): Gene
 			entry = [];
 		}
 	}
+	if(entry.length) throw new Error("Incomplete stride, " + entry);
 }

@@ -1,9 +1,8 @@
 
 //First declaring the types then I'll declare a value representation as well
 
+import { MAX_NUMERIC_CHAR_CODE, MIN_NUMERIC_CHAR_CODE, PERIOD_CHAR_CODE } from "./constants";
 import Gen from "./Gen";
-import { Tuple } from "./types";
-import { stride } from "./utils";
 
 export type ClosingCommandChar = "Z" | "z";
 
@@ -38,13 +37,43 @@ export type CmdArgs<T extends CommandChar> = T extends ClosingCommandChar ? []
 export type CommandArguments<T extends CommandChar> = ()=>Generator<CmdArgs<T>>;
 
 export type Cmd = Command<CommandChar>;
-export const ClosingChars = /[Zz]/;
-export const SingleChars = /[HhVv]/;
-export const BiChars = /[MmLlTt]/;
-export const QuadChars = /[SsQq]/;
-export const HexChars = /[Cc]/;
-export const ArcChars = /[Aa]/;
 
+/**
+ * Checks if a character is a capital or lowercase variation by examining char code.
+ * @param c 
+ * @param x 
+ * @returns 
+ */
+export const isChar = <T extends CommandChar>(c: string, x: T): c is T => {
+	const a = c.charCodeAt(0);
+	const b = x.charCodeAt(0);
+	return a === b 
+	|| (a>b ? a-32:a+32) === b;
+}
+
+/**
+ * Check if character is acceptible in a number.
+ * @param c 
+ * @returns 
+ */
+export const isNumeric = (c: string)=>{
+	const cd = c.charCodeAt(0);
+	return (cd >= MIN_NUMERIC_CHAR_CODE && cd <= MAX_NUMERIC_CHAR_CODE) || cd === PERIOD_CHAR_CODE;
+}
+
+export const isClosingChar = (s:string):s is ClosingCommandChar => isChar(s, "z");
+export const isSingleChar = (s: string): s is SingleCommandChar => isChar(s, "h") || isChar(s,"v");
+export const isBiChar = (s: string): s is BiCommandChar => isChar(s, "m") || isChar(s, "l") || isChar(s, "t");
+export const isQuadChar = (s: string): s is QuadCommandChar => isChar(s, "s") || isChar(s, "q");
+export const isHexChar = (s: string): s is HexCommandChar => isChar(s, "c");
+export const isArcChar = (s: string): s is ArcCommandChar => isChar(s, "a");
+
+export const isCommandChar = (s: string): s is CommandChar => isClosingChar(s)
+|| isSingleChar(s)
+|| isBiChar(s)
+|| isQuadChar(s)
+|| isHexChar(s)
+|| isArcChar(s);
 
 
 /**
@@ -52,11 +81,11 @@ export const ArcChars = /[Aa]/;
  * @param char 
  * @returns 
  */
-export const getCommandLength = <T extends CommandChar>(char: T): CommandLength<T> => (ClosingChars.test(char) ? 0
-: SingleChars.test(char) ? 1
-: BiChars.test(char) ? 2
-: QuadChars.test(char) ? 4
-: HexChars.test(char) ? 6
+export const getCommandLength = <T extends CommandChar>(char: T): CommandLength<T> => (isClosingChar(char) ? 0
+: isSingleChar(char) ? 1
+: isBiChar(char) ? 2
+: isQuadChar(char) ? 4
+: isHexChar(char) ? 6
 : 7) as CommandLength<T>;
 
 
@@ -64,39 +93,79 @@ export const getCommandLength = <T extends CommandChar>(char: T): CommandLength<
 class Command<T extends CommandChar> extends Gen<CmdArgs<T>> {
 	fn: T
 	len: CommandLength<T>
+
 	constructor(fn: T, values: CommandArguments<T>=function*(){}){
 		super(values);
 		this.fn = fn;
 		this.len = getCommandLength(fn);
 	}
 
+	*each(){
+		for(const n of super.each()){
+			if(n.length !== this.len) throw new Error("Invalid argument length");
+			yield n;
+		}
+	}
 	toString(){
 		let str: string = this.fn;
-		switch (this.len) {
-			case 0: break;
-			case 1:
-				for(const [v] of this.each()){
-					str += ` ${v}`;
-				}
-				break;
-			case 2:
-				for(const [x,y] of this.each()){
-					str += ` ${x},${y}`;
-				}
-			case 4:
-				for(const [dx,dy, x,y] of this.each()){
-					str += ` ${dx},${dy} ${x},${y}`;
-				}
-			case 6:
-				for(const [mx, my, dx, dy, x,y] of this.each()){
-					str += ` ${mx},${my} ${dx},${dy} ${x},${y}`;
-				}
-			case 7:
-				for(const [rx, ry, a, F, f, x,y] of this.each()){
-					str += ` ${rx} ${ry} ${a} ${F} ${f} ${x},${y}`;
-				}
+		for(const n of this.each()){
+			switch (this.len){
+				case 1: 
+					str += ` ${n[0]}`;
+					break;
+				case 2:
+					str += ` ${n[0]},${n[1]}`;
+					break;
+				case 4:
+					str += ` ${n[0]},${n[1]} ${n[2]},${n[3]}`;
+					break;
+				case 6:
+					str += ` ${n[0]},${n[1]} ${n[2]},${n[3]} ${n[4]},${n[5]}`;
+					break;
+				case 7:
+					str += ` ${n[0]} ${n[1]} ${n[2]} ${n[3]} ${n[4]} ${n[5]},${n[6]}`;
+					break
+			}
 		}
 		return str;
+	}
+
+	/** Parse the next set of arguments */
+	static parse<T extends CommandChar>(d: string, offset: number){
+		const char = d[offset] as CommandChar;
+		offset++;
+		return new Command(char, function*(){
+			let o = -1;
+			let args: number[] = [];
+			const len = getCommandLength(char);
+			for(let i = offset; i<d.length; i++){
+				if(isCommandChar(d[i])) break; //a new command has been encountered the parent parse should handle that.
+				if(isNumeric(d[i])){
+					if(!~o) o = i; //set the start point
+					continue;
+				}
+				if(~o){
+					args.push(parseFloat(d.slice(o,i)));
+					o = -1;
+					if(args.length === len){
+						yield args as CmdArgs<T>;
+						args = [];
+					}
+				}
+			}
+			if(~o){
+				args.push(parseFloat(d.slice(o)));
+				o = -1;
+				if(args.length === len){
+					yield args as CmdArgs<T>;
+					args = [];
+				}
+			}
+			
+			if(args.length){
+				throw new Error(`Path Parse error: Missing arguments, expected: ${len}, recieved: ${args.length}`);
+			}
+		})
 	}
 }
 
