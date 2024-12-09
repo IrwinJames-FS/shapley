@@ -8,3 +8,5 @@ export const MIN_NUMERIC_CHAR_CODE = "0".charCodeAt(0);
 export const MAX_NUMERIC_CHAR_CODE = "9".charCodeAt(0);
 
 export const PERIOD_CHAR_CODE = ".".charCodeAt(0);
+
+export const SUBTRACT_CHAR_CODE = "-".charCodeAt(0);

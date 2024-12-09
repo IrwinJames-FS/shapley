@@ -1,13 +1,23 @@
-import Command, { Cmd, CmdArgs, CommandArguments, CommandChar, CommandLength, getCommandLength, isCommandChar } from "./Command";
+import Command, { Cmd, CommandChar, compPoint, isClosingChar, isCommandChar } from "./Command";
 import Gen, { GeneratorList } from "./Gen";
+import { Bounds, Point } from "./types";
 import { stride } from "./utils";
 
 export type Dgen = GeneratorList<Cmd>;
-const COMMAND_CHARS = /[ZzHhVvMmLlTtSsQqCcAa]/g
 /**
  * D is a interactive representation of the information provided in the d property of a path.
  */
 class D extends Gen<Cmd> {
+	/*
+	Populated during iteration
+	*/
+	firstPosition?: Point
+	currentPosition?: Point
+	bounds: Bounds = [0,0,0,0,0,0];
+
+	get viewBox(){
+		return `${this.bounds.slice(0, 4).join(' ')}`;
+	}
 	/**
 	 * D can be initialized with a string which parses and builds the generator from the string. The string will be parsed on command so data is not duplicated in memory unecessarily.
 	 * 
@@ -21,30 +31,39 @@ class D extends Gen<Cmd> {
 	 * @param args 
 	 */
 	constructor(args: string | number[] | Cmd[] | GeneratorList<Cmd>){
-		if(typeof args === 'string'){
-			super(D.parse(args));
-			return;
-		} else if (typeof args === 'function'){
-			super(args);
-			return;
-		}
-		if(Array.isArray(args)){
-			if(typeof args[0] === 'number'){
-				super(function*(){
-					yield new Command("M", function*(){yield* stride(args as number[], 2)});
-					yield new Command("z");
-				});
-				return;
-			} else if (args[0] instanceof Command){
-				super(function*(){
-					yield* args as Cmd[];
-				})
-				return;
-			}
-		}
-		console.warn("Unsupported type recieved", args);
-		super(function*(){});
+		const gen = typeof args === 'string' ? D.parse(args)
+		: typeof args === 'function' ? args
+		: Array.isArray(args) 
+		? typeof args[0] === 'number' ? D.fromLines(args as number[])
+		: args[0] instanceof Command ? function*(){ yield* args as Cmd[]; }
+		: function*(){} : function*(){}
 		
+		super(gen);
+		
+	}
+
+	*each(){
+		let min: Point | undefined
+		let max: Point | undefined
+
+		for(const cmd of super.each()){
+			cmd.currentPosition = this.currentPosition;
+			yield cmd;
+			if(!this.firstPosition) this.firstPosition = cmd.firstPosition;
+			if(isClosingChar(cmd.fn)){
+				this.currentPosition = this.firstPosition;
+				this.firstPosition = undefined; //close the shape and start new 
+			} else {
+				this.currentPosition = cmd.finalPosition
+			}
+			min = compPoint(Math.min, cmd.min, min);
+			max = compPoint(Math.max, cmd.max, max);
+		}
+		if(!min || !max){ 
+			this.bounds = [0,0,0,0,0,0];
+			return;
+		}
+		this.bounds = [...min, ...max.map((v,i)=>v-min[i]), ...max] as Bounds;
 	}
 
 	toString(){
@@ -57,13 +76,18 @@ class D extends Gen<Cmd> {
 
 	static parse(d: string){
 		return function*(){
-			let char: CommandChar = "M";
 			for(let i = 0; i<d.length;i++){
 				if(isCommandChar(d[i])){
-					char = d[i] as CommandChar;
 					yield Command.parse(d, i)
 				}
 			}
+		}
+	}
+
+	static fromLines(d: number[]){
+		return function*(){
+			yield new Command("M", function*(){yield* stride(d, 2)});
+			yield new Command("z");
 		}
 	}
 }

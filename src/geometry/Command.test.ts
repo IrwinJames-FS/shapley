@@ -4,6 +4,7 @@ describe(`Test the Command class`, ()=>{
 	test(`Test the command initializer`, () => {
 		const h = new Command("H", function*(){ yield [100]; });
 		const z = new Command("Z")
+		
 		const m = new Command("m", function*(){
 			yield [50,0];
 			yield [100,100];

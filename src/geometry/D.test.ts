@@ -53,4 +53,19 @@ describe(`Test D functionality`, () => {
 		const d = new D(["M 50,0 100,100 0,100z"])
 		expect(''+d).toBe('');
 	});
+
+	test(`Test single chars`, ()=>{
+		const d = new D("M 0,0 H 100 V 100 H 0z")
+		expect(''+d).toBe("M 0,0 H 100 V 100 H 0 z");
+		expect(d.viewBox).toBe('0 0 100 100');
+	})
+
+	test(`Test ViewBox functionality`, ()=>{
+		const d = new D("M 50,0 100,100 0,100z");
+		d.toString();
+		const d1 = new D("m 50,0 50,100 -100,0z");
+		d1.toString();
+		expect(d.viewBox).toBe('0 0 100 100');
+		expect(d1.viewBox).toBe('0 0 100 100');
+	})
 });
