@@ -1,14 +1,25 @@
-import { FC } from "react";
+import { FC, ComponentPropsWithoutRef } from "react";
 import D from "~/geometry/D";
 
-export interface GlyphProps {
+const Glyph: FC<{
+	/**
+	 * The path command can be provided as a string path command or as a D path
+	 */
 	d: string | D
-}
-
-const Glyph: FC<GlyphProps> = ({d}) => {
+	width?: string
+	height?: string
+	svgProps?: ComponentPropsWithoutRef<"svg">
+} & Omit<ComponentPropsWithoutRef<"path">, "d">> = ({d, width, height, svgProps:{viewBox, ...svgProps}={}, ...props}) => {
 	const p = typeof d === 'string' ? new D(d):d;
-	return (<svg>
-		<path d={''+p} fill="rgb(28,128,248)"/>
+	const geo = ''+p;
+	console.log(viewBox)
+	return (<svg {...{
+		...svgProps,
+		viewBox: viewBox ?? p.viewBox,
+		width,
+		height,
+	}}>
+		<path d={geo} {...props}/>
 	</svg>)
 }
 

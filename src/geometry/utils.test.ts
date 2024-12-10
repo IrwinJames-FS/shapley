@@ -1,4 +1,4 @@
-import { ray, stride, toPrecision } from "./utils";
+import { info, ray, rollingThree, stride, toPrecision } from "./utils";
 
 describe(`Test the utility functions`, () => {
 	test(`Test the stride method`, ()=>{
@@ -36,5 +36,27 @@ describe(`Test the utility functions`, () => {
 		expect(b).toStrictEqual([0,1]);
 		expect(c).toStrictEqual([-1,0]);
 		expect(d).toStrictEqual([0,-1]);
+	});
+
+	test(`Test the info method`, ()=>{
+		const q = Math.PI/2;
+		
+		const [a1, d1] = info([0,0], ray(1, 0));
+		const [a2, d2] = info([0,0], ray(1, q));
+		const [a3, d3] = info([0,0], ray(1, Math.PI));
+		const [a4, d4] = info([0,0], ray(1, q*3));
+
+		expect(a1).toBe(0);
+		expect(d1).toBe(1);
+		expect(a2).toBe(q);
+		expect(d2).toBe(1);
+		expect(a3).toBe(Math.PI);
+		expect(d3).toBe(1);
+		expect(a4).toBe(q*3);
+		expect(d4).toBe(1);
+	});
+
+	test(`Test the rollingThree`, ()=>{
+		for(const p of rollingThree(stride([0,0], 2))) console.log(p);
 	});
 });
