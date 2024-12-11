@@ -61,7 +61,7 @@ export const animated: Story = {
 	args: {
 		d:"",
 		stroke: "#000",
-		strokeWidth: 3,
+		strokeWidth: 1,
 		strokeLinejoin: "round",
 		width: '300px',
 		height: '300px',
@@ -87,7 +87,7 @@ export const animated: Story = {
 			}
 		}, []);
 		useEffect(()=>{
-			if((dir.current>0 && sides >=12) || (dir.current<0 && sides <=0)) dir.current *= -1
+			if((dir.current>0 && sides >=18) || (dir.current<0 && sides <=0)) dir.current *= -1
 		}, [sides]);
 		return <Glyph {...{d, ...props}}/>
 	}
