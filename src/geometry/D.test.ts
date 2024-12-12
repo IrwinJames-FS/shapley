@@ -1,4 +1,4 @@
-import Command from "./Command";
+import Command from "./Commands/Command";
 import D from "./D"
 
 describe(`Test D functionality`, () => {

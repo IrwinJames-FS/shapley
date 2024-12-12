@@ -1,6 +1,6 @@
 import { BiValueCommandChars } from "../../dist/types";
-import Command, { CommandArguments, compPoint, isClosingChar, isCommandChar } from "./Command";
-import { l, L, M, Q } from "./Commands";
+import Command, { CommandArguments, compPoint, isClosingChar, isCommandChar } from "./Commands/Command";
+import { l, L, M, Q } from "./Commands/Commands";
 import Gen, { GeneratorList } from "./Gen";
 import { Bounds, Point } from "./types";
 import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride } from "./utils";
