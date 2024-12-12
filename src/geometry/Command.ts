@@ -5,20 +5,44 @@ import { MAX_NUMERIC_CHAR_CODE, MIN_NUMERIC_CHAR_CODE, PERIOD_CHAR_CODE, SUBTRAC
 import Gen from "./Gen";
 import { Point } from "./types";
 
+/**
+ * The SVG closing commands
+ */
 export type ClosingCommandChar = "Z" | "z";
 
+/**
+ * The SVG commands that expect a single value for each instance.
+ */
 export type SingleCommandChar = "H" | "h" | "V" | "v";
 
+/**
+ * The SVG commands that expects two values for each instance.
+ */
 export type BiCommandChar = "M" | "m" | "L" | "l" | "T" | "t";
 
+/**
+ * The SVG commands that expects four values for each instance.
+ */
 export type QuadCommandChar = "S" | "s" | "Q" | "q";
 
+/**
+ * The SVG commands that expects six values for each instance.
+ */
 export type HexCommandChar = "C" | "c";
 
+/**
+ * The SVG commands that expects 7 values and only two of them can be translated.
+ */
 export type ArcCommandChar = "A" | "a";
 
+/**
+ * The culmination of all the SVG path commands.
+ */
 export type CommandChar = ClosingCommandChar | SingleCommandChar | BiCommandChar | QuadCommandChar | HexCommandChar | ArcCommandChar;
 
+/**
+ * In attempts to make typing a bit more coherent this type alias associates a length to a command type
+ */
 export type CommandLength<T extends CommandChar> = T extends ClosingCommandChar ? 0
 : T extends SingleCommandChar ? 1
 : T extends BiCommandChar ? 2
@@ -26,8 +50,9 @@ export type CommandLength<T extends CommandChar> = T extends ClosingCommandChar 
 : T extends HexCommandChar ? 6
 : 7;
 
-
-
+/**
+ * Command instances are represented as tuples when iterating over each instance stored within a command. 
+ */
 export type CmdArgs<T extends CommandChar> = T extends ClosingCommandChar ? []
 : T extends SingleCommandChar ? [number]
 : T extends BiCommandChar ? [number, number]
@@ -35,9 +60,10 @@ export type CmdArgs<T extends CommandChar> = T extends ClosingCommandChar ? []
 : T extends HexCommandChar ? [number, number, number, number, number, number]
 : [number, number, number, number, number, number, number]
 
+/**
+ * The Command class expects an Generator method that feeds the information to the generator.
+ */
 export type CommandArguments<T extends CommandChar> = ()=>Generator<CmdArgs<T>>;
-
-export type Cmd = Command<CommandChar>;
 
 /**
  * Checks if a character is a capital or lowercase variation by examining char code.
@@ -62,8 +88,29 @@ export const isNumeric = (c: string)=>{
 	return (cd >= MIN_NUMERIC_CHAR_CODE && cd <= MAX_NUMERIC_CHAR_CODE) || cd === PERIOD_CHAR_CODE || cd === SUBTRACT_CHAR_CODE;
 }
 
+/**
+ * Checks if the command character's code matches z or Z.
+ * @param s 
+ * @returns 
+ * @example
+ * isClosingChar("z"); //true
+ * isClosingChar("Z"); //true
+ * isClosingChar("a"); //false
+ */
 export const isClosingChar = (s:string):s is ClosingCommandChar => isChar(s, "z");
+
+/**
+ * Checks if the command character's code matches h, H, v or V.
+ * @param s 
+ * @returns 
+ */
 export const isSingleChar = (s: string): s is SingleCommandChar => isChar(s, "h") || isChar(s,"v");
+
+/**
+ * Checks if the command character's code matches m, M, l, L, t or T.
+ * @param s 
+ * @returns 
+ */
 export const isBiChar = (s: string): s is BiCommandChar => isChar(s, "m") || isChar(s, "l") || isChar(s, "t");
 export const isQuadChar = (s: string): s is QuadCommandChar => isChar(s, "s") || isChar(s, "q");
 export const isHexChar = (s: string): s is HexCommandChar => isChar(s, "c");
@@ -116,7 +163,7 @@ export const compPoint = (fn: (...values: number[])=>number, ...points: (Point |
 	return m;
 }
 
-class Command<T extends CommandChar> extends Gen<CmdArgs<T>> {
+class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>> {
 	fn: T
 	len: CommandLength<T>
 

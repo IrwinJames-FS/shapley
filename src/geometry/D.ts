@@ -1,15 +1,15 @@
 import { BiValueCommandChars } from "../../dist/types";
-import Command, { Cmd, CommandArguments, CommandChar, compPoint, isClosingChar, isCommandChar } from "./Command";
-import { CIRCLE } from "./constants";
+import Command, { CommandArguments, compPoint, isClosingChar, isCommandChar } from "./Command";
+import { l, L, M, Q } from "./Commands";
 import Gen, { GeneratorList } from "./Gen";
 import { Bounds, Point } from "./types";
-import { allConnected, angleTo, info, polygon, ray, rollingThree, stride } from "./utils";
+import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride } from "./utils";
 
-export type Dgen = GeneratorList<Cmd>;
+export type Dgen = GeneratorList<Command>;
 /**
  * D is a interactive representation of the information provided in the d property of a path.
  */
-class D extends Gen<Cmd> {
+class D extends Gen<Command> {
 	/*
 	Populated during iteration
 	*/
@@ -34,15 +34,15 @@ class D extends Gen<Cmd> {
 	 * Allowing a wide range of sources allows D to operate in a large variety use cases.
 	 * @param args 
 	 */
-	constructor(args: string | number[] | Cmd[] | GeneratorList<Cmd> | CommandArguments<BiValueCommandChars>){
+	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiValueCommandChars>){
 		const gen = typeof args === 'string' ? D.parse(args)
 		: typeof args === 'function' ? D.standardizeGenerator(args)
 		: Array.isArray(args) 
 		? typeof args[0] === 'number' ? D.fromLines(args as number[])
-		: args[0] instanceof Command ? function*(){ yield* args as Cmd[]; }
+		: args[0] instanceof Command ? function*(){ yield* args as Command[]; }
 		: function*(){} : function*(){}
 		
-		super(gen as GeneratorList<Cmd>);
+		super(gen as GeneratorList<Command>);
 	}
 
 	*each(){
@@ -77,7 +77,7 @@ class D extends Gen<Cmd> {
 		return str.trim();
 	}
 
-	static standardizeGenerator(gen: GeneratorList<Cmd> | CommandArguments<BiValueCommandChars>){
+	static standardizeGenerator(gen: GeneratorList<Command> | CommandArguments<BiValueCommandChars>){
 		//check the first for value.. types cannot be mixed. 
 		const g = gen().next().value;
 		if(!g) return function*(){};
@@ -155,6 +155,42 @@ class D extends Gen<Cmd> {
 				});
 			}
 		})
+	}
+
+	/**
+	 * Iterates over each point and rounds vertex points. 
+	 * 
+	 * This method expects the first point to be exact then all subsequent points to be relative
+	 * @param cornerRadius 
+	 * @param points 
+	 */
+	static rounded(cornerRadius: number, d: readonly number[]){
+		return new D(function*(){
+			if(d.length < 6){
+				yield M(...pt(d,0));
+				if(d.length > 2) yield l(...d.slice(2));
+				return;
+			}
+
+			let previous = pt(d,0);
+			
+			yield M(...previous);
+			
+			let current = add(previous, pt(d,2));
+
+			for(let i = 4; i<d.length; i+=2){
+				const pa = angleTo(current, previous);
+				const start = ray(cornerRadius, pa, current);
+				yield L(...start);
+				const next = add(current, pt(d,i));
+				const na = angleTo(current, next);
+				const end = ray(cornerRadius, na, current);
+				yield Q(...current, ...end)
+				previous = current;
+				current = next;
+			}
+			yield L(...current);
+		});
 	}
 }
 export default D;

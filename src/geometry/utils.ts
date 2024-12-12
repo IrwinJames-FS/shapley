@@ -1,5 +1,3 @@
-import { BiValueCommandChars } from "../../dist/types";
-import Command, { Cmd, CommandArguments } from "./Command";
 import { CIRCLE } from "./constants";
 import { GeneratorList } from "./Gen";
 import { Point, Tuple } from "./types";
@@ -26,6 +24,17 @@ export const angleTo = ([x1,y1]: Point, [x2, y2]: Point) => {
 	const a = Math.atan2(y2-y1, x2-x1);
 	return a < 0 ? a + CIRCLE:a
 }
+/**
+ * While slice is not expensive it is still more expensive then pulling two explict values from a list
+ */
+export const pt = (list: readonly number[], index: number): Point => [list[index], list[index+1]]
+
+/**
+ * Grab the angle from origin to a position.
+ * @param point 
+ * @returns 
+ */
+export const ang = (point: Point)=>angleTo([0,0], point);
 
 export const distance = ([x1, y1]:Point, [x2, y2]: Point) => Math
 .sqrt((x2-x1)**2+(y2-y1)**2);
@@ -76,6 +85,8 @@ export function* stride<T, N extends number>(iterator: Iterable<T>, ln: N): Gene
 	if(entry.length) throw new Error("Incomplete stride, " + entry);
 }
 
+
+
 /**
  * An internal method that I use to iterate of lines by threes
  * @param iterator 
@@ -121,3 +132,7 @@ export const allConnected = (gen: GeneratorList<Point>) => function*(){
 		}
 	}
 }
+
+export const add = ([x1,y1]: Point, [x2,y2]: Point):Point => [x1+x2, y1+y2];
+
+export const subtract = ([x1,y1]: Point, [x2,y2]: Point): Point => [x1-x2, y1-y2];
