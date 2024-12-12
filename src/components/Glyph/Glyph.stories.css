@@ -1,0 +1,19 @@
+
+path.stroked{
+	--dash: 3500;
+	stroke-dasharray: var(--dash);
+	stroke-dashoffset: var(--dash);
+	animation: stroke 5s linear infinite forwards;
+}
+
+@keyframes stroke {
+	0%, 5%{
+		stroke-dashoffset: var(--dash);
+	}
+	45%,55%{
+		stroke-dashoffset: 0;
+	}
+	100%,95%{
+		stroke-dashoffset: var(--dash)
+	}
+}

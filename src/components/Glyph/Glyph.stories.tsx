@@ -3,7 +3,7 @@ import Glyph from "./Glyph";
 import D from "~/geometry/D";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toPrecision } from "~/geometry/utils";
-import { M, Q, S, z } from "~/geometry/Commands";
+import './Glyph.stories.css';
 export default {
 	component: Glyph,
 	tags: ['autodocs']
@@ -11,24 +11,65 @@ export default {
 
 type Story = StoryObj<typeof Glyph>;
 
+
 export const Primary: Story = {
 	args: {
 		fill:"none",
 		stroke: "#000",
-		strokeWidth: 5,
-		strokeLinejoin: "round",
-		width: "300px",
+		strokeWidth: 10,
+		strokeLinecap: 'round',
+		width: "600px",
 		height: "300px",
-		d: new D(`M 100,75 100,25 50,0 0,25 0,75 100,125 100,175 50,200 0,175 0,125
-M 110,25 110,175, 110,125 150,100 190,125 190,175
-M 290,175 290,135 250,115 210,135 210,175 250,195 290,175 300,190
-M 310,225 310,135 350,115 390,135 390,175 350,195 310,175
-M 410,25 410,175
-M 430,155 470,175 510,155 510,140 470,120 430,140 430,175 470,195 510,175
-M 520,120 520,175 560,195, 600,175 600,120
-M 600,175 600,215 560,235`)
+		className:"stroked",
+		d: D.rounded(0, 
+			[
+				100,75, 0,-50, -50,-25, -50,25, 0,50, 100,50, 0,50, -50,25, -50,-25, 0,-50,
+				120,-20, 40,-20, 0,-40, -40,-20, 0,150, 0,-50, 40,-20, 40,20, 0,50,
+				20,0, 0,-40, 40,-20, 40,20, 0,40, -40,20, -40,-20, 0,-40, 40,-20, 40,20, 0,60,
+				20,0, 0,-80, 0,20, 40,-20, 40,20, 0,40, -40,20,-40,-20, 0,60, 0,-60, 40,20, 50,0, 20,-120, -10,-20, -10,20, 20,120,
+				20,-40, 40,20, 40,-20, 0,-20, -40,-20, -40,20, 0,40, 40,20, 40,-20,
+				20,-40, 0,40, 40,20, 40,-20, 0,-40, 0,80, -40,20
+			]
+		).flatten(),
+	},
+	render: ({d:_, ...args})=>{
+		const [radius, setRadius] = useState(0);
+		const dir = useRef(1);
+		const d = useMemo(()=>D.rounded(radius, 
+			[
+				100,75, 0,-50, -50,-25, -50,25, 0,50, 100,50, 0,50, -50,25, -50,-25, 0,-50,
+				120,-20, 40,-20, 0,-40, -40,-20, 0,150, 0,-50, 40,-20, 40,20, 0,50,
+				20,0, 0,-40, 40,-20, 40,20, 0,40, -40,20, -40,-20, 0,-40, 40,-20, 40,20, 0,60,
+				20,0, 0,-80, 0,20, 40,-20, 40,20, 0,40, -40,20,-40,-20, 0,60, 0,-60, 40,20, 50,0, 20,-120, -10,-20, -10,20, 20,120,
+				20,-40, 40,20, 40,-20, 0,-20, -40,-20, -40,20, 0,40, 40,20, 40,-20,
+				20,-40, 0,40, 40,20, 40,-20, 0,-40, 0,80, -40,20
+			]
+		).flatten(), [radius]);
+	
+		/*useEffect(()=>{
+			let frame: number = -1;
+			let lastUpdate: number = 0;
+			const draw = (time:number=0) => {
+				if(time-lastUpdate<5e3) return frame = requestAnimationFrame(draw);
+				lastUpdate = time;
+				setRadius(s=>s+=10*dir.current);
+				frame = requestAnimationFrame(draw);
+			}
+			frame = requestAnimationFrame(draw);
+			return ()=>{
+				if(~frame) cancelAnimationFrame(frame);
+			}
+		}, []);*/
+		useEffect(()=>{
+			if((dir.current>0 && radius >=10) || (dir.current<0 && radius <=0)) dir.current *= -1
+		}, [radius]);
+		return <Glyph {...{
+			d, ...args,
+			onAnimationIteration: ()=>setRadius(s=>s+=10*dir.current)
+		}}/>
 	}
 }
+
 export const PrimaryN: Story = {
 	args:{
 		d: "M 50,0 100,100 0,100z",
@@ -38,6 +79,8 @@ export const PrimaryN: Story = {
 	}
 }
 
+
+
 export const Secondary: Story = {
 	args: {
 		d: D.polygon(6, 100, [0,0], 60),
@@ -46,6 +89,8 @@ export const Secondary: Story = {
 		height: '300px'
 	}
 }
+
+
 
 export const Shape: Story = {
 	args: {
