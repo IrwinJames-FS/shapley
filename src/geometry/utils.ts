@@ -9,10 +9,12 @@ import { Point, Tuple } from "./types";
  * @param param2 
  * @returns 
  */
-export const ray = (distance: number, angle: number, [x,y]:Point = [0,0]): [x: number, y:number] => [
-	toPrecision(distance * Math.cos(angle) + x),
-	toPrecision(distance * Math.sin(angle) + y)
-]
+export const ray = (distance: number, angle: number, [x,y]:Point = [0,0]): [x: number, y:number] => {
+	return [
+		toPrecision(distance * Math.cos(angle) + x),
+		toPrecision(distance * Math.sin(angle) + y)
+	]
+}
 
 /**
  * Find the angle from the first point to the second point.
@@ -132,7 +134,23 @@ export const allConnected = (gen: GeneratorList<Point>) => function*(){
 		}
 	}
 }
+export const translate = (x: number,y: number, ...values: number[]):number[] => {
+	for(let i = 0; i<values.length; i+=2){
+		values[i] += x;
+		values[i+1] += y;
+	}
+	return values;
+}
 
+export const scale = (x: number, y: number, ...values: number[]):number[] => {
+	for(let i = 0; i<values.length; i+=2){
+		values[i] *= x;
+		values[i+1] *= y;
+	}
+	return values
+}
 export const add = ([x1,y1]: Point, [x2,y2]: Point):Point => [x1+x2, y1+y2];
 
 export const subtract = ([x1,y1]: Point, [x2,y2]: Point): Point => [x1-x2, y1-y2];
+
+export const extractPoints = (...points: number[])=>Array.from(stride(points, 2));

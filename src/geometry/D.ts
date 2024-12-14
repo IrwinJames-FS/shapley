@@ -1,6 +1,5 @@
 import { BiValueCommandChars } from "../../dist/types";
-import Command, { CommandArguments, compPoint, isClosingChar, isCommandChar } from "./Commands/Command";
-import { l, L, M, Q } from "./Commands/Commands";
+import Command, { CommandArguments, compPoint, isAbsolute, isClosingChar, isCommandChar, l, L, M, Q } from "./Commands";
 import Gen, { GeneratorList } from "./Gen";
 import { Bounds, Point } from "./types";
 import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride } from "./utils";
@@ -16,11 +15,19 @@ class D extends Gen<Command> {
 	firstPosition?: Point
 	currentPosition?: Point
 	bounds: Bounds = [0,0,0,0,0,0];
-	margin: number = 10;
+	margin: number = 0;
+	_aspectRatio?: string
+	
 	get viewBox(){
 		const [mx, my, width, height] = this.bounds;
 		const m = this.margin*2
 		return `${mx-this.margin} ${my-this.margin} ${width+m} ${height+m}`;
+	}
+
+	get aspectRatio(){
+		if(this._aspectRatio) return this._aspectRatio;
+		
+		return `${this.bounds[2]} / ${this.bounds[3]}`;
 	}
 	/**
 	 * D can be initialized with a string which parses and builds the generator from the string. The string will be parsed on command so data is not duplicated in memory unecessarily.
@@ -34,7 +41,7 @@ class D extends Gen<Command> {
 	 * Allowing a wide range of sources allows D to operate in a large variety use cases.
 	 * @param args 
 	 */
-	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiValueCommandChars>){
+	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiValueCommandChars>, margin: number = 0){
 		const gen = typeof args === 'string' ? D.parse(args)
 		: typeof args === 'function' ? D.standardizeGenerator(args)
 		: Array.isArray(args) 
@@ -43,14 +50,30 @@ class D extends Gen<Command> {
 		: function*(){} : function*(){}
 		
 		super(gen as GeneratorList<Command>);
+		this.margin = margin;
 	}
 
+	setMargin(margin: number){
+		this.margin = margin;
+		return this;
+	}
+	/**
+	 * in some circumstances such as converting to objectBounding a measurement needs to be forced. the simplest way to complish this is to convert the class to a string and then observe the bounds. 
+	 * 
+	 */
+	getBounds(){
+		if(Math.max(...this.bounds) > 0) return this.bounds;
+		//by forcing all of the instances to iterate we can force a measurement prior to render.
+		const _ = ''+this;
+		return this.bounds;
+	}
 	*each(){
 		let min: Point | undefined
 		let max: Point | undefined
 
 		for(const cmd of super.each()){
 			cmd.currentPosition = this.currentPosition;
+
 			yield cmd;
 			if(!this.firstPosition) this.firstPosition = cmd.firstPosition;
 			if(isClosingChar(cmd.fn)){
@@ -66,7 +89,58 @@ class D extends Gen<Command> {
 			this.bounds = [0,0,0,0,0,0];
 			return;
 		}
+		
 		this.bounds = [...min, ...max.map((v,i)=>v-min[i]), ...max] as Bounds;
+		this.currentPosition = undefined;
+	}
+
+	/**
+	 * Translate the path
+	 * 
+	 * this will only translate Absolute commands and an the first m character provided.
+	 * @param x 
+	 * @param y 
+	 */
+	translate(x: number, y: number){
+		return this.apply(gen=>function*(){
+			let first = true;
+			for(const cmd of gen()){
+				if(!first && !isAbsolute(cmd.fn)) {
+					yield cmd;
+					continue;
+				}
+				first = false;
+				yield cmd.translate(x, y);
+				
+			}
+		});
+	}
+
+	scale(x: number, y: number){
+		return this.apply(gen=>function*(){
+			for(const cmd of gen()){
+				yield cmd.scale(x,y);
+			}
+		});
+	}
+
+	/**
+	 * Converts a command path to objectBounding units. this is particularly helpful if the path is being used as a background or clip path. 
+	 * 
+	 * To this results in a non linear scaling method forcing the units into a square. to maintain a non square rectangle it is recomended you set an aspect ratio. 
+	 * 
+	 */
+	toObjectBounding(){
+		const [mx,my,width, height] = this.getBounds();
+		if(mx === 0 && my === 0 && width === 1 && height === 1) return this; //no need to do any math its already normalized.
+		this._aspectRatio = this.aspectRatio;
+		const sx = 1/width;
+		const sy = 1/height;
+		const tx = mx*sx*-1;
+		const ty = my*sy*-1;
+		return this.scale(sx, sy) //scale the component down to a 1x1
+		.translate(tx,ty) //move top left to (0,0);
+		.flatten(); //work from a normalized point
 	}
 
 	toString(){
@@ -122,8 +196,8 @@ class D extends Gen<Command> {
 	 */
 	static polygon(sides: number, radius: number = 1, center:Point = [0,0], rotation: number=0, cornerRadius: number=0, connectAll: boolean = false){
 		const r = rotation * Math.PI/180;
+		console.log(sides, radius);
 		return connectAll ? new D(allConnected(polygon(sides, radius, center, r))):D.shape(cornerRadius, polygon(sides, radius, center, r))
-			
 	}
 
 	
@@ -154,6 +228,7 @@ class D extends Gen<Command> {
 					yield [...c, ...ray(cornerRadius, na, c)];
 				});
 			}
+			yield new Command("z");
 		})
 	}
 
