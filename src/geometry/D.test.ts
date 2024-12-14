@@ -57,7 +57,7 @@ describe(`Test D functionality`, () => {
 	test(`Test single chars`, ()=>{
 		const d = new D("M 0,0 H 100 V 100 H 0z")
 		expect(''+d).toBe("M 0,0 H 100 V 100 H 0 z");
-		//expect(d.viewBox).toBe('0 0 100 100');
+		expect(d.viewBox).toBe('0 0 100 100');
 	})
 
 	test(`Test ViewBox functionality`, ()=>{
@@ -65,7 +65,17 @@ describe(`Test D functionality`, () => {
 		d.toString();
 		const d1 = new D("m 50,0 50,100 -100,0z");
 		d1.toString();
-		//expect(d.viewBox).toBe('0 0 100 100');
-		//expect(d1.viewBox).toBe('0 0 100 100');
+		expect(d.viewBox).toBe('0 0 100 100');
+		expect(d1.viewBox).toBe('0 0 100 100');
+	})
+
+	test(`Test translate method`, ()=>{
+		const polygon = D.polygon(4).translate(10,10);
+		console.log('polygon: '+polygon);
+	});
+
+	test(`Test toObjectBounding method`, ()=>{
+		const polygon = D.polygon(4);
+		console.log(''+polygon.toObjectBounding())
 	})
 });

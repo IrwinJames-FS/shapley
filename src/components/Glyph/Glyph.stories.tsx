@@ -44,7 +44,7 @@ export const Primary: Story = {
 				20,-40, 40,20, 40,-20, 0,-20, -40,-20, -40,20, 0,40, 40,20, 40,-20,
 				20,-40, 0,40, 40,20, 40,-20, 0,-40, 0,80, -40,20
 			]
-		).flatten(), [radius]);
+		).setMargin(10).flatten(), [radius]);
 	
 		/*useEffect(()=>{
 			let frame: number = -1;
@@ -138,3 +138,11 @@ export const animated: Story = {
 	}
 }
 
+export const normalized:Story = {
+	args:{
+		d: D.polygon(4, 100, [200,200], 0, 10).toObjectBounding(),
+		fill: 'rgb(28,128,248)',
+		width: '300px',
+		height: '300px'
+	}
+}

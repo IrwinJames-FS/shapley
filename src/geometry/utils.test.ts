@@ -1,4 +1,4 @@
-import { info, ray, rollingThree, stride, toPrecision } from "./utils";
+import { extractPoints, info, ray, rollingThree, stride, toPrecision } from "./utils";
 
 describe(`Test the utility functions`, () => {
 	test(`Test the stride method`, ()=>{
@@ -59,4 +59,9 @@ describe(`Test the utility functions`, () => {
 	test(`Test the rollingThree`, ()=>{
 		for(const p of rollingThree(stride([0,0], 2))) console.log(p);
 	});
+
+	test(`Test extract points`, ()=>{
+		const pts = [1,2,3,4,5,6,7,8,9,0];
+		console.log(extractPoints(...pts))
+	})
 });

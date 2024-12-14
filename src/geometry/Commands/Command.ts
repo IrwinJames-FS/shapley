@@ -4,6 +4,7 @@
 import { MAX_NUMERIC_CHAR_CODE, MIN_NUMERIC_CHAR_CODE, PERIOD_CHAR_CODE, SUBTRACT_CHAR_CODE } from "../constants";
 import Gen from "../Gen";
 import { Point } from "../types";
+import { add, extractPoints, scale, translate } from "../utils";
 import { ArcCommandChar, BiCommandChar, ClosingCommandChar, CmdArgs, CommandArguments, CommandChar, CommandLength, HexCommandChar, QuadCommandChar, SingleCommandChar } from "./Command.types";
 
 /**
@@ -85,21 +86,36 @@ class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>> {
 	*each():Generator<CmdArgs<T>>{
 		const isAbs = isAbsolute(this.fn);
 		let cp: Point | undefined = this.currentPosition;
+		let mp: Point | undefined = this.currentPosition;
+		let Mp: Point | undefined = this.currentPosition;
 		for(const n of super.each()){
 			if(n.length !== this.len) throw new Error("Invalid argument length");
 			if(isAbs) {
 				//check the minimum and maximum and current position
 				switch (this.len){
+					case 0: break;
 					case 1:
-						if(!cp) cp = [0,0];
+						
+						if(!cp){
+							cp = [0,0];
+						}
 						if(isChar(this.fn, "h")){
 							cp[0] = n[0] as number;
 						} else {
 							cp[1] = n[0] as number
 						}
+						mp = minPoint(mp, cp);
+						Mp = maxPoint(Mp, cp);
+						break;
+					case 7:
+						cp = n.slice(n.length-2) as Point;
+						mp = minPoint(mp, cp);
+						Mp = maxPoint(Mp, cp);
 						break;
 					default:
-						cp = n.slice(n.length-2) as Point
+						cp = n.slice(n.length-2) as Point;
+						mp = minPoint(mp, ...extractPoints(...n));
+						Mp = maxPoint(Mp, ...extractPoints(...n));
 				}
 			} else {
 				switch(this.len){
@@ -108,21 +124,60 @@ class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>> {
 						if(!cp) cp = [0,0]
 						if(isChar(this.fn, "h")) cp[0] += n[0] as number;
 						else cp[1] += n[0] as number;
+						mp = minPoint(mp, cp);
+						Mp = maxPoint(Mp, cp);
 						break;
-					default:
+					case 7:
 						if(!cp) cp = n.slice(n.length-2) as Point;
 						else cp = cp.map((v,i)=>v+n[(n.length-2)+i]) as Point;
+						mp = minPoint(mp, cp);
+						Mp = maxPoint(Mp, cp);
+						break;
+					case 2:
+						if(!cp) cp = n.slice(n.length-2) as Point;
+						else cp = cp.map((v,i)=>v+n[(n.length-2)+i]) as Point;
+						mp = minPoint(mp, cp);
+						Mp = maxPoint(Mp, cp);
+						break;
+					default:
+						const pts = extractPoints(...n.slice(0,-2)).map(p=>add(p,cp ?? [0,0]));
+						if(!cp) cp = n.slice(n.length-2) as Point;
+						else cp = cp.map((v,i)=>v+n[(n.length-2)+i]) as Point;
+						mp = minPoint(mp, ...pts);
+						Mp = maxPoint(Mp, ...pts);
 						break;
 				}
 			}
 			if(!this.firstPosition) this.firstPosition = cp;
-			this.min = compPoint(Math.min, cp, this.min);
-			this.max = compPoint(Math.max, cp, this.max);
+			this.min = minPoint(this.min, mp);
+			this.max = maxPoint(this.max, Mp);
 			this.currentPosition = cp;
 			yield n;
 		}
 		this.finalPosition = this.currentPosition;
 		this.currentPosition = undefined;
+	}
+
+
+	/**
+	 * Translates a command set
+	 * @param x 
+	 * @param y 
+	 */
+	translate(x: number, y: number){
+		return this.apply(gen=>function*(){
+			for(const arr of gen()){
+				yield (arr.length === 7 ? [...arr.slice(0, 5), ...translate(x,y, ...arr.slice(5))]:translate(x,y, ...arr)) as CmdArgs<T>;
+			}
+		});
+	}
+
+	scale(x: number, y: number){
+		return this.apply(gen=>function*(){
+			for(const arr of gen()){
+				yield (arr.length === 7 ? [...scale(x,y, ...arr.slice(0,2)), ...arr.slice(2,5), ...arr.slice(5)]:scale(x,y, ...arr)) as CmdArgs<T>;
+			}
+		});
 	}
 
 	/**
@@ -412,6 +467,9 @@ export const compPoint = (fn: (...values: number[])=>number, ...points: (Point |
 	return m;
 }
 
+export const minPoint = (...points: (Point | undefined)[])=> compPoint(Math.min, ...points);
+
+export const maxPoint = (...points: (Point | undefined)[]) => compPoint(Math.max, ...points);
 
 
 

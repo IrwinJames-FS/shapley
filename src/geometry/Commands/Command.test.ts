@@ -45,5 +45,10 @@ describe(`Test the Command class`, ()=>{
 		const b = chars.toUpperCase().split('').map(isCommandChar);
 		expect(a).toStrictEqual(expected);
 		expect(b).toStrictEqual(expected);
+	});
+
+	test(`Test translate method`, ()=>{
+		const diamond = Command.parse("M 50,0 100,50 50,100 0,50", 0);
+		console.log(''+diamond.translate(10,10))
 	})
 })
