@@ -11,7 +11,7 @@ type Story = StoryObj<ShapeGridProps>;
 
 export const Primary: Story = {
 	args: {
-		ds: {
+		shapes: {
 			hexagon: D.polygon(6)
 		},
 		cellColumns: 'repeat(6, 1fr 2fr) 1fr',

@@ -11,6 +11,7 @@ export type ShapeDefinitionProps = {
 	 * The d path command must be in objectBounding units (0-1).
 	 */
 	d: string,
+	clipPathUnits?: string | number //to comply with existing type however shapley only uses string clipPathUnits by default.
 } & Omit<ComponentPropsWithoutRef<"path">, "id" | "d">;
 
 /**
@@ -18,9 +19,12 @@ export type ShapeDefinitionProps = {
  * @param param0 
  * @returns 
  */
-export const ShapeDefinition: FC<ShapeDefinitionProps> = ({id, d, ...props}) => (<>
-	<path {...{id, d, ...props}}/>
-	<clipPath {...{id: id+'-clip', clipPathUnits:"objectBoundingBox"}}>
-		<use href={"#"+id}/>
-	</clipPath>
-</>);
+export const ShapeDefinition: FC<ShapeDefinitionProps> = ({id, d, clipPathUnits, ...props}) => {
+	
+	return (<>
+		<path {...{id, d, ...props}}/>
+		<clipPath {...{id: id+'-clip', clipPathUnits}}>
+			<use href={"#"+id}/>
+		</clipPath>
+	</>);
+}

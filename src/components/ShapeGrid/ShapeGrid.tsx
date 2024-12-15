@@ -2,21 +2,22 @@ import { ComponentPropsWithoutRef, CSSProperties, FC } from "react"
 import { D } from "~/src/geometry"
 import { ShapeDefinition } from "../ShapeDefinition/ShapeDefinition"
 import './style.css';
+import { ShapeCache } from "../ShapeCache/ShapeCache";
 export type ShapeGridProps = {
 	/**
-	 * The ds object will use the key as an id so the path command can be referenced from multiple components
+	 * The shapes object will use the key as an id so the path command can be referenced from multiple components
 	 */
-	ds: Record<string, D>
+	shapes?: Record<string, D>
 
 	/**
 	 * Cell columns will be the css value for cellTemplateColumns
 	 */
-	cellColumns: string
+	cellColumns?: string
 
 	/**
 	 * Cell rows will the the css value for cellTemplateRows
 	 */
-	cellRows: string
+	cellRows?: string
 
 	/**
 	 * The size either needs to be set here or via css the assumed size is 1
@@ -28,7 +29,7 @@ export type ShapeGridProps = {
  * 
  */
 export const ShapeGrid: FC<ShapeGridProps> = ({
-	ds,
+	shapes,
 	className,
 	children,
 	cellColumns,
@@ -37,30 +38,18 @@ export const ShapeGrid: FC<ShapeGridProps> = ({
 	style={},
 	...props
 })=>{
-	//ensure all geometries are objectBounding
-	Object.keys(ds).forEach(k=>ds[k].toObjectBounding());
-	const aspectRatio = Object.values(ds)[0].aspectRatio;
 	return (<div {...{
 		className: [className ?? '', 'shapley-grid'].join(' ').trim(),
 		style:{
 			gridTemplateColumns: cellColumns,
 			gridTemplateRows: cellRows,
-			'--grid-aspect-ratio': aspectRatio,
 			'--shape-height': cellSize ? cellSize[1]:undefined,
 			'--shape-width': cellSize ? cellSize[0]:undefined,
 			...style
 		} as CSSProperties, //force recast back to CSSProperties it should parse just fine,
 		...props
 	}}>
-		<svg>
-			<defs>
-				{Object.keys(ds).map(k=>{
-					const d = ''+ds[k]
-					console.log(d, ds[k].bounds)
-					return <ShapeDefinition id={k} key={k} d={d}/>
-				})}
-			</defs>
-		</svg>
+		{shapes && <ShapeCache shapes={shapes}/>} 
 		{children}
 	</div>)
 }

@@ -16,8 +16,7 @@ export class D extends Gen<Command> {
 	currentPosition?: Point
 	bounds: Bounds = [0,0,0,0,0,0];
 	margin: number = 0;
-	_aspectRatio?: string
-	
+	_aspectRatio?: string;
 	get viewBox(){
 		const [mx, my, width, height] = this.bounds;
 		const m = this.margin*2
@@ -28,6 +27,15 @@ export class D extends Gen<Command> {
 		if(this._aspectRatio) return this._aspectRatio;
 		
 		return `${this.bounds[2]} / ${this.bounds[3]}`;
+	}
+
+	/**
+	 * checks if the current object meets the criterea for object bounding
+	 */
+	get isObjectBounding():boolean{
+		const [mx, my, w, h] = this.getBounds();
+		
+		return mx === 0 && my === 0 && w === 1 && h === 1;
 	}
 	/**
 	 * D can be initialized with a string which parses and builds the generator from the string. The string will be parsed on command so data is not duplicated in memory unecessarily.
@@ -67,6 +75,7 @@ export class D extends Gen<Command> {
 		const _ = ''+this;
 		return this.bounds;
 	}
+
 	*each(){
 		let min: Point | undefined
 		let max: Point | undefined
@@ -138,12 +147,20 @@ export class D extends Gen<Command> {
 		const sy = 1/height;
 		const tx = mx*sx*-1;
 		const ty = my*sy*-1;
-		console.log(sx,sy,tx,ty)
 		return this.scale(sx, sy) //scale the component down to a 1x1
 		.translate(tx,ty) //move top left to (0,0);
 		.flatten(); //work from a normalized point
 	}
 
+
+	/**
+	 * Experimental
+	 * Caches an instance currently this will overwrite any existing instance.
+	 * @param id 
+	 */
+	cache(id: string){
+		D.cache[id] = this;
+	}
 	toString(){
 		let str = '';
 		for(const cmd of this.each()){
@@ -268,4 +285,6 @@ export class D extends Gen<Command> {
 			yield L(...current);
 		});
 	}
+
+	static cache: Record<string, D> = {}
 }
