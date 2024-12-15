@@ -1,6 +1,6 @@
-import { BiValueCommandChars } from "../../dist/types";
-import Command, { CommandArguments, compPoint, isAbsolute, isClosingChar, isCommandChar, l, L, M, Q } from "./Commands";
-import Gen, { GeneratorList } from "./Gen";
+
+import { BiCommandChar, Command, CommandArguments, compPoint, isAbsolute, isClosingChar, isCommandChar, l, L, M, Q } from "./Commands";
+import { Gen, GeneratorList } from "./Gen";
 import { Bounds, Point } from "./types";
 import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride } from "./utils";
 
@@ -8,7 +8,7 @@ export type Dgen = GeneratorList<Command>;
 /**
  * D is a interactive representation of the information provided in the d property of a path.
  */
-class D extends Gen<Command> {
+export class D extends Gen<Command> {
 	/*
 	Populated during iteration
 	*/
@@ -41,7 +41,7 @@ class D extends Gen<Command> {
 	 * Allowing a wide range of sources allows D to operate in a large variety use cases.
 	 * @param args 
 	 */
-	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiValueCommandChars>, margin: number = 0){
+	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiCommandChar>, margin: number = 0){
 		const gen = typeof args === 'string' ? D.parse(args)
 		: typeof args === 'function' ? D.standardizeGenerator(args)
 		: Array.isArray(args) 
@@ -138,6 +138,7 @@ class D extends Gen<Command> {
 		const sy = 1/height;
 		const tx = mx*sx*-1;
 		const ty = my*sy*-1;
+		console.log(sx,sy,tx,ty)
 		return this.scale(sx, sy) //scale the component down to a 1x1
 		.translate(tx,ty) //move top left to (0,0);
 		.flatten(); //work from a normalized point
@@ -151,13 +152,13 @@ class D extends Gen<Command> {
 		return str.trim();
 	}
 
-	static standardizeGenerator(gen: GeneratorList<Command> | CommandArguments<BiValueCommandChars>){
+	static standardizeGenerator(gen: GeneratorList<Command> | CommandArguments<BiCommandChar>){
 		//check the first for value.. types cannot be mixed. 
 		const g = gen().next().value;
 		if(!g) return function*(){};
 		if(g instanceof Command) return gen;
 		if(Array.isArray(g) && g.length === 2) return function*(){
-			yield new Command("M", gen as CommandArguments<BiValueCommandChars>);
+			yield new Command("M", gen as CommandArguments<BiCommandChar>);
 			yield new Command("z")
 		}
 	}
@@ -208,7 +209,7 @@ class D extends Gen<Command> {
 	 * @param cornerRadius
 	 * @param points 
 	 */
-	static shape(cornerRadius: number, points: CommandArguments<BiValueCommandChars> | number[]){
+	static shape(cornerRadius: number, points: CommandArguments<BiCommandChar> | number[]){
 		if(!cornerRadius) return new D(points);
 		//there is a corner radius
 		
@@ -268,4 +269,3 @@ class D extends Gen<Command> {
 		});
 	}
 }
-export default D;

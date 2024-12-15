@@ -1,13 +1,6 @@
-import { FC, ComponentPropsWithoutRef } from "react";
-import D from "~/geometry/D";
-/**
- * Glyph can be used to render a custom SVG paths on the fly. 
- * 
- * I do plan on adding support to utilize more svg features directly however for now this elevates renders an svg component with a single path element. the props provided are passed to said path component
- * @param props
- * @returns 
- */
-const Glyph: FC<{
+import { type ComponentPropsWithoutRef, type FC, ReactElement } from "react";
+import { D } from "~/src/geometry/D";
+type GlyphProps = {
 	/**
 	 * The path command can be provided as a string path command or as a D path
 	 */
@@ -31,7 +24,15 @@ const Glyph: FC<{
 	 * svg props can be modified via this object.
 	 */
 	svgProps?: ComponentPropsWithoutRef<"svg">
-} & Omit<ComponentPropsWithoutRef<"path">, "d">> = ({d, width, height, svgProps:{viewBox, ...svgProps}={}, ...props}) => {
+} & Omit<ComponentPropsWithoutRef<"path">, "d">
+/**
+ * Glyph can be used to render a custom SVG paths on the fly. 
+ * 
+ * I do plan on adding support to utilize more svg features directly however for now this elevates renders an svg component with a single path element. the props provided are passed to said path component
+ * @param props
+ * @returns 
+ */
+export const Glyph: FC<GlyphProps> = ({d, width, height, svgProps:{viewBox, ...svgProps}={}, ...props}): ReactElement => {
 	const p = typeof d === 'string' ? new D(d):d;
 	const geo = ''+p;
 	return (<svg {...{
@@ -43,5 +44,3 @@ const Glyph: FC<{
 		<path d={geo} {...props}/>
 	</svg>)
 }
-
-export default Glyph;

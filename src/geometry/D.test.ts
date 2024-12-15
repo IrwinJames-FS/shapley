@@ -1,5 +1,5 @@
-import Command from "./Commands/Command";
-import D from "./D"
+import { Command } from "./Commands/Command";
+import { D } from "./D"
 
 describe(`Test D functionality`, () => {
 	test(`Test D string initializer`, () => {

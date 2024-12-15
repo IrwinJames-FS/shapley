@@ -1,13 +1,13 @@
 import { Meta, StoryObj } from "@storybook/react";
-import Shape, { OverridableComponent } from "./Shape";
-import { D } from "~/geometry";
+import { Shape, ShapeProps } from "./Shape";
+import { D } from "~/src/geometry/D";
 
 export default {
 	component: Shape,
 	tags: ['autodocs']
-} as Meta<OverridableComponent>
+} as Meta<ShapeProps>
 
-type Story = StoryObj<OverridableComponent>;
+type Story = StoryObj<ShapeProps>;
 
 export const Primary: Story = {
 	args: {

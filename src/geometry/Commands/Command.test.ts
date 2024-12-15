@@ -1,4 +1,4 @@
-import Command, { isCommandChar } from "./Command"
+import { Command, isCommandChar } from "./Command"
 
 describe(`Test the Command class`, ()=>{
 	test(`Test the command initializer`, () => {

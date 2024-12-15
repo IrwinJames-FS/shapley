@@ -8,7 +8,7 @@ export type GeneratorMutator<T> = (gen: GeneratorList<T>)=>GeneratorList<T>;
  * 
  * @todo - Instead of using a reusable generator use a raw generator and in the each method build a new generator for the next iteration. 
  */
-class Gen<T> {
+export class Gen<T> {
 	generator: GeneratorList<T>
 	constructor(generator: GeneratorList<T>){
 		this.generator = generator;
@@ -40,5 +40,3 @@ class Gen<T> {
 		return this;
 	}
 }
-
-export default Gen

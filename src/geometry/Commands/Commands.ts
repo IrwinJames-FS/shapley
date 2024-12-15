@@ -1,5 +1,5 @@
 
-import Command from "./Command";
+import { Command } from "./Command";
 import {CommandChar} from "./Command.types";
 import { stride } from "../utils";
 
