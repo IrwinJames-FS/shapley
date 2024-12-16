@@ -1,4 +1,4 @@
-import Gen from "./Gen"
+import { Gen } from "./Gen"
 
 describe(`Test the Gen class methods`, () => {
 	test(`Test the Gen initializer`, () => {

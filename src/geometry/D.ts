@@ -1,6 +1,6 @@
-import { BiValueCommandChars } from "../../dist/types";
-import Command, { CommandArguments, compPoint, isAbsolute, isClosingChar, isCommandChar, l, L, M, Q } from "./Commands";
-import Gen, { GeneratorList } from "./Gen";
+
+import { BiCommandChar, Command, CommandArguments, compPoint, isAbsolute, isClosingChar, isCommandChar, l, L, M, Q } from "./Commands";
+import { Gen, GeneratorList } from "./Gen";
 import { Bounds, Point } from "./types";
 import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride } from "./utils";
 
@@ -8,7 +8,7 @@ export type Dgen = GeneratorList<Command>;
 /**
  * D is a interactive representation of the information provided in the d property of a path.
  */
-class D extends Gen<Command> {
+export class D extends Gen<Command> {
 	/*
 	Populated during iteration
 	*/
@@ -16,8 +16,7 @@ class D extends Gen<Command> {
 	currentPosition?: Point
 	bounds: Bounds = [0,0,0,0,0,0];
 	margin: number = 0;
-	_aspectRatio?: string
-	
+	_aspectRatio?: string;
 	get viewBox(){
 		const [mx, my, width, height] = this.bounds;
 		const m = this.margin*2
@@ -28,6 +27,15 @@ class D extends Gen<Command> {
 		if(this._aspectRatio) return this._aspectRatio;
 		
 		return `${this.bounds[2]} / ${this.bounds[3]}`;
+	}
+
+	/**
+	 * checks if the current object meets the criterea for object bounding
+	 */
+	get isObjectBounding():boolean{
+		const [mx, my, w, h] = this.getBounds();
+		
+		return mx === 0 && my === 0 && w === 1 && h === 1;
 	}
 	/**
 	 * D can be initialized with a string which parses and builds the generator from the string. The string will be parsed on command so data is not duplicated in memory unecessarily.
@@ -41,7 +49,7 @@ class D extends Gen<Command> {
 	 * Allowing a wide range of sources allows D to operate in a large variety use cases.
 	 * @param args 
 	 */
-	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiValueCommandChars>, margin: number = 0){
+	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiCommandChar>, margin: number = 0){
 		const gen = typeof args === 'string' ? D.parse(args)
 		: typeof args === 'function' ? D.standardizeGenerator(args)
 		: Array.isArray(args) 
@@ -61,12 +69,13 @@ class D extends Gen<Command> {
 	 * in some circumstances such as converting to objectBounding a measurement needs to be forced. the simplest way to complish this is to convert the class to a string and then observe the bounds. 
 	 * 
 	 */
-	getBounds(){
+	public getBounds(){
 		if(Math.max(...this.bounds) > 0) return this.bounds;
 		//by forcing all of the instances to iterate we can force a measurement prior to render.
 		const _ = ''+this;
 		return this.bounds;
 	}
+
 	*each(){
 		let min: Point | undefined
 		let max: Point | undefined
@@ -132,7 +141,7 @@ class D extends Gen<Command> {
 	 */
 	toObjectBounding(){
 		const [mx,my,width, height] = this.getBounds();
-		if(mx === 0 && my === 0 && width === 1 && height === 1) return this; //no need to do any math its already normalized.
+		if(this.isObjectBounding) return this; //no need to do any math its already normalized.
 		this._aspectRatio = this.aspectRatio;
 		const sx = 1/width;
 		const sy = 1/height;
@@ -143,6 +152,16 @@ class D extends Gen<Command> {
 		.flatten(); //work from a normalized point
 	}
 
+
+	/**
+	 * Experimental
+	 * Caches the dimensions and aspect ratio of an instance. The idea is to make regenerating the instance unecessary for most rendering purposes.
+	 * @param id 
+	 */
+	public cache(id: string){
+		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio};
+		return this;
+	}
 	toString(){
 		let str = '';
 		for(const cmd of this.each()){
@@ -151,13 +170,13 @@ class D extends Gen<Command> {
 		return str.trim();
 	}
 
-	static standardizeGenerator(gen: GeneratorList<Command> | CommandArguments<BiValueCommandChars>){
+	static standardizeGenerator(gen: GeneratorList<Command> | CommandArguments<BiCommandChar>){
 		//check the first for value.. types cannot be mixed. 
 		const g = gen().next().value;
 		if(!g) return function*(){};
 		if(g instanceof Command) return gen;
 		if(Array.isArray(g) && g.length === 2) return function*(){
-			yield new Command("M", gen as CommandArguments<BiValueCommandChars>);
+			yield new Command("M", gen as CommandArguments<BiCommandChar>);
 			yield new Command("z")
 		}
 	}
@@ -208,7 +227,7 @@ class D extends Gen<Command> {
 	 * @param cornerRadius
 	 * @param points 
 	 */
-	static shape(cornerRadius: number, points: CommandArguments<BiValueCommandChars> | number[]){
+	static shape(cornerRadius: number, points: CommandArguments<BiCommandChar> | number[]){
 		if(!cornerRadius) return new D(points);
 		//there is a corner radius
 		
@@ -267,5 +286,6 @@ class D extends Gen<Command> {
 			yield L(...current);
 		});
 	}
+
+	static cache: Record<string, {viewBox: string, aspectRatio: string}> = {}
 }
-export default D;

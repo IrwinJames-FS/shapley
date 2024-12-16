@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from "@storybook/react";
-import Glyph from "./Glyph";
-import D from "~/geometry/D";
+import { Glyph } from "./Glyph";
+import { D } from "~/src/geometry/D";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toPrecision } from "~/geometry/utils";
+import { toPrecision } from "~/src/geometry/utils";
 import './Glyph.stories.css';
 export default {
 	component: Glyph,

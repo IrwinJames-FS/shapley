@@ -2,7 +2,7 @@
 //First declaring the types then I'll declare a value representation as well
 
 import { MAX_NUMERIC_CHAR_CODE, MIN_NUMERIC_CHAR_CODE, PERIOD_CHAR_CODE, SUBTRACT_CHAR_CODE } from "../constants";
-import Gen from "../Gen";
+import { Gen } from "../Gen";
 import { Point } from "../types";
 import { add, extractPoints, scale, translate } from "../utils";
 import { ArcCommandChar, BiCommandChar, ClosingCommandChar, CmdArgs, CommandArguments, CommandChar, CommandLength, HexCommandChar, QuadCommandChar, SingleCommandChar } from "./Command.types";
@@ -20,7 +20,7 @@ import { ArcCommandChar, BiCommandChar, ClosingCommandChar, CmdArgs, CommandArgu
  * new Command("z");
  * new Command("m", function*(){yield [0,0]});
  */
-class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>> {
+export class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>> {
 	/**
 	 * The command character represent an function that will be invoked for each instance of arguments. 
 	 */
@@ -165,17 +165,37 @@ class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>> {
 	 * @param y 
 	 */
 	translate(x: number, y: number){
+		const fn = this.fn;
 		return this.apply(gen=>function*(){
 			for(const arr of gen()){
-				yield (arr.length === 7 ? [...arr.slice(0, 5), ...translate(x,y, ...arr.slice(5))]:translate(x,y, ...arr)) as CmdArgs<T>;
+				if(isChar(fn, "h")){
+					yield [arr[0]! + x] as CmdArgs<T>;
+				} else if(isChar(fn, "v")){
+					yield [arr[0]! + y] as CmdArgs<T>;
+				} else {
+					const trans = (arr.length === 7 ? [...arr.slice(0, 5), ...translate(x,y, ...arr.slice(5))]:translate(x,y, ...arr)) as CmdArgs<T>;
+					console.log("Translated", trans, arr);
+					yield (arr.length === 7 ? [...arr.slice(0, 5), ...translate(x,y, ...arr.slice(5))]:translate(x,y, ...arr)) as CmdArgs<T>;
+				}
+				
 			}
 		});
 	}
 
 	scale(x: number, y: number){
+		const fn = this.fn;
 		return this.apply(gen=>function*(){
 			for(const arr of gen()){
-				yield (arr.length === 7 ? [...scale(x,y, ...arr.slice(0,2)), ...arr.slice(2,5), ...arr.slice(5)]:scale(x,y, ...arr)) as CmdArgs<T>;
+				if(isChar(fn, "h")){
+					yield [arr[0]! * x] as CmdArgs<T>;
+				} else if(isChar(fn, "v")){
+					yield [arr[0]! * y] as CmdArgs<T>;
+				} else {
+					const trans = (arr.length === 7 ? [...scale(x,y, ...arr.slice(0,2)), ...arr.slice(2,5), ...arr.slice(5)]:scale(x,y, ...arr)) as CmdArgs<T>;
+					console.log("Scaled", trans, arr);
+					yield trans
+				}
+				
 			}
 		});
 	}
@@ -252,8 +272,6 @@ class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>> {
 		})
 	}
 }
-
-export default Command;
 
 /**
  * Checks if a character is a capital or lowercase variation by examining char code.
