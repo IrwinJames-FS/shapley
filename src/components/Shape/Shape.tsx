@@ -62,7 +62,6 @@ export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T
 export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{ className: svgClassName, viewBox, preserveAspectRatio, style:svgStyle, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
 	d = d ?? D.cache[sref];
 	if(!d) {
-		console.log(D.cache, sref);
 		throw new Error("No shape provided or cached");
 	}
 

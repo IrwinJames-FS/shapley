@@ -46,7 +46,7 @@ export const Hexagon: Story = {
 	}
 }
 
-export const Hexptagon: Story = {
+export const Heptagon: Story = {
 	args: {
 		sides: 7,
 		rotation: -90,

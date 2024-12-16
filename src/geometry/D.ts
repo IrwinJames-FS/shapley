@@ -140,7 +140,6 @@ export class D extends Gen<Command> {
 	 * 
 	 */
 	toObjectBounding(){
-		console.log("Converting to object bounding");
 		const [mx,my,width, height] = this.getBounds();
 		if(this.isObjectBounding) return this; //no need to do any math its already normalized.
 		this._aspectRatio = this.aspectRatio;
@@ -152,7 +151,6 @@ export class D extends Gen<Command> {
 		.translate(tx,ty) //move top left to (0,0);
 		.flatten(); //work from a normalized point
 		const d = ''+this;
-		console.log("Converted", d, this.aspectRatio, this.bounds);
 		return this;
 	}
 
@@ -164,7 +162,6 @@ export class D extends Gen<Command> {
 	 */
 	public cache(id: string){
 		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio};
-		console.log("Cached", id, D.cache[id])
 		return this;
 	}
 	toString(){
@@ -220,7 +217,6 @@ export class D extends Gen<Command> {
 	 */
 	static polygon(sides: number, radius: number = 1, center:Point = [0,0], rotation: number=0, cornerRadius: number=0, connectAll: boolean = false){
 		const r = rotation * Math.PI/180;
-		console.log(sides, radius);
 		return connectAll ? new D(allConnected(polygon(sides, radius, center, r))):D.shape(cornerRadius, polygon(sides, radius, center, r))
 	}
 
