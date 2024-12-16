@@ -1,8 +1,8 @@
 import { ComponentPropsWithoutRef, CSSProperties, FC } from "react"
 import { D } from "~/src/geometry"
-import { ShapeDefinition } from "../ShapeDefinition/ShapeDefinition"
 import './style.css';
 import { ShapeCache } from "../ShapeCache/ShapeCache";
+
 export type ShapeGridProps = {
 	/**
 	 * The shapes object will use the key as an id so the path command can be referenced from multiple components

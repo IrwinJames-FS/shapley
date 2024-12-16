@@ -9,7 +9,7 @@ export type ShapeCacheProps = {
 
 export const ShapeCache: FC<ShapeCacheProps> = ({shapes, allObjectBounding})=>{
 	
-	return <svg>
+	return <svg className="shape-cache">
 		<defs>
 			{Object.keys(shapes).map(k=>{
 				shapes[k].cache(k); //cache the shape as well.

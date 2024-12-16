@@ -20,11 +20,13 @@ export type ShapeDefinitionProps = {
  * @returns 
  */
 export const ShapeDefinition: FC<ShapeDefinitionProps> = ({id, d, clipPathUnits, ...props}) => {
-	
 	return (<>
 		<path {...{id, d, ...props}}/>
 		<clipPath {...{id: id+'-clip', clipPathUnits}}>
 			<use href={"#"+id}/>
 		</clipPath>
+		<mask {...{id:id+'-mask', maskUnits: "objectBoundingBox", maskContentUnits: "objectBoundingBox"}}>
+			<use href={"#"+id} fill="#FFF"/>
+		</mask>
 	</>);
 }

@@ -4,54 +4,95 @@ import './style.css';
 import { v4 } from "uuid";
 import { PolyMorphicProps } from "../types";
 import { ShapeDefinition } from "../ShapeDefinition";
+import { ShapeCache } from "../ShapeCache/ShapeCache";
 
-export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T, {
-	/**
-	 * The shape components root element by default is a div however it can be updated to 
-	 */
-	as?: T
+export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T, ({
 	/**
 	 * d can be a string or an instance of D.
 	 */
-	d: D | string
+	d: D,
+
 	/**
-	 * If clipped any overflow beyond the shape will be clipped
+	 * If a d
 	 */
-	clipped?: boolean,
 	pathProps?: Omit<ComponentPropsWithoutRef<"path">, "d">,
+} | {
+	/**
+	 * Shapes can also be rendered from a cached shape.
+	 * 
+	 * It is recommended if you use a cached shape you convert the shape using toObjectBounding or the ShapeCache's allObjectBounding.
+	 */
+	sref: string
+}) & {
+	/**
+	 * The fill value is hoisted from the useProps however can also be passed via the useProps property.
+	 */
+	fill?: string,
+
+	/**
+	 * The stroke value is hoisted from the useProps however can also be passed via the useProps property.
+	 */
+	stroke?: string,
+
+	/**
+	 * The strokeWidth value is hoisted from the useProps however can also be passed via the useProps property.
+	 */
+	strokeWidth?: number | string
+
+
+	/**
+	 * Each shape is rendered via an svg's use tag. 
+	 * 
+	 * This property allows you to directly interface with the use component.
+	 */
 	useProps?: Omit<ComponentPropsWithoutRef<"use">, "href">,
+
+	/**
+	 * All shapes are SVG path commands stored within either the child svg or an external svg within the same DOM.
+	 */
 	svgProps?: ComponentPropsWithoutRef<"svg">
 }>
 
 
-export const Shape:FC<ShapeProps> = ({as:Component = "div", d, clipped, className, children, svgProps:{viewBox, preserveAspectRatio, style:svgStyle, ...svgProps}={}, pathProps={}, useProps:{strokeWidth, ...useProps}={}, style={}, ...props})=>{
-	const geo = typeof d === 'string' ? new D(d):d
-	const cmds = ''+geo.toObjectBounding().setMargin(strokeWidth ? (typeof strokeWidth === 'string' ? parseFloat(strokeWidth):strokeWidth)/2:0);
-	if(Math.max(...geo.bounds.slice(2,4)) > 1) console.warn("Shape paths should be within 0 and 1.");
-	const id = v4();
-	return (<Component {...{
+/**
+ * The shape component is a general use component which accepts children and uses an svg to represent the shape as a background component.
+ * 
+ */
+export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{viewBox, preserveAspectRatio, style:svgStyle, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
+	d = d ?? D.cache[sref];
+	if(!d) throw new Error("No shape provided or cached");
+	if(Math.max(...d.bounds.slice(2,4)) > 1) console.warn("Shape paths should be within 0 and 1.");
+	const id = sref ? sref : v4();
+	fill = fill ?? useProps.fill
+	stroke = stroke ?? useProps.stroke
+	strokeWidth = strokeWidth ?? useProps.strokeWidth
+	return (<>
+	{!sref && <ShapeCache shapes={{[id]: d}}/>}
+	<Component {...{
 		className: [className, 'shapley-shape'].filter(a=>a).join(' '),
 		...props,
 		style: {
-			clipPath: clipped ? `url(#${id}-clip)`:undefined,
-			aspectRatio: geo.aspectRatio,
+			'--shapley-bg-color': fill,
+			'--shapley-stroke-color': stroke,
+			'--shapley-stroke-width': strokeWidth,
+			'--shapley-clip': `url(#${id}-clip)`,
+			aspectRatio: d.aspectRatio,
 			...style
 		}
 	}}>
 		<svg {...{
 			preserveAspectRatio: preserveAspectRatio ?? "none",
-			viewBox: viewBox ?? geo?.viewBox,
+			viewBox: viewBox ?? d.viewBox,
 			style: {
-				aspectRatio: geo.aspectRatio,
+				aspectRatio: d.aspectRatio,
 				...svgStyle
 			},
 			...svgProps,
 			}}>
-			<defs>
-				<ShapeDefinition {...{id, d: cmds, ...pathProps}}/>
-			</defs>
+			
 			<use href={"#"+id} {...{strokeWidth, ...useProps}}/>
 		</svg>
 		{children}
-	</Component>);
+	</Component>
+	</>);
 }
