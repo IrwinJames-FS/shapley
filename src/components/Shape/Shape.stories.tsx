@@ -75,8 +75,8 @@ export const Secondary: Story = {
 	render(props:Omit<ShapeProps, "sref">){
 		return (<>
 			<ShapeCache shapes={{
-				hexagon: D.polygon(6)
-			}} allObjectBounding/>
+				hexagon: D.polygon(6).toObjectBounding()
+			}}/>
 			<Shape sref="hexagon"  {...props}>Hello, World</Shape>
 		</>)
 	}

@@ -4,7 +4,8 @@ import { D } from "~/src/geometry";
 import { ShapeGridCell } from "./ShapeGridCell";
 
 export default {
-	component: ShapeGrid
+	component: ShapeGrid,
+	tags: ['autodocs']
 } as Meta<ShapeGridProps>
 
 type Story = StoryObj<ShapeGridProps>;

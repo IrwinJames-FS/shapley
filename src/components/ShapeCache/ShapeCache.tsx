@@ -4,17 +4,13 @@ import { ShapeDefinition } from "../ShapeDefinition"
 
 export type ShapeCacheProps = {
 	shapes: Record<string, D>
-	allObjectBounding?: boolean
 }
 
-export const ShapeCache: FC<ShapeCacheProps> = ({shapes, allObjectBounding})=>{
-	
+export const ShapeCache: FC<ShapeCacheProps> = ({shapes})=>{
+	Object.entries(shapes).forEach(([k, d])=>d.cache(k));
 	return <svg className="shape-cache">
 		<defs>
 			{Object.keys(shapes).map(k=>{
-				shapes[k].cache(k); //cache the shape as well.
-				const isBounding = shapes[k].isObjectBounding;
-				if(allObjectBounding && !isBounding) shapes[k].toObjectBounding();
 				return (<ShapeDefinition key={k} {...{
 					id: k,
 					d: ''+shapes[k],

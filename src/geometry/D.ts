@@ -69,7 +69,7 @@ export class D extends Gen<Command> {
 	 * in some circumstances such as converting to objectBounding a measurement needs to be forced. the simplest way to complish this is to convert the class to a string and then observe the bounds. 
 	 * 
 	 */
-	getBounds(){
+	public getBounds(){
 		if(Math.max(...this.bounds) > 0) return this.bounds;
 		//by forcing all of the instances to iterate we can force a measurement prior to render.
 		const _ = ''+this;
@@ -141,7 +141,7 @@ export class D extends Gen<Command> {
 	 */
 	toObjectBounding(){
 		const [mx,my,width, height] = this.getBounds();
-		if(mx === 0 && my === 0 && width === 1 && height === 1) return this; //no need to do any math its already normalized.
+		if(this.isObjectBounding) return this; //no need to do any math its already normalized.
 		this._aspectRatio = this.aspectRatio;
 		const sx = 1/width;
 		const sy = 1/height;
@@ -155,11 +155,12 @@ export class D extends Gen<Command> {
 
 	/**
 	 * Experimental
-	 * Caches an instance currently this will overwrite any existing instance.
+	 * Caches the dimensions and aspect ratio of an instance. The idea is to make regenerating the instance unecessary for most rendering purposes.
 	 * @param id 
 	 */
-	cache(id: string){
-		D.cache[id] = this;
+	public cache(id: string){
+		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio};
+		return this;
 	}
 	toString(){
 		let str = '';
@@ -286,5 +287,5 @@ export class D extends Gen<Command> {
 		});
 	}
 
-	static cache: Record<string, D> = {}
+	static cache: Record<string, {viewBox: string, aspectRatio: string}> = {}
 }

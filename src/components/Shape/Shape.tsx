@@ -61,13 +61,14 @@ export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T
 export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{viewBox, preserveAspectRatio, style:svgStyle, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
 	d = d ?? D.cache[sref];
 	if(!d) throw new Error("No shape provided or cached");
-	if(Math.max(...d.bounds.slice(2,4)) > 1) console.warn("Shape paths should be within 0 and 1.");
+
 	const id = sref ? sref : v4();
 	fill = fill ?? useProps.fill
 	stroke = stroke ?? useProps.stroke
 	strokeWidth = strokeWidth ?? useProps.strokeWidth
+	const cache = !sref && <ShapeCache shapes={{[id]: d.toObjectBounding()}}/>;
 	return (<>
-	{!sref && <ShapeCache shapes={{[id]: d}}/>}
+	{cache}
 	<Component {...{
 		className: [className, 'shapley-shape'].filter(a=>a).join(' '),
 		...props,
