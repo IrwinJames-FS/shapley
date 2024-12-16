@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { PolyMorphicProps } from "../types";
 import { ShapeDefinition } from "../ShapeDefinition";
 import { ShapeCache } from "../ShapeCache/ShapeCache";
+import { mergeClasses } from "~/src/utils";
 
 export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T, ({
 	/**
@@ -58,9 +59,12 @@ export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T
  * The shape component is a general use component which accepts children and uses an svg to represent the shape as a background component.
  * 
  */
-export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{viewBox, preserveAspectRatio, style:svgStyle, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
+export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{ className: svgClassName, viewBox, preserveAspectRatio, style:svgStyle, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
 	d = d ?? D.cache[sref];
-	if(!d) throw new Error("No shape provided or cached");
+	if(!d) {
+		console.log(D.cache, sref);
+		throw new Error("No shape provided or cached");
+	}
 
 	const id = sref ? sref : v4();
 	fill = fill ?? useProps.fill
@@ -82,6 +86,7 @@ export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, strok
 		}
 	}}>
 		<svg {...{
+			className: mergeClasses(svgClassName)`shapley-shape-bg`,
 			preserveAspectRatio: preserveAspectRatio ?? "none",
 			viewBox: viewBox ?? d.viewBox,
 			style: {

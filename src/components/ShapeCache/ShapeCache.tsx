@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react"
 import { D } from "~/src/geometry"
 import { ShapeDefinition } from "../ShapeDefinition"
-
+import './style.css';
 export type ShapeCacheProps = {
 	shapes: Record<string, D>
 }

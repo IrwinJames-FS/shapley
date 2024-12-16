@@ -35,7 +35,7 @@ export class Gen<T> {
 	 * Flattens the Generators existing operations down to the last known value.
 	 */
 	flatten(){
-		const s = Array.from(this.generator());
+		const s = Array.from(this.each()); //using each should allow me to update info as flattening occurs if necessary.
 		this.generator = function*(){yield* s;}
 		return this;
 	}

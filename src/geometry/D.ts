@@ -140,6 +140,7 @@ export class D extends Gen<Command> {
 	 * 
 	 */
 	toObjectBounding(){
+		console.log("Converting to object bounding");
 		const [mx,my,width, height] = this.getBounds();
 		if(this.isObjectBounding) return this; //no need to do any math its already normalized.
 		this._aspectRatio = this.aspectRatio;
@@ -147,9 +148,12 @@ export class D extends Gen<Command> {
 		const sy = 1/height;
 		const tx = mx*sx*-1;
 		const ty = my*sy*-1;
-		return this.scale(sx, sy) //scale the component down to a 1x1
+		this.scale(sx, sy) //scale the component down to a 1x1
 		.translate(tx,ty) //move top left to (0,0);
 		.flatten(); //work from a normalized point
+		const d = ''+this;
+		console.log("Converted", d, this.aspectRatio, this.bounds);
+		return this;
 	}
 
 
@@ -160,6 +164,7 @@ export class D extends Gen<Command> {
 	 */
 	public cache(id: string){
 		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio};
+		console.log("Cached", id, D.cache[id])
 		return this;
 	}
 	toString(){
@@ -208,7 +213,7 @@ export class D extends Gen<Command> {
 	 * @param sides 
 	 * @param radius 
 	 * @param center 
-	 * @param rotation - in angles
+	 * @param rotation - in degrees
 	 * @param cornerRadius 
 	 * @param connectAll 
 	 * @returns 
