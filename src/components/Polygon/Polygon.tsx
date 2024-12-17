@@ -71,10 +71,10 @@ export type PolygonProps<T extends ElementType = ElementType> = PolyMorphicProps
  */
 export const Polygon: FC<PolygonProps> = ({sides, cornerRadius=0, rotation=0, forceDraw, children, ...props}) => {
 	//check if the cache has a defined polygon. 
-	const id = useMemo(()=>`polygon-${sides}-${cornerRadius}-${rotation}`, [sides, rotation, cornerRadius]);
-	const isCached = useMemo(()=>id in D.cache, [id])
+	const id = useMemo(()=>`polygon-${sides}-${cornerRadius}-${rotation}`.replace(/\./g, '_'), [sides, rotation, cornerRadius]);
+	const isCached = useMemo(()=>id in D.cache, [id]);
 	if(isCached && !forceDraw) return <Shape sref={id} {...props}>{children}</Shape>
-	const polygon = D.polygon(sides, 1, [0,0], rotation).toObjectBounding();
+	const polygon = D.polygon(sides, 1, [0,0], rotation, cornerRadius).toObjectBounding();
 	return (<>
 	<ShapeCache shapes={{[id]:polygon}}/>
 	<Shape sref={id} {...props}>{children}</Shape>

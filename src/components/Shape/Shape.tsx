@@ -69,9 +69,8 @@ export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, strok
 	fill = fill ?? useProps.fill
 	stroke = stroke ?? useProps.stroke
 	strokeWidth = strokeWidth ?? useProps.strokeWidth
-	const cache = !sref && <ShapeCache shapes={{[id]: d.toObjectBounding()}}/>;
 	return (<>
-	{cache}
+	{!sref && <ShapeCache shapes={{[id]:d.toObjectBounding()}}/>}
 	<Component {...{
 		className: [className, 'shapley-shape'].filter(a=>a).join(' '),
 		...props,
@@ -94,7 +93,7 @@ export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, strok
 			},
 			...svgProps,
 			}}>
-			
+				{/* Anonymous shapes no caching*/}
 			<use href={"#"+id} {...{strokeWidth, ...useProps}}/>
 		</svg>
 		{children}

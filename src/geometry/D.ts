@@ -161,7 +161,7 @@ export class D extends Gen<Command> {
 	 * @param id 
 	 */
 	public cache(id: string){
-		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio};
+		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio, d: ""+this};
 		return this;
 	}
 	toString(){
@@ -288,5 +288,5 @@ export class D extends Gen<Command> {
 		});
 	}
 
-	static cache: Record<string, {viewBox: string, aspectRatio: string}> = {}
+	static cache: Record<string, {viewBox: string, aspectRatio: string, d: string}> = {}
 }
