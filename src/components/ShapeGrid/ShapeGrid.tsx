@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, CSSProperties, FC } from "react"
-import { D } from "~/src/geometry"
+import { D } from "../../geometry"
 import './style.css';
 import { ShapeCache } from "../ShapeCache/ShapeCache";
 

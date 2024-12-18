@@ -198,6 +198,9 @@ export class D extends Gen<Command> {
 		}
 	}
 
+	static hydrateCache(event: Event){
+		console.log("Time to hydrate", event);
+	}
 	static fromLines(d: number[]){
 		return function*(){
 			yield new Command("M", function*(){yield* stride(d, 2)});
@@ -288,5 +291,7 @@ export class D extends Gen<Command> {
 		});
 	}
 
-	static cache: Record<string, {viewBox: string, aspectRatio: string, d: string}> = {}
+	static cache: DCache = {};
 }
+
+export type DCache = Record<string, {viewBox: string, aspectRatio: string, d: string}>;

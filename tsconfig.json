@@ -1,15 +1,19 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "module": "commonjs",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "declaration": false,
     "strict": true,
     "skipLibCheck": true,
+    "outDir": "dist/cjs",
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"]
     }
-  }
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["./dist/**", "./src/stories", "./src/**/*.stories.*"]
 }

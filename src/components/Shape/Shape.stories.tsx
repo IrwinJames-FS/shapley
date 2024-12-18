@@ -1,8 +1,8 @@
+import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { Shape, ShapeProps } from "./Shape";
-import { D } from "~/src/geometry/D";
+import { D } from "../../geometry/D";
 import { ShapeCache } from "../ShapeCache/ShapeCache";
-import { background } from "storybook/internal/theming";
 
 export default {
 	component: Shape,

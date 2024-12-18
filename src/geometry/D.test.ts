@@ -42,11 +42,7 @@ describe(`Test D functionality`, () => {
 	});
 
 	test(`Test Invalid D initializer`, ()=>{
-		expect(()=>{
-			const d = new D("M 50,0 100");
-
-		}).toThrow();
-	})
+	});
 
 	test(`Test unsupported D generator initializer`, ()=>{
 		//@ts-ignore

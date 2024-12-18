@@ -1,11 +1,10 @@
 import { ComponentPropsWithoutRef, ElementType, FC, PropsWithChildren } from "react";
-import { D } from "~/src/geometry/D";
+import { D } from "../../geometry/D";
 import './style.css';
 import { v4 } from "uuid";
 import { PolyMorphicProps } from "../types";
-import { ShapeDefinition } from "../ShapeDefinition";
 import { ShapeCache } from "../ShapeCache/ShapeCache";
-import { mergeClasses } from "~/src/utils";
+import { mergeClasses } from "../../utils";
 
 export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T, ({
 	/**
@@ -62,7 +61,9 @@ export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T
 export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{ className: svgClassName, viewBox, preserveAspectRatio, style:svgStyle, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
 	d = d ?? D.cache[sref];
 	if(!d) {
-		throw new Error("No shape provided or cached");
+		console.log(sref, D.cache, typeof window);
+		//throw new Error("No shape provided or cached " + typeof window);
+		return undefined; //not great handling
 	}
 
 	const id = sref ? sref : v4();

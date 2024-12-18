@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, ElementType, FC, useMemo } from "react";
 import { PolyMorphicProps } from "../types";
-import { D } from "~/src/geometry";
+import { D } from "../../geometry";
 import { Shape } from "../Shape";
 import { ShapeCache } from "../ShapeCache";
 

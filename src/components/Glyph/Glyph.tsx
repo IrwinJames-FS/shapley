@@ -1,5 +1,5 @@
 import { type ComponentPropsWithoutRef, type FC, ReactElement } from "react";
-import { D } from "~/src/geometry/D";
+import { D } from "../../geometry/D";
 type GlyphProps = {
 	/**
 	 * The path command can be provided as a string path command or as a D path

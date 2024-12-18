@@ -1,6 +1,7 @@
+import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { ShapeGrid, ShapeGridProps } from "./ShapeGrid";
-import { D } from "~/src/geometry";
+import { D } from "../../geometry";
 import { ShapeGridCell } from "./ShapeGridCell";
 
 export default {

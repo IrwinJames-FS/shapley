@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, CSSProperties, FC } from "react"
+import { CSSProperties, FC } from "react"
 import { Shape, ShapeProps } from "../Shape/Shape"
 
 export type ShapeGridCellProps = {
