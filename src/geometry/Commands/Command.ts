@@ -173,8 +173,6 @@ export class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>
 				} else if(isChar(fn, "v")){
 					yield [arr[0]! + y] as CmdArgs<T>;
 				} else {
-					const trans = (arr.length === 7 ? [...arr.slice(0, 5), ...translate(x,y, ...arr.slice(5))]:translate(x,y, ...arr)) as CmdArgs<T>;
-					console.log("Translated", trans, arr);
 					yield (arr.length === 7 ? [...arr.slice(0, 5), ...translate(x,y, ...arr.slice(5))]:translate(x,y, ...arr)) as CmdArgs<T>;
 				}
 				
@@ -192,7 +190,6 @@ export class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>
 					yield [arr[0]! * y] as CmdArgs<T>;
 				} else {
 					const trans = (arr.length === 7 ? [...scale(x,y, ...arr.slice(0,2)), ...arr.slice(2,5), ...arr.slice(5)]:scale(x,y, ...arr)) as CmdArgs<T>;
-					console.log("Scaled", trans, arr);
 					yield trans
 				}
 				

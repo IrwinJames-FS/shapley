@@ -1,8 +1,9 @@
+import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { Glyph } from "./Glyph";
-import { D } from "~/src/geometry/D";
+import { D } from "../../geometry/D";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toPrecision } from "~/src/geometry/utils";
+import { toPrecision } from "../../geometry/utils";
 import './Glyph.stories.css';
 export default {
 	component: Glyph,
@@ -83,7 +84,7 @@ export const PrimaryN: Story = {
 
 export const Secondary: Story = {
 	args: {
-		d: D.polygon(6, 100, [0,0], 60),
+		d: D.polygon(6, {radius:100, rotation: 60}),
 		fill: "rgb(28,128,248)",
 		width: '300px',
 		height: '300px'
@@ -115,7 +116,7 @@ export const animated: Story = {
 	render: ({d:_, ...props})=>{
 		const [sides, setSides] = useState(0)
 		const dir = useRef(1);
-		const d = useMemo(()=>D.polygon(sides, 100, [0,0], toPrecision(Date.now()/100, 4)%360, 0,true), [sides]);
+		const d = useMemo(()=>D.polygon(sides, {radius: 100, rotation: toPrecision(Date.now()/100, 4)%360, connectAll:true}), [sides]);
 		
 		useEffect(()=>{
 			let frame: number = -1;
@@ -140,7 +141,7 @@ export const animated: Story = {
 
 export const normalized:Story = {
 	args:{
-		d: D.polygon(4, 100, [200,200], 0, 10).toObjectBounding(),
+		d: D.polygon(4, {radius: 100, center:[200,200], cornerRadius:10}).toObjectBounding(),
 		fill: 'rgb(28,128,248)',
 		width: '300px',
 		height: '300px'

@@ -147,21 +147,24 @@ export class D extends Gen<Command> {
 		const sy = 1/height;
 		const tx = mx*sx*-1;
 		const ty = my*sy*-1;
-		return this.scale(sx, sy) //scale the component down to a 1x1
+		this.scale(sx, sy) //scale the component down to a 1x1
 		.translate(tx,ty) //move top left to (0,0);
 		.flatten(); //work from a normalized point
-	}
-
-
-	/**
-	 * Experimental
-	 * Caches the dimensions and aspect ratio of an instance. The idea is to make regenerating the instance unecessary for most rendering purposes.
-	 * @param id 
-	 */
-	public cache(id: string){
-		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio};
+		const d = ''+this;
 		return this;
 	}
+
+	/**
+	 * Returns a simple object that can be used to create a definition or reacreate a path command. 
+	 */
+	public cached(): DCacheItem{
+		return {
+			d: ""+this,
+			aspectRatio: this.aspectRatio,
+			objectBounding: this.isObjectBounding
+		}
+	}
+
 	toString(){
 		let str = '';
 		for(const cmd of this.each()){
@@ -196,6 +199,9 @@ export class D extends Gen<Command> {
 		}
 	}
 
+	static hydrateCache(event: Event){
+		console.log("Time to hydrate", event);
+	}
 	static fromLines(d: number[]){
 		return function*(){
 			yield new Command("M", function*(){yield* stride(d, 2)});
@@ -208,14 +214,22 @@ export class D extends Gen<Command> {
 	 * @param sides 
 	 * @param radius 
 	 * @param center 
-	 * @param rotation - in angles
+	 * @param rotation - in degrees
 	 * @param cornerRadius 
 	 * @param connectAll 
 	 * @returns 
 	 */
-	static polygon(sides: number, radius: number = 1, center:Point = [0,0], rotation: number=0, cornerRadius: number=0, connectAll: boolean = false){
+	static polygon(
+		sides: number,
+		{
+			radius = 1,
+			rotation = 0,
+			cornerRadius = 0,
+			center = [0,0],
+			connectAll=false
+		}: PolygonOptions = {}
+	){
 		const r = rotation * Math.PI/180;
-		console.log(sides, radius);
 		return connectAll ? new D(allConnected(polygon(sides, radius, center, r))):D.shape(cornerRadius, polygon(sides, radius, center, r))
 	}
 
@@ -287,5 +301,18 @@ export class D extends Gen<Command> {
 		});
 	}
 
-	static cache: Record<string, {viewBox: string, aspectRatio: string}> = {}
+	/** reload an instance from a cached */
+	static fromCached(cache: DCacheItem){
+		const d = new D(cache.d)
+		d._aspectRatio = cache.aspectRatio
+	}
 }
+export type PolygonOptions = {
+	radius?: number,
+	center?: Point,
+	rotation?: number,
+	cornerRadius?: number,
+	connectAll?:boolean
+}
+export type DCacheItem = {aspectRatio: string, d: string, objectBounding: boolean}
+export type DCache = Record<string, DCacheItem>;

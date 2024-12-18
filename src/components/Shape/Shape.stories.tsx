@@ -1,8 +1,8 @@
+import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { Shape, ShapeProps } from "./Shape";
-import { D } from "~/src/geometry/D";
-import { ShapeCache } from "../ShapeCache/ShapeCache";
-import { background } from "storybook/internal/theming";
+import { D } from "../../geometry/D";
+import { ShapeCache } from "../ShapeCache";
 
 export default {
 	component: Shape,
@@ -16,7 +16,7 @@ export const Primary: Story = {
 		/**
 		 * d can be a string or an instance of D.
 		 */
-		d: D.polygon(6, 1, [0,0], 0, 0.1).toObjectBounding(),
+		d: D.polygon(6, {  cornerRadius: 0.1}).toObjectBounding(),
 		/**
 		 * To adjust the properties for the use component which renders the shape modify this property
 		 */

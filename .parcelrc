@@ -1,3 +1,17 @@
 {
-	"extends": "@parcel/config-default"
+	"extends": "@parcel/config-default",
+	"bundler": "@parcel/bundler-library",
+	"transformers": {
+		"*.{js,jsx}":[
+			"./trans.js",
+			"@parcel/transformer-babel",
+			"@parcel/transformer-react-refresh-wrap",
+			"./transformer.js"
+		]
+	},
+	"reporters":[
+		"...",
+		"@parcel/reporter-cli"
+	]
+	
 }

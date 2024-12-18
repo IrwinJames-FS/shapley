@@ -1,22 +1,31 @@
 import { FC, ReactNode } from "react"
-import { D } from "~/src/geometry"
-import { ShapeDefinition } from "../ShapeDefinition"
+import { D } from "../../geometry"
+
+import './style.css';
+import { ShapeDefinition } from "../ShapeDefinition";
+
 
 export type ShapeCacheProps = {
-	shapes: Record<string, D>
+	shapes?: Record<string, D>
 }
 
-export const ShapeCache: FC<ShapeCacheProps> = ({shapes})=>{
-	Object.entries(shapes).forEach(([k, d])=>d.cache(k));
-	return <svg className="shape-cache">
-		<defs>
-			{Object.keys(shapes).map(k=>{
-				return (<ShapeDefinition key={k} {...{
-					id: k,
-					d: ''+shapes[k],
-					clipPathUnits: shapes[k].isObjectBounding ? 'objectBoundingBox':undefined
-				}}/>)
-			})}
-		</defs>
-	</svg>
-}
+export const ShapeCache: FC<ShapeCacheProps> = async ({shapes={}})=>(<><svg className="shape-cache">
+	<defs>
+		{Object.entries(shapes).map(([k, shape])=>{
+			return (<ShapeDefinition key={k} {...{
+				id: k,
+				d: ''+shape,
+				clipPathUnits: shape.isObjectBounding ? 'objectBoundingBox':undefined
+			}}/>)
+		})}
+
+	</defs>
+</svg>
+<style>
+	{Object.entries(shapes).map(([k, shape])=>`.shapley-shape.shapley-shape-${k}{
+visibility: visible;
+clip-path: url(#${k}-clip);
+--shapley-aspect-ratio: ${shape.aspectRatio};
+}`)}
+</style>
+</>);

@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, CSSProperties, FC } from "react"
-import { D } from "~/src/geometry"
+import { D, DCache } from "../../geometry"
 import './style.css';
-import { ShapeCache } from "../ShapeCache/ShapeCache";
+import { ShapeCache } from "../ShapeCache";
 
 export type ShapeGridProps = {
 	/**

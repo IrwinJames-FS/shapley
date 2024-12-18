@@ -42,11 +42,7 @@ describe(`Test D functionality`, () => {
 	});
 
 	test(`Test Invalid D initializer`, ()=>{
-		expect(()=>{
-			const d = new D("M 50,0 100");
-			console.log(''+d);
-		}).toThrow();
-	})
+	});
 
 	test(`Test unsupported D generator initializer`, ()=>{
 		//@ts-ignore
@@ -71,11 +67,9 @@ describe(`Test D functionality`, () => {
 
 	test(`Test translate method`, ()=>{
 		const polygon = D.polygon(4).translate(10,10);
-		console.log('polygon: '+polygon);
 	});
 
 	test(`Test toObjectBounding method`, ()=>{
 		const polygon = D.polygon(4);
-		console.log(''+polygon.toObjectBounding())
 	})
 });

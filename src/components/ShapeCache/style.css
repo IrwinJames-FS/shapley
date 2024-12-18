@@ -1,3 +1,8 @@
 .shape-cache{
-	display: none;
+	position: fixed !important; /*dont get laid out*/
+	/* no inherit dimensions */
+	width: 0 !important; 
+	height: 0 !important;
+	/* cache should never have any visible elements but just in case its misused. */
+	overflow: hidden !important;
 }
