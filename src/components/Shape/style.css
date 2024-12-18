@@ -4,8 +4,10 @@
 	flex-flow: column nowrap;
 	justify-content: center;
 	align-items: center;
+	aspect-ratio: var(--shapley-aspect-ratio);
 	clip-path: var(--shapley-clip);
 	filter: var(--shapley-filter, none) default;
+	visibility: hidden;
 	& > svg.shapley-shape-bg {
 		position: absolute;
 		inset: 0;

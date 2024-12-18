@@ -154,16 +154,17 @@ export class D extends Gen<Command> {
 		return this;
 	}
 
-
 	/**
-	 * Experimental
-	 * Caches the dimensions and aspect ratio of an instance. The idea is to make regenerating the instance unecessary for most rendering purposes.
-	 * @param id 
+	 * Returns a simple object that can be used to create a definition or reacreate a path command. 
 	 */
-	public cache(id: string){
-		D.cache[id] = {viewBox:this.viewBox, aspectRatio:this.aspectRatio, d: ""+this};
-		return this;
+	public cached(): DCacheItem{
+		return {
+			d: ""+this,
+			aspectRatio: this.aspectRatio,
+			objectBounding: this.isObjectBounding
+		}
 	}
+
 	toString(){
 		let str = '';
 		for(const cmd of this.each()){
@@ -218,7 +219,16 @@ export class D extends Gen<Command> {
 	 * @param connectAll 
 	 * @returns 
 	 */
-	static polygon(sides: number, radius: number = 1, center:Point = [0,0], rotation: number=0, cornerRadius: number=0, connectAll: boolean = false){
+	static polygon(
+		sides: number,
+		{
+			radius = 1,
+			rotation = 0,
+			cornerRadius = 0,
+			center = [0,0],
+			connectAll=false
+		}: PolygonOptions = {}
+	){
 		const r = rotation * Math.PI/180;
 		return connectAll ? new D(allConnected(polygon(sides, radius, center, r))):D.shape(cornerRadius, polygon(sides, radius, center, r))
 	}
@@ -291,7 +301,18 @@ export class D extends Gen<Command> {
 		});
 	}
 
-	static cache: DCache = {};
+	/** reload an instance from a cached */
+	static fromCached(cache: DCacheItem){
+		const d = new D(cache.d)
+		d._aspectRatio = cache.aspectRatio
+	}
 }
-
-export type DCache = Record<string, {viewBox: string, aspectRatio: string, d: string}>;
+export type PolygonOptions = {
+	radius?: number,
+	center?: Point,
+	rotation?: number,
+	cornerRadius?: number,
+	connectAll?:boolean
+}
+export type DCacheItem = {aspectRatio: string, d: string, objectBounding: boolean}
+export type DCache = Record<string, DCacheItem>;

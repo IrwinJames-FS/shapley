@@ -1,5 +1,5 @@
 import { CSSProperties, FC } from "react"
-import { Shape, ShapeProps } from "../Shape/Shape"
+import { Shape, ShapeProps } from "../Shape"
 
 export type ShapeGridCellProps = {
 	column?: number,
