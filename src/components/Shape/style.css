@@ -1,0 +1,25 @@
+.shapley-shape{
+	position:relative;
+	display:flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	aspect-ratio: var(--shapley-aspect-ratio);
+	clip-path: var(--shapley-clip);
+	filter: var(--shapley-filter, none) default;
+	visibility: hidden;
+	& > svg.shapley-shape-bg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+	}
+	use {
+		fill: var(--shapley-bg-color, transparent);
+		stroke: var(--shapley-stroke-color, none);
+		stroke-width: var(--shapley-stroke-width, 0);
+		stroke-linejoin: var(--shapley-stroke-linejoin, none) default;
+		stroke-linecap: var(--shapley-stroke-linecap, round) default;
+	}
+}

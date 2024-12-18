@@ -1,3 +1,4 @@
+import path from "path";
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
@@ -6,10 +7,15 @@ const config = {
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
+    "storybook-addon-tsdoc"
   ],
+  viteFinal: (config) => {
+    config.resolve.alias["~"] = path.join(__dirname, "../")
+    return config;
+  },
   framework: {
     name: "@storybook/react-vite",
     options: {},
-  },
+  }
 };
 export default config;
