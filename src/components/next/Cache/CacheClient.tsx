@@ -24,7 +24,7 @@ const CacheClient: FC<NextShapeCacheClientProps> = ({shapes=[]})=>{
 <style>
 	{shapes.map(([k, shape])=>`.shapley-shape-${k}{
 visibility: visible;
-clip-path: url(#${k}-clip);
+--shapley-clip: url(#${k}-clip);
 --shapley-aspect-ratio: ${shape.aspectRatio};
 }`)}
 </style>

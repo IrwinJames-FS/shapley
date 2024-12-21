@@ -8,6 +8,7 @@
 	clip-path: var(--shapley-clip);
 	filter: var(--shapley-filter, none) default;
 	visibility: hidden;
+	color: inherit;
 	& > svg.shapley-shape-bg {
 		position: absolute;
 		inset: 0;

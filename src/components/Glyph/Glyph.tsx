@@ -20,6 +20,7 @@ type GlyphProps = {
 	 */
 	height?: string
 
+	viewBox?: string
 	/**
 	 * svg props can be modified via this object.
 	 */
@@ -32,14 +33,17 @@ type GlyphProps = {
  * @param props
  * @returns 
  */
-export const Glyph: FC<GlyphProps> = ({d, width, height, svgProps:{viewBox, ...svgProps}={}, ...props}): ReactElement => {
+export const Glyph: FC<GlyphProps> = ({d, width, height, viewBox, svgProps:{viewBox:svgViewBox, style, ...svgProps}={}, ...props}): ReactElement => {
 	const p = typeof d === 'string' ? new D(d):d;
 	const geo = ''+p;
 	return (<svg {...{
 		...svgProps,
-		viewBox: viewBox ?? p.viewBox,
+		viewBox: viewBox ?? svgViewBox ?? p.viewBox,
 		width,
 		height,
+		style:{
+			...style
+		}
 	}}>
 		<path d={geo} {...props}/>
 	</svg>)
