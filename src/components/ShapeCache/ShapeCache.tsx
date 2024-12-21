@@ -9,7 +9,7 @@ export type ShapeCacheProps = {
 	shapes?: Record<string, D>
 }
 
-export const ShapeCache: FC<ShapeCacheProps> = async ({shapes={}})=>(<><svg className="shape-cache">
+export const ShapeCache: FC<ShapeCacheProps> = ({shapes={}})=>(<><svg className="shape-cache">
 	<defs>
 		{Object.entries(shapes).map(([k, shape])=>{
 			return (<ShapeDefinition key={k} {...{
@@ -18,14 +18,17 @@ export const ShapeCache: FC<ShapeCacheProps> = async ({shapes={}})=>(<><svg clas
 				clipPathUnits: shape.isObjectBounding ? 'objectBoundingBox':undefined
 			}}/>)
 		})}
-
 	</defs>
 </svg>
 <style>
-	{Object.entries(shapes).map(([k, shape])=>`.shapley-shape.shapley-shape-${k}{
-visibility: visible;
-clip-path: url(#${k}-clip);
---shapley-aspect-ratio: ${shape.aspectRatio};
+	{Object.entries(shapes).map(([k, shape])=>`
+:root{
+	--shapley-${k}-aspect-ratio: ${shape.aspectRatio}
+}
+.shapley-shape.shapley-shape-${k}{
+	visibility: visible;
+	--shapley-clip: url(#${k}-clip);
+	--shapley-aspect-ratio: ${shape.aspectRatio};
 }`)}
 </style>
 </>);

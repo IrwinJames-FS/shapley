@@ -21,7 +21,6 @@ export const ShapeGridCell:FC<ShapeGridCellProps> = ({
 		style: {
 			'--grid-column': column,
 			'--grid-row': row,
-			'--shape-clip': '#'+sref+'-clip',
 			...style
 		} as CSSProperties,
 		...props

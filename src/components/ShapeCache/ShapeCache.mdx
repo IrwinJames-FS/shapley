@@ -1,0 +1,31 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="components/ShapeCache"/>
+
+# ShapeCache
+
+Shapes are always Object Bounding representations. In order to appropriately represent a shape later in a scalabe context the aspect ratio also needs to be stored as well.
+
+Currently the cache does not convert shapes to ObjectBounding as a default so glyphs can be stored within the Shape cache as well.
+
+```ts
+import { ShapeCache } from "@irwinproject/Shapley";
+
+const Main = () => {
+	return <ShapeCache shapes={{
+		hexagon: D.polygon(6),
+		triangle: D.polygon(3)
+	}}>
+}
+```
+
+The following will result in the following html output.
+
+```html
+<svg>
+   <defs>
+      <path d="">
+   </defs>
+</svg>
+```
+
