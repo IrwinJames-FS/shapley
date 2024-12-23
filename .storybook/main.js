@@ -7,12 +7,8 @@ const config = {
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
-    "storybook-addon-tsdoc"
+    "@irwinproject/storybook-addon-tsdoc"
   ],
-  viteFinal: (config) => {
-    config.resolve.alias["~"] = path.join(__dirname, "../")
-    return config;
-  },
   framework: {
     name: "@storybook/nextjs",
     options: {},
