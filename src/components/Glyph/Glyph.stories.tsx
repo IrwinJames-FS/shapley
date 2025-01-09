@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { Glyph } from "./Glyph";
+import { Glyph, GlyphProps } from "./Glyph";
 import { D } from "../../geometry/D";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toPrecision } from "../../geometry/utils";
@@ -8,13 +8,29 @@ import './Glyph.stories.css';
 export default {
 	component: Glyph,
 	tags: ['autodocs']
-} as Meta<typeof Glyph>
+} as Meta<GlyphProps>
 
-type Story = StoryObj<typeof Glyph>;
-
+type Story = StoryObj<GlyphProps>;
 
 export const Primary: Story = {
 	args: {
+		fill: "none",
+		stroke: "#000",
+		strokeWidth: 1,
+		width: "300px",
+		height: "300px",
+		
+		d: D.polygon(6, {radius: 50, connectAll:true})
+	}
+}
+/**
+ * This example
+ */
+export const Rounded: Story = {
+	args: {
+		/**
+		 * Fill is a property of the underlying path component so it will be forwarded.
+		 */
 		fill:"none",
 		stroke: "#000",
 		strokeWidth: 10,
@@ -47,20 +63,6 @@ export const Primary: Story = {
 			]
 		).setMargin(10).flatten(), [radius]);
 	
-		/*useEffect(()=>{
-			let frame: number = -1;
-			let lastUpdate: number = 0;
-			const draw = (time:number=0) => {
-				if(time-lastUpdate<5e3) return frame = requestAnimationFrame(draw);
-				lastUpdate = time;
-				setRadius(s=>s+=10*dir.current);
-				frame = requestAnimationFrame(draw);
-			}
-			frame = requestAnimationFrame(draw);
-			return ()=>{
-				if(~frame) cancelAnimationFrame(frame);
-			}
-		}, []);*/
 		useEffect(()=>{
 			if((dir.current>0 && radius >=10) || (dir.current<0 && radius <=0)) dir.current *= -1
 		}, [radius]);
