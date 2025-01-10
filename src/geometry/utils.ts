@@ -125,14 +125,46 @@ export const polygon = (sides: number, radius: number = 1, center:Point = [0,0],
 	}
 	if(rem) yield ray(radius, angle-delta+rem, center);
 }
+
+/**
+ * This function has absolutely no use other then a neat effect it produces. 
+ * 
+ * This function is more to test the way paths are stroked but I think it looks cool so use it if you like. 
+ * @param gen 
+ * @returns 
+ */
 export const allConnected = (gen: GeneratorList<Point>) => function*(){
 	const points = Array.from(gen());
+	//each point needs to connect to all other points aside from its own. 
+	const connections = points.map((p, i)=>Array.from(points.keys()).splice(i,1));
+	let i = 0;
+	while (connections.length) {
+
+	}
 	for(let i = 0; i<points.length;i++){
 		for(let j = i+1; j<points.length;j++){
 			yield points[i]; 
 			yield points[j];
 		}
 	}
+
+	/*
+	New Method plan
+
+	the number of iterations will always be the same however the number of strokes and moves can be severely reduced allowing for a more animatable. to do this an algorithm needs to be designed that walks over the points without lifting or back tracking. 
+	I dont think overlap will be avoidable but it shouldnt be very noticable either. 
+
+	connect the current point to the next point by an offest (i.e i=0, o=0, j = i+o+1, ... draw line from point[i] to point[j])
+	in some cases the point index j will exceed the number of points available. 
+
+	update j = (i+o+1)%points.length
+
+	but how do I calculate the maximum offset.
+	
+	* 3 sides = 0 interconnected points
+	* 4 sides = 2 interconnected point
+	* 5
+	*/
 }
 export const translate = (x: number,y: number, ...values: number[]):number[] => {
 	for(let i = 0; i<values.length; i+=2){

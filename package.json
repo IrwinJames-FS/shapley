@@ -43,19 +43,20 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@irwinproject/storybook-addon-tsdoc": "^1.0.0",
     "react": "^19.0.0",
     "uuid": "^11.0.3"
   },
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js",
-      "types": "./dist/types/index.d.ts"
+      "import": "./dist/esm/index.js"
     },
     "./next/ShapeCache": {
+      "types": "./dist/types/components/next/index.d.ts",
       "require": "./dist/cjs/components/next/Cache/index.js",
-      "import": "./dist/esm/components/next/Cache/index.js",
-      "types": "./dist/types/components/next/index.d.ts"
+      "import": "./dist/esm/components/next/Cache/index.js"
     }
   }
 }
