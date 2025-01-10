@@ -18,7 +18,7 @@
 	}
 	use {
 		fill: var(--shapley-bg-color, transparent);
-		stroke: var(--shapley-stroke-color, none);
+		stroke: var(--shapley-stroke-color, transparent);
 		stroke-width: var(--shapley-stroke-width, 0);
 		stroke-linejoin: var(--shapley-stroke-linejoin, none) default;
 		stroke-linecap: var(--shapley-stroke-linecap, round) default;
