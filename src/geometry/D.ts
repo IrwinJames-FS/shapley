@@ -267,14 +267,15 @@ export class D extends Gen<Command> {
 	 * @param cornerRadius 
 	 * @param points 
 	 */
-	static rounded(cornerRadius: number, d: readonly number[]){
+	static rounded(cornerRadius: number | number[], d: readonly number[]){
+		
 		return new D(function*(){
 			if(d.length < 6){
 				yield M(...pt(d,0));
 				if(d.length > 2) yield l(...d.slice(2));
 				return;
 			}
-
+			const isNum = typeof cornerRadius === 'number'
 			let previous = pt(d,0);
 			
 			yield M(...previous);
@@ -282,6 +283,7 @@ export class D extends Gen<Command> {
 			let current = add(previous, pt(d,2));
 
 			for(let i = 4; i<d.length; i+=2){
+				const cr = isNum ? cornerRadius:
 				const pa = angleTo(current, previous);
 				const start = ray(cornerRadius, pa, current);
 				yield L(...start);

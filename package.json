@@ -1,6 +1,6 @@
 {
   "name": "@irwinproject/shapley",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "scripts": {
     "test": "jest --coverage",
     "storybook": "storybook dev -p 6006",
