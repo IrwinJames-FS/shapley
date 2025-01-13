@@ -1,6 +1,6 @@
 
 import { Command } from "./Command";
-import {CommandChar} from "./Command.types";
+import {CommandChar} from "./types";
 import { stride } from "../utils";
 
 /**

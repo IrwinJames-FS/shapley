@@ -4,7 +4,25 @@ import { Gen, GeneratorList } from "./Gen";
 import { Bounds, Point } from "./types";
 import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride } from "./utils";
 
+/**
+ * A Generator List using Command instances as elements. 
+ */
 export type Dgen = GeneratorList<Command>;
+
+/**
+ * D can be instanced using a number of base types. 
+ * 
+ * if a string is provided the string is parsed as a path command and instance of each command are created as necessary.
+ * 
+ * an array of numbers will be parsed in twos and generate 2 dimensional points using the pattern M (...points)z 
+ * 
+ * an array of commands can be provided. Unlike a string or array argument mutations to the orignal Command instance will be preserved across render loops. 
+ * 
+ * A Generator List behaves similar to a Command array.
+ * 
+ * The last type you can provide is a function that returns a generator which yields x and y coordinates and it behaves similar to a number array when parsing. 
+ */
+export type DInitTypes = string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiCommandChar>;
 /**
  * D is a interactive representation of the information provided in the d property of a path.
  */
@@ -48,9 +66,8 @@ export class D extends Gen<Command> {
 	 * and finally D can be initalized with a Generator function the yields command Types. 
 	 * 
 	 * Allowing a wide range of sources allows D to operate in a large variety use cases.
-	 * @param args 
 	 */
-	constructor(args: string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiCommandChar>, margin: number = 0){
+	constructor(args: DInitTypes, margin: number = 0){
 		const gen = typeof args === 'string' ? D.parse(args)
 		: typeof args === 'function' ? D.standardizeGenerator(args)
 		: Array.isArray(args) 
@@ -62,6 +79,9 @@ export class D extends Gen<Command> {
 		this.margin = margin;
 	}
 
+	/**
+	 * Sets the margin used when calculating the viewBox.
+	 */
 	setMargin(margin: number){
 		this.margin = margin;
 		return this;
@@ -109,8 +129,6 @@ export class D extends Gen<Command> {
 	 * Translate the path
 	 * 
 	 * this will only translate Absolute commands and an the first m character provided.
-	 * @param x 
-	 * @param y 
 	 */
 	translate(x: number, y: number){
 		return this.apply(gen=>function*(){
@@ -173,24 +191,25 @@ export class D extends Gen<Command> {
 		}
 		return str.trim();
 	}
-
-	static standardizeGenerator(gen: GeneratorList<Command> | CommandArguments<BiCommandChar>){
+	/**
+	 * Standardizes generator functions to a GeneratorList&lt;Command&gt;
+	 */
+	static standardizeGenerator(gen: GeneratorList<Command> | CommandArguments<BiCommandChar>): GeneratorList<Command>{
 		//check the first for value.. types cannot be mixed. 
 		const g = gen().next().value;
 		if(!g) return function*(){};
-		if(g instanceof Command) return gen;
+		if(g instanceof Command) return gen as GeneratorList<Command>;
 		if(Array.isArray(g) && g.length === 2) return function*(){
 			yield new Command("M", gen as CommandArguments<BiCommandChar>);
 			yield new Command("z")
 		}
+		return function*(){};
 	}
 
 	/**
-	 * Parse the d path 
-	 * @param d 
-	 * @returns 
+	 * Parse the d path
 	 */
-	static parse(d: string){
+	static parse(d: string): GeneratorList<Command>{
 		return function*(){
 			for(let i = 0; i<d.length;i++){
 				if(isCommandChar(d[i])){
@@ -200,10 +219,10 @@ export class D extends Gen<Command> {
 		}
 	}
 
-	static hydrateCache(event: Event){
-		console.log("Time to hydrate", event);
-	}
-	static fromLines(d: number[]){
+	/**
+	 * Builds a shape from a number array.
+	 */
+	static fromLines(d: number[]): GeneratorList<Command>{
 		return function*(){
 			yield new Command("M", function*(){yield* stride(d, 2)});
 			yield new Command("z");
@@ -211,8 +230,8 @@ export class D extends Gen<Command> {
 	}
 
 	/**
-	 * 
-	 * @param sides 
+	 * This convenience method generates regular polygons of a provided size. Additionally accepts various options to alter the rendering of the polygon. 
+	 * (should this be called ngon?)
 	 */
 	static polygon(
 		sides: number,
@@ -223,7 +242,7 @@ export class D extends Gen<Command> {
 			center = [0,0],
 			connectAll=false
 		}: PolygonOptions = {}
-	){
+	): D{
 		const r = rotation * Math.PI/180;
 		return connectAll ? new D(allConnected(polygon(sides, radius, center, r))):D.shape(cornerRadius, polygon(sides, radius, center, r))
 	}
@@ -232,11 +251,9 @@ export class D extends Gen<Command> {
 
 	
 	/**
-	 * Creates a point using a limited command spec however allows for corner rounding and shorhand notation
-	 * @param cornerRadius
-	 * @param points 
+	 * Creates a point using a limited command spec however allows for corner rounding and shorhand notation 
 	 */
-	static shape(cornerRadius: number, points: CommandArguments<BiCommandChar> | number[]){
+	static shape(cornerRadius: number, points: CommandArguments<BiCommandChar> | number[]): D{
 		if(!cornerRadius) return new D(points);
 		//there is a corner radius
 		
@@ -264,10 +281,8 @@ export class D extends Gen<Command> {
 	 * Iterates over each point and rounds vertex points. 
 	 * 
 	 * This method expects the first point to be exact then all subsequent points to be relative
-	 * @param cornerRadius 
-	 * @param points 
 	 */
-	static rounded(cornerRadius: number | number[], d: readonly number[]){
+	static rounded(cornerRadius: number, d: number[]): D{
 		
 		return new D(function*(){
 			if(d.length < 6){
@@ -275,7 +290,6 @@ export class D extends Gen<Command> {
 				if(d.length > 2) yield l(...d.slice(2));
 				return;
 			}
-			const isNum = typeof cornerRadius === 'number'
 			let previous = pt(d,0);
 			
 			yield M(...previous);
@@ -283,7 +297,7 @@ export class D extends Gen<Command> {
 			let current = add(previous, pt(d,2));
 
 			for(let i = 4; i<d.length; i+=2){
-				const cr = isNum ? cornerRadius:
+				
 				const pa = angleTo(current, previous);
 				const start = ray(cornerRadius, pa, current);
 				yield L(...start);
@@ -299,9 +313,10 @@ export class D extends Gen<Command> {
 	}
 
 	/** reload an instance from a cached */
-	static fromCached(cache: DCacheItem){
+	static fromCached(cache: DCacheItem): D{
 		const d = new D(cache.d)
 		d._aspectRatio = cache.aspectRatio
+		return d;
 	}
 }
 export type PolygonOptions = {

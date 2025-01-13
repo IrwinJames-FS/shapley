@@ -7,7 +7,7 @@ const config = {
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
-    //"@irwinproject/storybook-addon-tsdoc"
+    "@irwinproject/storybook-addon-tsdoc"
   ],
   framework: {
     name: "@storybook/nextjs",

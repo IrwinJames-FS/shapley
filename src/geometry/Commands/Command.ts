@@ -5,7 +5,7 @@ import { MAX_NUMERIC_CHAR_CODE, MIN_NUMERIC_CHAR_CODE, PERIOD_CHAR_CODE, SUBTRAC
 import { Gen } from "../Gen";
 import { Point } from "../types";
 import { add, extractPoints, scale, translate } from "../utils";
-import { ArcCommandChar, BiCommandChar, ClosingCommandChar, CmdArgs, CommandArguments, CommandChar, CommandLength, HexCommandChar, QuadCommandChar, SingleCommandChar } from "./Command.types";
+import { ArcCommandChar, BiCommandChar, ClosingCommandChar, CmdArgs, CommandArguments, CommandChar, CommandLength, HexCommandChar, QuadCommandChar, SingleCommandChar } from "./types";
 
 /**
  * The Command class is a sort of an abstraction layer built to work with multiple sources however it is geared to replicate the behavior of an SVG path command. 

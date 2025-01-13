@@ -53,6 +53,11 @@
       "require": "./dist/cjs/index.js",
       "import": "./dist/esm/index.js"
     },
+    "./utils": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/cjs/utils.js",
+      "import": "./dist/esm/utils.js"
+    },
     "./next/ShapeCache": {
       "types": "./dist/types/components/next/index.d.ts",
       "require": "./dist/cjs/components/next/Cache/index.js",
