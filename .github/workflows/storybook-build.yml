@@ -8,6 +8,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: IrwinJames-FS/github-actions-storybook-to-github-pages@v1.0.0
+    - uses: IrwinJames-FS/github-actions-storybook-to-github-pages
       with:
         path: dist/storybook
