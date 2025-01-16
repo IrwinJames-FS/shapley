@@ -4,7 +4,7 @@
   "scripts": {
     "test": "jest --coverage",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "build-storybook": "storybook build -o ./docs",
     "prepare": "npm run build",
     "build": "tsc && tsc --project ./tsconfig.esm.json && tsc --project ./tsconfig.types.json && node builder.js"
   },

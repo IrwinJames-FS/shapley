@@ -12,11 +12,10 @@ export type ShapeCacheProps = {
 export const ShapeCache: FC<ShapeCacheProps> = ({shapes={}})=>(<><svg className="shape-cache">
 	<defs>
 		{Object.entries(shapes).map(([k, shape])=>{
-			console.log(shape);
 			return (<ShapeDefinition key={k} {...{
 				id: k,
-				d: ''+shape,
-				clipPathUnits: shape.isObjectBounding ? 'objectBoundingBox':undefined
+				d: ''+(shape.isObjectBounding ? shape:shape.toObjectBounding()),
+				clipPathUnits: 'objectBoundingBox'
 			}}/>)
 		})}
 	</defs>
