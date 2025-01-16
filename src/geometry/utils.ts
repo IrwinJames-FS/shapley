@@ -275,3 +275,13 @@ export const subtract = ([x1,y1]: Point, [x2,y2]: Point): Point => [x1-x2, y1-y2
  * @returns 
  */
 export const extractPoints = (...points: number[]):Point[]=>Array.from(stride(points, 2));
+
+export const toAbsolutePoints = (points: number[]): Point[] => {
+	const absolutePoints:Point[] = [];
+	let pos:Point = [0,0];
+	for(let i = 0; i < points.length; i+=2){
+		pos = add(pos, pt(points, i))
+		absolutePoints.push([...pos] as Point);
+	}
+	return absolutePoints;
+}

@@ -131,3 +131,4 @@ dist
 
 # Documentation
 .tsdoc/
+storybook-static/

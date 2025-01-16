@@ -1,9 +1,10 @@
 
-import { BiCommandChar, Command, CommandArguments, compPoint, isAbsolute, isClosingChar, isCommandChar, l, L, M, Q } from "./Commands";
+import Commands, { BiCommandChar, Command, CommandArguments, compPoint, isAbsolute, isClosingChar, isCommandChar }  from "./Commands";
 import { Gen, GeneratorList } from "./Gen";
 import { Bounds, Point } from "./types";
-import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride } from "./utils";
-
+import { add, allConnected, angleTo, polygon, pt, ray, rollingThree, stride, toAbsolutePoints } from "./utils";
+/** @private */
+const {l, L, M, Q, z} = Commands;
 /**
  * A Generator List using Command instances as elements. 
  */
@@ -24,23 +25,61 @@ export type Dgen = GeneratorList<Command>;
  */
 export type DInitTypes = string | number[] | Command[] | GeneratorList<Command> | CommandArguments<BiCommandChar>;
 /**
- * D is a interactive representation of the information provided in the d property of a path.
+ * D is a interactive representation of the information provided in the d property of a svg path. D uses reusable [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) as the source of true which allows for a simple interface to parse multiple source formats and types. 
+ * 
+ * D supports initializing from a [svg path command string](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d)
+ * 
+ * D also supports initializing from an array of points ([x: number, y: number]). drawing a line from each point to form a shape. (D.shape and D.rounded offer options to round corners.)
+ * 
+ * One side effect of this is if the iterator returns an instance of a class modifications to that instance may be present in the next iteration. This may be desired in some use cases however in a react context the source of truth will typically be a stateful value or something that can trigger a render.
+ * 
+ * D provided specialized static initializers to simplify implementations.
+ * 
+ * @todo TypedArray Support
+ * @example
+ * import { D, Commands } from "@irwinproject/shapley";
+ * //or 
+ * import { D } from "@irwinproject/shapley/geometry/d";
+ * const { M } = Commands
+ * //Initialize from string 
+ * const d = new D("M 50, 0 100, 100 0, 100");
+ * 
+ * //Initialize from point buffer
+ * const d = new D([50, 0, 100, 100, 0, 100]);
+ * 
+ * //Initialize from a Generator<Point>
+ * const d = new D(function*(){
+ * 	yield M(50, 0, 100, 100, 0, 100);
+ * });
  */
 export class D extends Gen<Command> {
-	/*
-	Populated during iteration
-	*/
-	firstPosition?: Point
-	currentPosition?: Point
+	
+	private firstPosition?: Point
+	
+	private currentPosition?: Point
+
+	/**
+	 * The bounds will not be populated until the initial rendering the the D instance. 
+	 * 
+	 * every time the iterator runs it measures the provided path commands. 
+	 */
 	bounds: Bounds = [0,0,0,0,0,0];
-	margin: number = 0;
-	_aspectRatio?: string;
+
+	private margin: number = 0;
+	private _aspectRatio?: string;
+
+	/**
+	 * The viewbox used to represent this specific glyph. 
+	 */
 	get viewBox(){
 		const [mx, my, width, height] = this.bounds;
 		const m = this.margin*2
 		return `${mx-this.margin} ${my-this.margin} ${width+m} ${height+m}`;
 	}
 
+	/**
+	 * The aspect based on the existing bounds. 
+	 */
 	get aspectRatio(){
 		if(this._aspectRatio) return this._aspectRatio;
 		
@@ -49,6 +88,8 @@ export class D extends Gen<Command> {
 
 	/**
 	 * checks if the current object meets the criterea for object bounding
+	 * 
+	 * Shapes rely on this principle to properly pin the path to the bounds of the root html element.
 	 */
 	get isObjectBounding():boolean{
 		const [mx, my, w, h] = this.getBounds();
@@ -57,13 +98,14 @@ export class D extends Gen<Command> {
 		return mb >= 0 && Mb <= 1;
 	}
 	/**
-	 * D can be initialized with a string which parses and builds the generator from the string. The string will be parsed on command so data is not duplicated in memory unecessarily.
+	 * D offers a variety of static methods to simplify creating 
+	 * D can be initialized with a svg path command. The string will be parsed on command so data is not duplicated in memory unecessarily. one fallback of this comes when animating shapes as it may be more beneficial to use an arry or raw generator. (the flatten method can be used to convert from svg one time then use raw data in subsequent renders.)
 	 * 
 	 * D can also be initialized using an array of numbers. If said method is provided every two numbers will be used as points to make a shape. This will simply prefix the numbers with an M and conclud with a z. 
 	 * 
-	 * D can be initialized with an array of command types
+	 * D can be initialized with an array of command types 
 	 * 
-	 * and finally D can be initalized with a Generator function the yields command Types. 
+	 * and finally D can be initalized with a Generator function the yields command Types or *[x: number, y:number]* to define points.
 	 * 
 	 * Allowing a wide range of sources allows D to operate in a large variety use cases.
 	 */
@@ -91,13 +133,18 @@ export class D extends Gen<Command> {
 	 * in some circumstances such as converting to objectBounding a measurement needs to be forced. the simplest way to complish this is to convert the class to a string and then observe the bounds. 
 	 * 
 	 */
-	public getBounds(){
+	public getBounds():Bounds{
 		if(Math.max(...this.bounds) > 0) return this.bounds;
 		//by forcing all of the instances to iterate we can force a measurement prior to render.
 		const _ = ''+this;
 		return this.bounds;
 	}
 
+	/**
+	 * This method along with yielding the necessary commands it also tracks the strokes position. this allows more declarative mutations such as an efficient method to round lines. 
+	 * It also allows Shapes and Glyphs (single path elements) to auto size themselves nicely. 
+	 * @returns 
+	 */
 	*each(){
 		let min: Point | undefined
 		let max: Point | undefined
@@ -144,6 +191,12 @@ export class D extends Gen<Command> {
 		});
 	}
 
+	/**
+	 * Scales a path by the provided values.
+	 * @param x 
+	 * @param y 
+	 * @returns 
+	 */
 	scale(x: number, y: number){
 		return this.apply(gen=>function*(){
 			for(const cmd of gen()){
@@ -156,7 +209,6 @@ export class D extends Gen<Command> {
 	 * Converts a command path to objectBounding units. this is particularly helpful if the path is being used as a background or clip path. 
 	 * 
 	 * To this results in a non linear scaling method forcing the units into a square. to maintain a non square rectangle it is recomended you set an aspect ratio. 
-	 * 
 	 */
 	toObjectBounding(){
 		const [mx,my,width, height] = this.getBounds();
@@ -184,6 +236,10 @@ export class D extends Gen<Command> {
 		}
 	}
 
+	/**
+	 * D can be converted to a path command string.
+	 * @returns 
+	 */
 	toString(){
 		let str = '';
 		for(const cmd of this.each()){
@@ -207,7 +263,7 @@ export class D extends Gen<Command> {
 	}
 
 	/**
-	 * Parse the d path
+	 * Parse the d string path
 	 */
 	static parse(d: string): GeneratorList<Command>{
 		return function*(){
@@ -253,25 +309,29 @@ export class D extends Gen<Command> {
 	/**
 	 * Creates a point using a limited command spec however allows for corner rounding and shorhand notation 
 	 */
-	static shape(cornerRadius: number, points: CommandArguments<BiCommandChar> | number[]): D{
+	static shape(cornerRadius: number | number[], points: CommandArguments<BiCommandChar> | number[]): D{
 		if(!cornerRadius) return new D(points);
 		//there is a corner radius
 		
 		return new D(function*(){
 			const gen = Array.isArray(points) ? stride(points, 2):points();
 			let isPlaced = false;
+			let i = 0;
 			for(const r3 of rollingThree(gen)){
 				if(r3.length !== 3) return yield new Command("M", function*(){yield* r3}); //just pass the stuff through as lines
 				const [p,c,n] = r3;
 				const pa = angleTo(c,p);
 				const na = angleTo(c,n);
+				const cr = Array.isArray(cornerRadius) ? cornerRadius[i]:cornerRadius;
 				yield new Command(isPlaced ? "L":"M", function*(){
-					yield ray(cornerRadius, pa, c);
+					yield ray(cr, pa, c);
 				});
 				isPlaced = true;
+				
 				yield new Command("S", function*(){
-					yield [...c, ...ray(cornerRadius, na, c)];
+					yield [...c, ...ray(cr, na, c)];
 				});
+				i = (i + 3)
 			}
 			yield new Command("z");
 		})
@@ -282,36 +342,63 @@ export class D extends Gen<Command> {
 	 * 
 	 * This method expects the first point to be exact then all subsequent points to be relative
 	 */
-	static rounded(cornerRadius: number, d: number[]): D{
-		
+	static rounded(cornerRadius: number | number[], d: number[], closed: boolean=false): D{
+		//conver to absolute points
+		const points = toAbsolutePoints(d);
 		return new D(function*(){
-			if(d.length < 6){
-				yield M(...pt(d,0));
-				if(d.length > 2) yield l(...d.slice(2));
+			if(points.length < 3) {
+				yield M(...points.flatMap(p=>p));
 				return;
 			}
-			let previous = pt(d,0);
-			
-			yield M(...previous);
-			
-			let current = add(previous, pt(d,2));
-
-			for(let i = 4; i<d.length; i+=2){
+			let previous = points[0];
+			let current = points[1];
+			let cr = Array.isArray(cornerRadius) ? cornerRadius[0]:cornerRadius;
+			if(closed && cr){
+				const pa = angleTo(previous, current);
+				const start = ray(cr, pa, previous);
+				yield M(...start);
+			} else {
+				yield M(...previous);
+			}
+			cr = Array.isArray(cornerRadius) ? cornerRadius[1]:cornerRadius;
+			for(let i = 2; i<points.length;i++){
+				const next = points[i];
 				
-				const pa = angleTo(current, previous);
-				const start = ray(cornerRadius, pa, current);
-				yield L(...start);
-				const next = add(current, pt(d,i));
-				const na = angleTo(current, next);
-				const end = ray(cornerRadius, na, current);
-				yield Q(...current, ...end)
+				if(cr){
+					const pa = angleTo(current, previous);
+					const start = ray(cr, pa, current);
+					yield L(...start);
+					const na = angleTo(current, next);
+					const end = ray(cr, na, current);
+					yield Q(...current, ...end);
+				} else {
+					yield L(...current)
+				}
 				previous = current;
 				current = next;
+				cr = Array.isArray(cornerRadius) ? cornerRadius[i]:cornerRadius;
 			}
-			yield L(...current);
+			if(closed && cr){
+				const pa = angleTo(current, previous);
+				const start = ray(cr, pa, current);
+				yield L(...start);
+				const na = angleTo(current, points[0]);
+				const end = ray(cr, na, current);
+				yield Q(...current, ...end);
+				cr = Array.isArray(cornerRadius) ? cornerRadius[0]:cornerRadius;
+				const npa = angleTo(points[0], current);
+				const nstart = ray(cr, npa, points[0]);
+				yield L(...nstart);
+				const nna = angleTo(points[0], points[1]);
+				const nend = ray(cr, nna, points[0]);
+				yield Q(...points[0], ...nend);
+			} else {
+				yield L(...current);
+				if(closed) yield z();
+			}
 		});
 	}
-
+	
 	/** reload an instance from a cached */
 	static fromCached(cache: DCacheItem): D{
 		const d = new D(cache.d)
@@ -319,12 +406,31 @@ export class D extends Gen<Command> {
 		return d;
 	}
 }
+
+/**
+ * Polygon options are intended to simplify the polgon methods.
+ */
 export type PolygonOptions = {
 	radius?: number,
 	center?: Point,
+	/**
+	 * In degrees
+	 */
 	rotation?: number,
 	cornerRadius?: number,
+	/**
+	 * Connect all disables corner radius.
+	 */
 	connectAll?:boolean
 }
+/**
+ * Cached items provides the minimum necessary information to reconstruct an instance of D in another context.
+ */
 export type DCacheItem = {aspectRatio: string, d: string, objectBounding: boolean}
+
+/**
+ * The cache is used to rehydrate. 
+ * 
+ * In most cases this will be automatically updated and hydrated.
+ */
 export type DCache = Record<string, DCacheItem>;

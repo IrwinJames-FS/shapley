@@ -1,4 +1,4 @@
 export * from './Command';
 
-export * from './Commands';
+export { default } from './Commands';
 export * from './types';

@@ -16,6 +16,8 @@ import { ArcCommandChar, BiCommandChar, ClosingCommandChar, CmdArgs, CommandArgu
  * 
  * @example
  * import { Command } from "@irwinproject/shapley";
+ * //or
+ * import { Command } from "@irwinproject/shapley/geometry/commands";
  * 
  * new Command("z");
  * new Command("m", function*(){yield [0,0]});
@@ -180,6 +182,12 @@ export class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>
 		});
 	}
 
+	/**
+	 * Scales a command.
+	 * @param x 
+	 * @param y 
+	 * @returns 
+	 */
 	scale(x: number, y: number){
 		const fn = this.fn;
 		return this.apply(gen=>function*(){
@@ -278,6 +286,7 @@ export class Command<T extends CommandChar = CommandChar> extends Gen<CmdArgs<T>
  * @param x 
  * @returns 
  * @example
+ * @private
  * import { isChar } from "@irwinproject/shapley";
  * 
  * const ischar = isChar("A", "a"); //true
@@ -294,9 +303,12 @@ export const isChar = <T extends CommandChar>(c: string, x: T): c is T => {
  * 
  * This method is used in the parsing process and will likely be made private in the future.
  * @param c 
- * @returns 
+ * @returns
+ * @private 
  * @example
  * import {isNumeric} from "@irwinproject/shapley";
+ * //or
+ * import {isNumberic} from "@irwinproject/shapley/geometry/commands";
  * 
  * isNumeric("-"); //true
  * isNumeric("."); //true
@@ -314,6 +326,7 @@ export const isNumeric = (c: string)=>{
  * This method is used in the parsing process and will likely be made private in the future.
  * @param s 
  * @returns 
+ * @private
  * @example
  * import { isClosingChar } from "@irwinproject/shapley";
  * 
@@ -329,6 +342,7 @@ export const isClosingChar = (s:string):s is ClosingCommandChar => isChar(s, "z"
  * This method is used in the parsing process and will likely be made private in the future.
  * @param s 
  * @returns 
+ * @private
  * @example
  * import { isSingleChar } from "@irwinproject/shapley";
  * 
@@ -343,6 +357,7 @@ export const isSingleChar = (s: string): s is SingleCommandChar => isChar(s, "h"
  * This method is used in the parsing process and will likely be made private in the future.
  * @param s 
  * @returns 
+ * @private
  * @example
  * import { isBiChar } from "@irwinproject/shapley";
  * 
@@ -357,6 +372,7 @@ export const isBiChar = (s: string): s is BiCommandChar => isChar(s, "m") || isC
  * This method is used in the parsing process and will likely be made private in the future.
  * @param s 
  * @returns 
+ * @private
  * @example
  * import { isQuadChar } from "@irwinproject/shapley";
  * 
@@ -371,6 +387,7 @@ export const isQuadChar = (s: string): s is QuadCommandChar => isChar(s, "s") ||
  * This method is used in the parsing process and will likely be made private in the future.
  * @param s 
  * @returns 
+ * @private
  * @example 
  * import { isHexChar } from "@irwinproject/shapley";
  * 
@@ -385,6 +402,7 @@ export const isHexChar = (s: string): s is HexCommandChar => isChar(s, "c");
  * This method is used in the parsing process and will likely be made private in the future.
  * @param s 
  * @returns 
+ * @private
  * @example
  * import { isArcChar } from "@irwinproject/shapley";
  * 
@@ -399,6 +417,7 @@ export const isArcChar = (s: string): s is ArcCommandChar => isChar(s, "a");
  * This method is used in the parsing process and will likely be made private in the future.
  * @param s 
  * @returns 
+ * @private
  * @example
  * import { isCommandChar } from "@irwinproject/shapley";
  * 
@@ -419,6 +438,7 @@ export const isCommandChar = (s: string): s is CommandChar => isClosingChar(s)
  * This method is used in the parsing process and will likely be made private in the future.
  * @param char 
  * @returns
+ * @private
  * @example
  * import { getCommandLength } from "@irwinproject/shapley";
  * 
@@ -442,6 +462,7 @@ export const getCommandLength = <T extends CommandChar>(char: T): CommandLength<
  * This method is used in the parsing process and will likely be made private in the future.
  * @param char 
  * @returns 
+ * @private
  * @example
  * import { isAbsolute } from "@irwinproject/shapley";
  * 
@@ -460,6 +481,7 @@ export const isAbsolute = (char: CommandChar) => {
  * This method is used in the parsing process and will likely be made private in the future.
  * @param fn 
  * @param points 
+ * @private
  * @example 
  * import { compPoint } from "@irwinproject/shapley";
  * 
@@ -482,8 +504,9 @@ export const compPoint = (fn: (...values: number[])=>number, ...points: (Point |
 	return m;
 }
 
+/** @private */
 export const minPoint = (...points: (Point | undefined)[])=> compPoint(Math.min, ...points);
-
+/** @private */
 export const maxPoint = (...points: (Point | undefined)[]) => compPoint(Math.max, ...points);
 
 

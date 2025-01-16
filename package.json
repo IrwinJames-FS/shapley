@@ -58,6 +58,16 @@
       "require": "./dist/cjs/utils.js",
       "import": "./dist/esm/utils.js"
     },
+    "./geometry":{
+      "types": "./dist/types/geometry/index.d.ts",
+      "require": "./dist/cjs/geometry/index.js",
+      "import": "./dist/esm/geometry/index.js"
+    },
+    "./geometry/commands":{
+      "types": "./dist/types/geometry/Commands/Commands.d.ts",
+      "require": "./dist/cjs/geometry/Commands/Commands.js",
+      "import": "./dist/esm/geometry/Commands/Commands.js"
+    },
     "./next/ShapeCache": {
       "types": "./dist/types/components/next/index.d.ts",
       "require": "./dist/cjs/components/next/Cache/index.js",
