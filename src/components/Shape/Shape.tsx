@@ -74,7 +74,7 @@ export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, strok
 		});
 	}
 	return (<>
-	{!sref && id && d && <ShapeCache shapes={{[id]:d.toObjectBounding().cached()}}/>}
+	{!sref && id && d && <ShapeCache shapes={{[id]:d.toObjectBounding()}}/>}
 	<Component {...{
 		className: [className, 'shapley-shape', id ? `shapley-shape-${id}`:undefined].filter(a=>a).join(' '),
 		...props,
