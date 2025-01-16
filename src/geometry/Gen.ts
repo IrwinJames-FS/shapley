@@ -1,4 +1,11 @@
+/**
+ * A generator list is a reusable Generator allowing for multiple iterations from the same source. 
+ */
 export type GeneratorList<T> = ()=>Generator<T>;
+
+/**
+ * A Generator mutator method is a method that is responsible of iterating the provided generator and modify it. the modified generator must be of the same type and to remain compliant with the gnerator class.
+ */
 export type GeneratorMutator<T> = (gen: GeneratorList<T>)=>GeneratorList<T>;
 
 /**

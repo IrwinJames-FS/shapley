@@ -24,8 +24,17 @@ The following will result in the following html output.
 ```html
 <svg>
    <defs>
-      <path d="">
+      <path d="..." id="hexagon"></path>
+	  <clipPath id="hexagon-clip" clipPathUnits="objectBoundingBox">
+		<use href="hexagon">
+	  </clipPath>
+	  <path d="..." id="triangle"></path>
+	  <clipPath id="triangle-clip" clipPathUnits="objectBoundingBox">
+		<use href="triangle">
+	  </clipPath>
    </defs>
 </svg>
-```
+```;
+
+
 

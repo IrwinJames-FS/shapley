@@ -5,13 +5,13 @@ const config = {
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
-    "@chromatic-com/storybook",
-    "@storybook/addon-interactions",
     "@irwinproject/storybook-addon-tsdoc"
   ],
+  
   framework: {
     name: "@storybook/nextjs",
     options: {},
-  }
+  },
+  staticDirs: ['../public'],
 };
 export default config;

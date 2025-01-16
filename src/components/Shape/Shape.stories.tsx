@@ -1,83 +1,37 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { Shape, ShapeProps } from "./Shape";
-import { D } from "../../geometry/D";
+import { D } from "../../geometry";
 import { ShapeCache } from "../ShapeCache";
 
 export default {
 	component: Shape,
-	tags: ['autodocs']
+	tags: ['autodocs'],
 } as Meta<ShapeProps>
 
-type Story = StoryObj<ShapeProps>;
+type Story = StoryObj<ShapeProps>
 
 export const Primary: Story = {
 	args: {
-		/**
-		 * d can be a string or an instance of D.
-		 */
-		d: D.polygon(6, {  cornerRadius: 0.1}).toObjectBounding(),
-		/**
-		 * To adjust the properties for the use component which renders the shape modify this property
-		 */
-		useProps: {fill: '#FF0', stroke: "#00F", strokeWidth: 0.025},
-		/**
-		 * Children can be added like normal
-		 */
-		children: ["Hello World"],
-		/**
-		 * All html properties such as style are supported (assuming the base html element supports the property).
-		 */
-		style:{
-			maxWidth: '600px',
-			background: "#0F0"
-		},
-		/**
-		 * The properties for the underlying svg component can be modified here.
-		 */
-		svgProps:{
-			style:{
-				filter: 'drop-shadow(2px 2px 4px #000)'
-			}
-		}
+		d: D.polygon(6),
+		children: "Hello World!",
+		fill: 'rgb(28,128,248)',
+		stroke: "#000",
+		strokeWidth: 0.1
 	}
+
 }
 
-/**
- * Shapes can also be loaded from shapes that have been cached in a ShapeCache
- */
-export const Secondary: Story = {
+export const Cached: Story = {
 	args: {
-		/**
-		 * To adjust the properties for the use component which renders the shape modify this property
-		 */
-		useProps: {stroke: "#000", strokeWidth: 0.025},
-		/**
-		 * Children can be added like normal
-		 */
-		children: ["Hello World"],
-		/**
-		 * All html properties such as style are supported (assuming the base html element supports the property).
-		 */
-		style:{
-			maxWidth: '600px',
-			backgroundColor: '#F00'
-		},
-		/**
-		 * The properties for the underlying svg component can be modified here.
-		 */
-		svgProps:{
-			style:{
-				filter: 'drop-shadow(2px 2px 4px #000)'
-			}
-		}
+		sref: "triangle",
+		fill: 'rgb(28,128,248)',
+		children: "Triangles are Fun!"
 	},
-	render(props:Omit<ShapeProps, "sref">){
-		return (<>
-			<ShapeCache shapes={{
-				hexagon: D.polygon(6).toObjectBounding()
-			}}/>
-			<Shape sref="hexagon"  {...props}>Hello, World</Shape>
+	render: ({sref="triangle", ...props})=>{
+		return (<><ShapeCache shapes={{[sref]:D.polygon(3).toObjectBounding()}}/>
+		<Shape sref={sref} {...props}/>
 		</>)
+		
 	}
 }
