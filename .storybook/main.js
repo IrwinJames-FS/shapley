@@ -1,5 +1,5 @@
 import path from "path";
-/** @type { import('@storybook/react-vite').StorybookConfig } */
+/** @type { import('@storybook/nextjs').StorybookConfig } */
 const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
@@ -7,14 +7,10 @@ const config = {
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
-    "storybook-addon-tsdoc"
+    "@irwinproject/storybook-addon-tsdoc"
   ],
-  viteFinal: (config) => {
-    config.resolve.alias["~"] = path.join(__dirname, "../")
-    return config;
-  },
   framework: {
-    name: "@storybook/react-vite",
+    name: "@storybook/nextjs",
     options: {},
   }
 };

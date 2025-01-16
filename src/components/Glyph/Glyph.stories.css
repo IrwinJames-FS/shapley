@@ -1,9 +1,14 @@
 
 path.stroked{
 	--dash: 3500;
+	--dur: 5s;
 	stroke-dasharray: var(--dash);
 	stroke-dashoffset: var(--dash);
-	animation: stroke 5s linear infinite forwards;
+	animation: stroke var(--dur) linear infinite forwards;
+	&.lg{
+		--dash:100000;
+		--dur: 20s
+	}
 }
 
 @keyframes stroke {

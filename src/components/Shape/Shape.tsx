@@ -1,10 +1,10 @@
-import { ComponentPropsWithoutRef, ElementType, FC } from "react";
+import { Children, cloneElement, ComponentPropsWithoutRef, ElementType, FC, ReactElement } from "react";
 import { D } from "../../geometry/D";
 import './style.css';
 import { v4 } from "uuid";
 import { PolyMorphicProps } from "../types";
 import { ShapeCache } from "../ShapeCache";
-import { mergeClasses } from "../../utils";
+import { isTransitionalElement, mergeClasses } from "../../utils";
 
 export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T, ({
 	/**
@@ -22,7 +22,8 @@ export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T
 	 * 
 	 * It is recommended if you use a cached shape you convert the shape using toObjectBounding or the ShapeCache's allObjectBounding.
 	 */
-	sref: string
+	sref?: string
+
 }) & {
 	/**
 	 * The fill value is hoisted from the useProps however can also be passed via the useProps property.
@@ -59,14 +60,23 @@ export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T
  * 
  */
 export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{ className: svgClassName, viewBox, preserveAspectRatio, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
-	const id = sref ? sref : v4();
+	const id = sref ? sref : d ? v4():undefined;
 	fill = fill ?? useProps.fill
 	stroke = stroke ?? useProps.stroke
 	strokeWidth = strokeWidth ?? useProps.strokeWidth
+	if(sref) {
+		children = Children.map(children, (child, i)=>{
+			if(!isTransitionalElement<ShapeProps>(child)) return child;
+			if(((child.props?.className ?? "").includes("shapley-shape") || child.type === Shape)&& !child.props?.sref && !child.props?.d){
+				return cloneElement(child, {sref});
+			}
+			return child;
+		});
+	}
 	return (<>
-	{!sref && <ShapeCache shapes={{[id]:d.toObjectBounding().cached()}}/>}
+	{!sref && id && d && <ShapeCache shapes={{[id]:d.toObjectBounding().cached()}}/>}
 	<Component {...{
-		className: [className, 'shapley-shape', `shapley-shape-${id}`].filter(a=>a).join(' '),
+		className: [className, 'shapley-shape', id ? `shapley-shape-${id}`:undefined].filter(a=>a).join(' '),
 		...props,
 		style: {
 			'--shapley-bg-color': fill,
@@ -88,3 +98,5 @@ export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, strok
 	</Component>
 	</>);
 }
+
+Shape.displayName = "Shape";

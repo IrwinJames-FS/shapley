@@ -34,8 +34,9 @@ export class D extends Gen<Command> {
 	 */
 	get isObjectBounding():boolean{
 		const [mx, my, w, h] = this.getBounds();
-		
-		return mx === 0 && my === 0 && w === 1 && h === 1;
+		const mb = Math.min(mx, my, w, h);
+		const Mb = Math.max(mx, my, w,h);
+		return mb >= 0 && Mb <= 1;
 	}
 	/**
 	 * D can be initialized with a string which parses and builds the generator from the string. The string will be parsed on command so data is not duplicated in memory unecessarily.
@@ -65,6 +66,7 @@ export class D extends Gen<Command> {
 		this.margin = margin;
 		return this;
 	}
+
 	/**
 	 * in some circumstances such as converting to objectBounding a measurement needs to be forced. the simplest way to complish this is to convert the class to a string and then observe the bounds. 
 	 * 
@@ -120,7 +122,6 @@ export class D extends Gen<Command> {
 				}
 				first = false;
 				yield cmd.translate(x, y);
-				
 			}
 		});
 	}
@@ -212,12 +213,6 @@ export class D extends Gen<Command> {
 	/**
 	 * 
 	 * @param sides 
-	 * @param radius 
-	 * @param center 
-	 * @param rotation - in degrees
-	 * @param cornerRadius 
-	 * @param connectAll 
-	 * @returns 
 	 */
 	static polygon(
 		sides: number,
