@@ -95,7 +95,9 @@ export class D extends Gen<Command> {
 		const [mx, my, w, h] = this.getBounds();
 		const mb = Math.min(mx, my, w, h);
 		const Mb = Math.max(mx, my, w,h);
-		return mb >= 0 && Mb <= 1;
+		const isOb = mb >= 0 && Mb <= 1;
+		console.log("Is objectBounding", isOb, ''+this);
+		return isOb;
 	}
 	/**
 	 * D offers a variety of static methods to simplify creating 
@@ -134,7 +136,7 @@ export class D extends Gen<Command> {
 	 * 
 	 */
 	public getBounds():Bounds{
-		if(Math.max(...this.bounds) > 0) return this.bounds;
+		//if(Math.max(...this.bounds) > 0) return this.bounds;
 		//by forcing all of the instances to iterate we can force a measurement prior to render.
 		const _ = ''+this;
 		return this.bounds;

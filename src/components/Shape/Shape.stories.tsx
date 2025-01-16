@@ -26,7 +26,10 @@ export const Cached: Story = {
 	args: {
 		sref: "triangle",
 		fill: 'rgb(28,128,248)',
-		children: "Triangles are Fun!"
+		children: "Triangles are Fun!",
+		style:{
+			width: "600px"
+		}
 	},
 	render: ({sref="triangle", ...props})=>{
 		return (<><ShapeCache shapes={{[sref]:D.polygon(3).toObjectBounding()}}/>
