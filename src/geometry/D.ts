@@ -96,7 +96,6 @@ export class D extends Gen<Command> {
 		const mb = Math.min(mx, my, w, h);
 		const Mb = Math.max(mx, my, w,h);
 		const isOb = mb >= 0 && Mb <= 1;
-		console.log("Is objectBounding", isOb, ''+this);
 		return isOb;
 	}
 	/**
