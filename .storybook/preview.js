@@ -7,6 +7,12 @@ const preview = {
         date: /Date$/i,
       },
     },
+    options: {
+      storySort: {
+        method: 'alphabetical',
+        order: ['Getting Started']
+      }
+    }
   },
 };
 
