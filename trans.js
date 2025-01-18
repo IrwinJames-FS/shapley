@@ -2,7 +2,6 @@ const { Transformer } = require('@parcel/plugin');
 
 module.exports = new Transformer({
   async transform({ asset }) {
-	console.log('trans running');
 	// Ensure 'use client' stays at the very top
 	const content = await asset.getCode()
 	const hasUseClient = content.includes("'use client'");
@@ -13,7 +12,6 @@ module.exports = new Transformer({
 	  
 	  // Prepend 'use client' to the start of the file
 	  const modifiedContent = "'use client';\n" + cleanedContent;
-	  console.log(content, modifiedContent);
 	  asset.setCode(modifiedContent);
 	}
 	

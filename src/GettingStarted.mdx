@@ -1,0 +1,157 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Getting Started"/>
+
+
+# Getting Started
+
+Shapley is designed to simplify using dynamic svg backing layers in react or JSX based environments. to accomplish this I overengineered a class that wraps around the "d" property of a *path* component.
+
+## Your first shape
+
+Building shapes from a an instance of [D](?path=/docs/geometry-d-d--docs) is designed to be open ended to allow for various use cases and implementations. 
+
+```tsx
+export const MyFirstShapeComponent = ()=>{
+	return <Shape 
+	as="a" 
+	href="https://www.google.com" 
+	d={D.polygon(6)} 
+	style={{background: "rgb(28,128,248)"}} 
+	stroke="#000" 
+	strokeWidth={0.1}>Google</Shape>
+}
+```
+In the above example the Shape will use an *anchor* tag as its root. the shape will adopt the inherit properties of the anchor tag and support the shapley specific properties.
+
+d is generating a hexagon. 
+
+the shape's background can be styled using the background property using the css background properties or using svgs fill properties... or both. 
+
+Shapes bounds are clipped this prevents hover and click events from being triggered when the cursor interacts with the bounding element outside the backing shape layer. 
+
+Shapes use object bounding geometries. this means that all x and y values will be converted to a values between 0 and 1. where 0 represents the smallest value for its respective axis and 1 represents the largest value for the axis. 
+
+objectBounding geometries will always have a viewbox of `0 0 1 1` however this does not mean the geometry is square. instead the css aspect ratio is used to control the aspect ratio for both the svg layer but also the root html component.
+
+## Cached Shapes
+
+Caching shapes that will be reused is often the most performant option. A specialized Next ShapeCache is provided as well which does allow for re-hydration of D instance client side. this addresses server to client side rendering differences. 
+
+While the import paths differ the implementations are the exact same. 
+
+```tsx
+export const MyShapeCache = () => {
+	return <ShapeCache shapes={{
+		hexagon: D.polygon(6, {cornerRadius: 0.1}),
+		triangle: D.polygon(3, {rotation: -90})
+	}}>
+}
+```
+
+As long as this component exists within the dom shapes of the following name can be declared anywhere.
+
+```tsx
+export const MyCoolHexComponent = () => {
+	return <Shape sref="hexagon">
+		{/*whatever you want really*/}
+	</Shape>
+}
+```
+
+The path information is inherited from an svg element used to cache the path information. and the aspect ratio is cached using css selectors.
+
+The instance can be animated using css animations.
+
+**Limitation:**
+
+Cached instance paths cannot be mutated directly. Technically there is a way that can rehydrate an instance of D however this has not been tested in such a use case and the cached path commands may not exist if contexts change (move from server to client).
+
+This also results in cornerRadius to be non mutable once cached. 
+
+## Animating Glyphs and Shapes
+
+While shapley does not add methods to directly animate a path. [D](?path=/docs/geometry-d-d--docs) and its static methods can be used to simplify the mutation or generation of animated paths.
+
+```tsx
+const LoadingIcon = ()=>{
+	const dir = useRef(1);
+	const [sides, setSides] = useState(0);
+	const d = useMemo(()=>D.polygon(sides, {allConnected: true, radius: 50}).setMargin(10));
+
+	useEffect(()=>{
+		let lastUpdate = 0;
+		let frame = -1;
+		const draw = (time)=>{
+			if(time-lastUpdate < 32) {
+				//just go to the next frame
+				frame = requestAnimationFrame(draw)
+				return;
+			}
+			lastUpdate = time;
+			//increment the sides and keep it between the desired sizes
+			setSides(s=>Math.max(0, Math.min(12, s+(0.01*dir.current))));
+			frame = requestAnimationFrame(draw);
+		}
+		frame = requestAnimationFrame(draw);
+		return () => {
+			if(~frame) cancelAnimationFrame(frame);
+		}
+	}, []);
+	//flip the dir when sides hits some bounds
+	useEffect(()=>{
+		if(sides > 0 && sides < 12) return; //nothing needs to happen
+
+		//change the direction of the shape.
+		dir.current *= -1;
+		
+	}, [sides])
+	return <Glyph d={d} stroke="#000" strokeWidth={10}/>
+}
+```
+
+The above is a basic example of how a frame based loading icon can be implemented using shapley. 
+
+because we are animating D we will memoize this variable and use the number of sides as the animations state. 
+
+D has no reliance on client side or server side code so it can be used within a variety of frame works and is not restricted to react or JSX implementations. 
+
+### Donts
+- Dont try to cache animations server side. cached paths cant be mutated. (You can cache paths that will only be animated by css however).
+- Dont use D as a state. D is lazy in its nature. Transformations, regeneration and measurements are not made until requested. Instead D should be static or memoized and modified or re-instanced based on a dependency value. (In environment without a virtual dom it will still require the instance to be stringified to process mutations.) Additionally changes to D are occuring within an instance as such react's state methods wont detect a change even if path commands are flattened for force rendered. 
+
+
+## [D](?path=/docs/geometry-d-d--docs)
+
+Provides a flexible way to declare path commands instead of using path command strings. Additionally then provides a method to mutate the path commands allowing for a more efficient frame based animation.
+
+D evaluates the bounds of a path as it iterates over its final values after transforms are applied between render loops. an svg can be used to represent a single path.
+
+Components such as [Glyph](?path=/docs/components-glyph--docs) and [Shape](?path=/docs/components-shape--docs) use these measurements to size the svg layer to the intrinsic size. 
+
+D can be converted to a valid path command string. 
+
+## [Glyph](?path=/docs/components-glyph--docs)
+
+Glyphs allow for paths to be drawn directly to an svg backing layer. 
+
+## [Shape](?path=/docs/components-shape--docs)
+
+Shapes allow for paths to be used as a background layer for an html components.
+
+Shapes can be converted to any html component by utilizing the *as* property.
+
+## [ShapeCache](?path=/docs/components-shapecache--docs)
+
+Shapes can be cached and re-used or re-instanced. This is built on the referencing of components from the [use](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use) component in svg. In addition to the cached path css classes are generated which can be used by [Shape](?path=/docs/components-shape--docs) to preserve aspect ratio and sizing.
+
+## [ShapeGrid](?path=/docs/components-ShapeGrid--docs)
+
+The grid system is still very much and experimental feature. the idea is to build an interface that will simplify the declaration of a css grid and its grid cells. (This introduces other complexities such as a Triangle grid where two variations of a common geometry is used. or hexagons where there are multiple orientations).
+
+All in all the grid system provides an interface to set the grid template, cell size, and a layout function which is run for each child to position the geometry in the grid. 
+
+
+
+
+

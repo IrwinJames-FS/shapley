@@ -1,6 +1,6 @@
 {
   "name": "@irwinproject/shapley",
-  "version": "1.0.2",
+  "version": "1.0.32",
   "scripts": {
     "test": "jest --coverage",
     "storybook": "storybook dev -p 6006",
@@ -70,7 +70,7 @@
       "import": "./dist/esm/geometry/Commands/Commands.js"
     },
     "./next/ShapeCache": {
-      "types": "./dist/types/components/next/index.d.ts",
+      "types": "./dist/types/components/next/Cache/index.d.ts",
       "require": "./dist/cjs/components/next/Cache/index.js",
       "import": "./dist/esm/components/next/Cache/index.js"
     }
