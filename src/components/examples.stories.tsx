@@ -31,7 +31,6 @@ export const AnimatedPolygonGlyph: Story = {
 			let frame = -1;
 			const draw = (time: number)=>{
 				if(time-lastUpdate.current < FPS) return frame = requestAnimationFrame(draw); //skip this frame
-				console.log(time-lastUpdate.current, FPS)
 				lastUpdate.current = time;
 				setSides(s=>Math.min(MAX_SIDES, Math.max(MIN_SIDES, s+(dir.current*STEP))));
 				return frame = requestAnimationFrame(draw);
