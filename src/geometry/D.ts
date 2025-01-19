@@ -137,7 +137,7 @@ export class D extends Gen<Command> {
 	public getBounds():Bounds{
 		//if(Math.max(...this.bounds) > 0) return this.bounds;
 		//by forcing all of the instances to iterate we can force a measurement prior to render.
-		const _ = ''+this;
+		const _ = this.toString();
 		return this.bounds;
 	}
 
@@ -212,6 +212,7 @@ export class D extends Gen<Command> {
 	 * To this results in a non linear scaling method forcing the units into a square. to maintain a non square rectangle it is recomended you set an aspect ratio. 
 	 */
 	toObjectBounding(){
+		
 		const [mx,my,width, height] = this.getBounds();
 		if(this.isObjectBounding) return this; //no need to do any math its already normalized.
 		this._aspectRatio = this.aspectRatio;
@@ -222,7 +223,7 @@ export class D extends Gen<Command> {
 		this.scale(sx, sy) //scale the component down to a 1x1
 		.translate(tx,ty) //move top left to (0,0);
 		.flatten(); //work from a normalized point
-		const d = ''+this;
+		//console.log("Finished objectBounding transform", this.isObjectBounding)
 		return this;
 	}
 

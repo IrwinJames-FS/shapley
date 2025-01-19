@@ -70,6 +70,8 @@ describe(`Test D functionality`, () => {
 	});
 
 	test(`Test toObjectBounding method`, ()=>{
-		const polygon = D.polygon(4);
+		const polygon = D.polygon(6).toObjectBounding();
+		console.log(''+polygon);
+		console.log(polygon.viewBox)
 	})
 });
