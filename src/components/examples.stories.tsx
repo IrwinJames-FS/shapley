@@ -9,7 +9,8 @@ import { MAX } from "uuid";
 
 
 export default {
-	title: "components/examples"
+	title: "components/examples",
+	tags: ['autodocs']
 } as Meta
 
 type Story = StoryObj
