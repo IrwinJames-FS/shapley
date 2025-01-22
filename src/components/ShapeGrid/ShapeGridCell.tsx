@@ -1,4 +1,4 @@
-import { CSSProperties, FC } from "react"
+import { CSSProperties, FC, ReactNode } from "react"
 import { Shape, ShapeProps } from "../Shape"
 
 export type ShapeGridCellProps = {
@@ -6,7 +6,7 @@ export type ShapeGridCellProps = {
 	row?: number,
 } & ShapeProps
 
-export const ShapeGridCell:FC<ShapeGridCellProps> = ({
+export const ShapeGridCell = ({
 	sref,
 	className,
 	row,
@@ -14,7 +14,7 @@ export const ShapeGridCell:FC<ShapeGridCellProps> = ({
 	style={},
 	children,
 	...props
-}) => {
+}: ShapeGridCellProps):ReactNode => {
 	return <Shape {...{
 		sref,
 		className: [className ?? '', 'shapley-grid-cell'].join(' ').trim(),

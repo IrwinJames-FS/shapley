@@ -1,4 +1,4 @@
-import { Children, cloneElement, ComponentPropsWithoutRef, ElementType, FC, ReactElement } from "react";
+import { Children, cloneElement, ComponentPropsWithoutRef, ElementType, FC, ReactElement, ReactNode } from "react";
 import { D } from "../../geometry/D";
 import './style.css';
 import { v4 } from "uuid";
@@ -59,7 +59,7 @@ export type ShapeProps<T extends ElementType = ElementType> = PolyMorphicProps<T
  * The shape component is a general use component which accepts children and uses an svg to represent the shape as a background component.
  * 
  */
-export const Shape:FC<ShapeProps> = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{ className: svgClassName, viewBox, preserveAspectRatio, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props})=>{
+export const Shape = ({as:Component = "div", sref, d, fill, stroke, strokeWidth, clipped, className, children, svgProps:{ className: svgClassName, viewBox, preserveAspectRatio, ...svgProps}={}, pathProps={}, useProps={}, style={}, ...props}: ShapeProps): ReactNode=>{
 	const id = sref ? sref : d ? v4():undefined;
 	fill = fill ?? useProps.fill
 	stroke = stroke ?? useProps.stroke

@@ -9,18 +9,20 @@
 	filter: var(--shapley-filter, none) default;
 	visibility: hidden;
 	color: inherit;
-	& > svg.shapley-shape-bg {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		z-index: -1;
-	}
-	use {
-		fill: var(--shapley-bg-color, transparent);
-		stroke: var(--shapley-stroke-color, transparent);
-		stroke-width: var(--shapley-stroke-width, 0);
-		stroke-linejoin: var(--shapley-stroke-linejoin, round) default;
-		stroke-linecap: var(--shapley-stroke-linecap, round) default;
-	}
+}
+
+.shapley-shape > svg.shapley-shape-bg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.shapley-shape > svg.shapley-shape-bg > use {
+	fill: var(--shapley-bg-color, transparent);
+	stroke: var(--shapley-stroke-color, transparent);
+	stroke-width: var(--shapley-stroke-width, 0);
+	stroke-linejoin: var(--shapley-stroke-linejoin, round);
+	stroke-linecap: var(--shapley-stroke-linecap, round);
 }
