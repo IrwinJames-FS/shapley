@@ -137,3 +137,8 @@ out
 
 src/
 docs/
+.github/
+builder.js
+public/
+tsconfig.*.json
+tsconfig.json

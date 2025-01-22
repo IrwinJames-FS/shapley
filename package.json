@@ -1,6 +1,6 @@
 {
   "name": "@irwinproject/shapley",
-  "version": "1.0.36",
+  "version": "1.0.4",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
@@ -57,34 +57,335 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
-    },
-    "./index": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+      "types": {
+        "default": "./dist/types/index.d.ts",
+        "development":[
+          "./dist/types/index.d.ts",
+          "./dist/types/index.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/index.js",
+        "development":[
+          "./dist/cjs/index.js",
+          "./dist/cjs/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/index.js",
+        "development": [
+          "./dist/esm/index.js",
+          "./dist/esm/index.js.map"
+        ]
+      }
     },
     "./utils": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/utils.js",
-      "import": "./dist/esm/utils.js"
+      "types": {
+        "default": "./dist/types/utils.d.ts",
+        "development": [
+          "./dist/types/utils.d.ts",
+          "./dist/types/utils.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/utils.js",
+        "development": [
+          "./dist/cjs/utils.js",
+          "./dist/cjs/utils.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/utils.js",
+        "development": [
+          "./dist/esm/utils.js",
+          "./dist/esm/utils.js.map"
+        ]
+      }
+    },
+    "./components":{
+      "types": {
+        "default": "./dist/types/components/index.d.ts",
+        "development": [
+          "./dist/types/components/index.d.ts",
+          "./dist/types/components/index.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/components/index.js",
+        "development": [
+          "./dist/cjs/components/index.js",
+          "./dist/cjs/components/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/components/index.js",
+        "development": [
+          "./dist/esm/components/index.js",
+          "./dist/esm/components/index.js.map"
+        ]
+      }
+    },
+    "./components/Shape":{
+      "types": {
+        "default": "./dist/types/components/Shape/index.d.ts",
+        "development": [
+          "./dist/types/components/Shape/index.d.ts",
+          "./dist/types/components/Shape/index.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/components/Shape/index.js",
+        "development":[
+          "./dist/cjs/components/Shape/index.js",
+          "./dist/cjs/components/Shape/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/components/Shape/index.js",
+        "development": [
+          "./dist/esm/components/Shape/index.js",
+          "./dist/esm/components/Shape/index.js.map"
+        ]
+      }
+    },
+    "./components/Glyph":{
+      "types": {
+        "default": "./dist/types/components/Glyph/index.d.ts",
+        "development":[
+          "./dist/types/components/Glyph/index.d.ts",
+          "./dist/types/components/Glyph/index.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/components/Glyph/index.js",
+        "development": [
+          "./dist/cjs/components/Glyph/index.js",
+          "./dist/cjs/components/Glyph/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/components/Glyph/index.js",
+        "development": [
+          "./dist/esm/components/Glyph/index.js",
+          "./dist/esm/components/Glyph/index.js.map"
+        ]
+      }
+    },
+    "./components/ShapeCache":{
+      "types": {
+        "default": "./dist/types/components/ShapeCache/index.d.ts",
+        "development": [
+          "./dist/types/components/ShapeCache/index.d.ts",
+          "./dist/types/components/ShapeCache/index.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/components/ShapeCache/index.js",
+        "development": [
+          "./dist/cjs/components/ShapeCache/index.js",
+          "./dist/cjs/components/ShapeCache/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/components/ShapeCache/index.js",
+        "development": [
+          "./dist/esm/components/ShapeCache/index.js",
+          "./dist/esm/components/ShapeCache/index.js.map"
+        ]
+      }
+    },
+    "./components/ShapeGrid":{
+      "types": {
+        "default": "./dist/types/components/ShapeGrid/index.d.ts",
+        "development": [
+          "./dist/types/components/ShapeGrid/index.d.ts",
+          "./dist/types/components/ShapeGrid/index.d.ts.map"
+        ]
+      },
+      "require":{
+        "default": "./dist/cjs/components/ShapeGrid/index.js",
+        "development": [
+          "./dist/cjs/components/ShapeGrid/index.js",
+          "./dist/cjs/components/ShapeGrid/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/components/ShapeGrid/index.js",
+        "development": [
+          "./dist/esm/components/ShapeGrid/index.js",
+          "./dist/esm/components/ShapeGrid/index.js.map"
+        ]
+      }
     },
     "./geometry": {
-      "types": "./dist/types/geometry/index.d.ts",
-      "require": "./dist/cjs/geometry/index.js",
-      "import": "./dist/esm/geometry/index.js"
+      "types": {
+        "default": "./dist/types/geometry/index.d.ts",
+        "development": [
+          "./dist/types/geometry/index.d.ts",
+          "./dist/types/geometry/index.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/geometry/index.js",
+        "development": [
+          "./dist/cjs/geometry/index.js",
+          "./dist/cjs/geometry/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/geometry/index.js",
+        "development": [
+          "./dist/esm/geometry/index.js",
+          "./dist/esm/geometry/index.js.map"
+        ]
+      }
+    },
+    "./geometry/d": {
+      "types": {
+        "default": "./dist/types/geometry/D.d.ts",
+        "development": [
+          "./dist/types/geometry/D.d.ts",
+          "./dist/types/geometry/D.d.ts.map"
+        ]
+      }
+    },
+    "./geometry/command": {
+      "types": {
+        "default": "./dist/types/geometry/Commands/Command.d.ts",
+        "development": [
+          "./dist/types/geometry/Commands/Command.d.ts",
+          "./dist/types/geometry/Commands/Command.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/geometry/Commands/Command.js",
+        "development": [
+          "./dist/cjs/geometry/Commands/Command.js",
+          "./dist/cjs/geometry/Commands/Command.js.map"
+        ]
+      },
+      "import":{
+        "default": "./dist/esm/geometry/Commands/Command.js",
+        "development": [
+          "./dist/esm/geometry/Commands/Command.js",
+          "./dist/esm/geometry/Commands/Command.js.map"
+        ]
+      }
     },
     "./geometry/commands": {
-      "types": "./dist/types/geometry/Commands/Commands.d.ts",
-      "require": "./dist/cjs/geometry/Commands/Commands.js",
-      "import": "./dist/esm/geometry/Commands/Commands.js"
+      "types": {
+        "default": "./dist/types/geometry/Commands/Commands.d.ts",
+        "development": [
+          "./dist/types/geometry/Commands/Commands.d.ts",
+          "./dist/types/geometry/Commands/Commands.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/geometry/Commands/Commands.js",
+        "development": [
+          "./dist/cjs/geometry/Commands/Commands.js",
+          "./dist/cjs/geometry/Commands/Commands.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/geometry/Commands/Commands.js",
+        "development":[
+          "./dist/esm/geometry/Commands/Commands.js",
+          "./dist/esm/geometry/Commands/Commands.js.map"
+        ]
+      }
+    },
+    "./geometry/utils": {
+      "types": {
+        "default": "./dist/types/geometry/utils.d.ts",
+        "development": [
+          "./dist/types/geometry/utils.d.ts",
+          "./dist/types/geometry/utils.d.ts.map"
+        ]
+      },
+      "require":{
+        "default": "./dist/cjs/geometry/utils.js",
+        "development": [
+          "./dist/cjs/geometry/utils.js",
+          "./dist/cjs/geometry/utils.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/geometry/utils.js",
+        "development": [
+          "./dist/esm/geometry/utils.js",
+          "./dist/esm/geometry/utils.js.map"
+        ]
+      }
+    },
+    "./geometry/types":{
+      "types": {
+        "default": "./dist/types/geometry/types.d.ts",
+        "development": [
+          "./dist/types/geometry/types.d.ts",
+          "./dist/types/geometry/types.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/geometry/types.js",
+        "development": [
+          "./dist/cjs/geometry/types.js",
+          "./dist/cjs/geometry/types.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/geometry/types.js",
+        "development": [
+          "./dist/esm/geometry/types.js",
+          "./dist/esm/geometry/types.js.map"
+        ]
+      }
+    },
+    "./geomery/gen":{
+      "types":{
+        "default": "./dist/types/geometry/Gen.d.ts",
+        "development": [
+          "./dist/types/geometry/Gen.d.ts",
+          "./dist/types/geometry/Gen.d.ts.map"
+        ]
+      },
+      "require":{
+        "default": "./dist/cjs/geometry/Gen.js",
+        "development":[
+          "./dist/cjs/geometry/Gen.js",
+          "./dist/cjs/geometry/Gen.js.map"
+        ]
+      },
+      "import":{
+        "default": "./dist/esm/geometry/Gen.js",
+        "development": [
+          "./dist/esm/geometry/Gen.js",
+          "./dist/esm/geometry/Gen.js.map"
+        ]
+      }
     },
     "./next/ShapeCache": {
-      "types": "./dist/types/components/next/Cache/index.d.ts",
-      "require": "./dist/cjs/components/next/Cache/index.js",
-      "import": "./dist/esm/components/next/Cache/index.js"
+      "types": {
+        "default": "./dist/types/components/next/Cache/index.d.ts",
+        "development": [
+          "./dist/types/components/next/Cache/index.d.ts",
+          "./dist/types/components/next/Cache/index.d.ts.map"
+        ]
+      },
+      "require": {
+        "default": "./dist/cjs/components/next/Cache/index.js",
+        "development": [
+          "./dist/cjs/components/next/Cache/index.js",
+          "./dist/cjs/components/next/Cache/index.js.map"
+        ]
+      },
+      "import": {
+        "default": "./dist/esm/components/next/Cache/index.js",
+        "development": [
+          "./dist/esm/components/next/Cache/index.js",
+          "./dist/esm/components/next/Cache/index.js.map"
+        ]
+      }
     }
   }
 }

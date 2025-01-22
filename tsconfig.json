@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "outDir": "dist/cjs",
     "jsx": "react-jsx",
+    "sourceMap": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"]
