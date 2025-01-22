@@ -1,4 +1,4 @@
-import { type ComponentPropsWithoutRef, type FC, ReactElement } from "react";
+import { type ComponentPropsWithoutRef, type FC, ReactNode } from "react";
 import { D } from "../../geometry/D";
 export type GlyphProps = {
 	/**
@@ -39,7 +39,7 @@ export type GlyphProps = {
  * 
  * I do plan on adding support to utilize more svg features directly however for now this elevates and renders an svg component with a single path element. the props provided are passed to said path component.
  */
-export const Glyph: FC<GlyphProps> = ({d, width, height, viewBox, svgProps:{viewBox:svgViewBox, style, ...svgProps}={}, ...props}): ReactElement => {
+export const Glyph = ({d, width, height, viewBox, svgProps:{viewBox:svgViewBox, style, ...svgProps}={}, ...props}: GlyphProps): ReactNode => {
 	const p = typeof d === 'string' ? new D(d):d;
 	const geo = ''+p;
 	return (<svg {...{

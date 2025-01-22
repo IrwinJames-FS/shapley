@@ -1,6 +1,9 @@
 {
   "name": "@irwinproject/shapley",
-  "version": "1.0.35",
+  "version": "1.0.36",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "test": "jest --coverage",
     "storybook": "storybook dev -p 6006",
@@ -27,11 +30,12 @@
     "@storybook/addon-onboarding": "^8.3.6",
     "@storybook/blocks": "^8.3.6",
     "@storybook/nextjs": "^8.4.7",
-    "@storybook/react": "^8.3.6",
+    "@storybook/react": "^8.5.0",
     "@storybook/react-vite": "^8.3.6",
     "@storybook/test": "^8.3.6",
     "@types/jest": "^29.5.14",
-    "@types/react": "^19.0.1",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
     "jest": "^29.7.0",
     "next": "^15.1.1",
     "parcel": "^2.13.2",
@@ -45,11 +49,19 @@
   "dependencies": {
     "@irwinproject/storybook-addon-tsdoc": "^1.0.0",
     "glob": "^11.0.1",
-    "react": "^19.0.0",
     "uuid": "^11.0.3"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "./index": {
       "types": "./dist/types/index.d.ts",
       "require": "./dist/cjs/index.js",
       "import": "./dist/esm/index.js"

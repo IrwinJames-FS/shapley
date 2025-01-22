@@ -58,7 +58,7 @@ export type ShapeGridProps = {
  * The shape grid is responsible for laying out grid. positioning the cells and applying a reference type and aspect ratio
  * 
  */
-export const ShapeGrid: FC<ShapeGridProps> = ({
+export const ShapeGrid = ({
 	shapes,
 	className,
 	children,
@@ -68,7 +68,7 @@ export const ShapeGrid: FC<ShapeGridProps> = ({
 	layoutFn,
 	style={},
 	...props
-})=>{
+}: ShapeGridProps):ReactNode=>{
 
 	if(shapes) Object.values(shapes).forEach(s=>s.toObjectBounding());
 	let o = 0;

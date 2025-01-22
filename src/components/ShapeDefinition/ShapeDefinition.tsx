@@ -19,7 +19,7 @@ export type ShapeDefinitionProps = {
  * @param param0 
  * @returns 
  */
-export const ShapeDefinition: FC<ShapeDefinitionProps> = ({id, d, clipPathUnits, ...props}) => {
+export const ShapeDefinition = ({id, d, clipPathUnits, ...props}: ShapeDefinitionProps) => {
 	return (<>
 		<path {...{id, d, ...props}}/>
 		<clipPath {...{id: id+'-clip', clipPathUnits}}>

@@ -9,7 +9,7 @@ export type ShapeCacheProps = {
 	shapes?: Record<string, D>
 }
 
-export const ShapeCache: FC<ShapeCacheProps> = ({shapes={}})=>(<><svg className="shape-cache">
+export const ShapeCache = ({shapes={}}: ShapeCacheProps={}): ReactNode =>(<><svg className="shape-cache">
 	<defs>
 		{Object.entries(shapes).map(([k, shape])=>{
 			return (<ShapeDefinition key={k} {...{

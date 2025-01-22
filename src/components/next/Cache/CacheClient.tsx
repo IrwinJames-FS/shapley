@@ -1,12 +1,12 @@
 'use client';
-import { FC, useEffect, useState } from "react"
+import { FC, ReactNode, useEffect, useState } from "react"
 import { DCacheItem } from "../../../geometry"
 import { ShapeDefinition } from "../../ShapeDefinition";
 
 export type NextShapeCacheClientProps = {
 	shapes?: [string, DCacheItem][]
 }
-const CacheClient: FC<NextShapeCacheClientProps> = ({shapes=[]})=>{
+const CacheClient = ({shapes=[]}:NextShapeCacheClientProps): ReactNode=>{
 	const [mounted, setMounted] = useState(false);
 	useEffect(()=>setMounted(true), [setMounted]);
 	return mounted ? (<div className="invisible"><svg className="shape-cache">
