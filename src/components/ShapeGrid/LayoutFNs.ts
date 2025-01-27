@@ -50,7 +50,8 @@ export const DiamondLayout = (columns: number, sref?: string):ShapeGridLayoutFn 
 export const HexagonLayout = (columns: number, sref?: string, isVertical?: boolean, alt?: boolean, invert?:boolean):ShapeGridLayoutFn => isVertical 
 ? index => {
 	const [c,r] = unflatten(columns, index);
-	return {row:0, column:0};
+	console.log(r);
+	return {row:1+(r*4)+(c%2)*2, column: c+1, sref};
 }
 : alt ? index => {
 	const [c,r] = unflatten(columns, index);
